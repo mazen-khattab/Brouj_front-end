@@ -1,0 +1,3652 @@
+{
+  "schemas": [
+    {
+      "name": "AddProjectImageRequest",
+      "source": "src/Brouj.API/Requests/AddProjectImageRequest.cs",
+      "properties": [
+        {
+          "name": "file",
+          "csharpType": "IFormFile",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "null!"
+        },
+        {
+          "name": "altText",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "AddStageItemImageRequest",
+      "source": "src/Brouj.API/Requests/AddStageItemImageRequest.cs",
+      "properties": [
+        {
+          "name": "file",
+          "csharpType": "IFormFile",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "null!"
+        },
+        {
+          "name": "description",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "AddUnitImageRequest",
+      "source": "src/Brouj.API/Requests/AddUnitImageRequest.cs",
+      "properties": [
+        {
+          "name": "file",
+          "csharpType": "IFormFile",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "null!"
+        },
+        {
+          "name": "altText",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ChangePlanStageItemStatusRequest",
+      "source": "src/Brouj.API/Requests/ChangePlanStageItemStatusRequest.cs",
+      "properties": [
+        {
+          "name": "status",
+          "csharpType": "PlanStageItemStatus",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "confirmedDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "CreateReservationRequest",
+      "source": "src/Brouj.API/Requests/CreateReservationRequest.cs",
+      "properties": [
+        {
+          "name": "unitId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "CreateTimePlanRequest",
+      "source": "src/Brouj.API/Requests/CreateTimePlanRequest.cs",
+      "properties": [
+        {
+          "name": "input",
+          "csharpType": "TimePlanInput",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "new()"
+        },
+        {
+          "name": "stages",
+          "csharpType": "IReadOnlyList<StageDraftInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "CsrfTokenResponse",
+      "source": "src/Brouj.API/Requests/CsrfTokenResponse.cs",
+      "properties": [
+        {
+          "name": "requestToken",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": true,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "DeleteUnitParameters",
+      "source": "src/Brouj.API/Requests/DeleteUnitParameters.cs",
+      "properties": [
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetActivityLogsParameters",
+      "source": "src/Brouj.API/Requests/GetActivityLogsParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "userId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "entityType",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "action",
+          "csharpType": "ActivityAction?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "dateFrom",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "dateTo",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetAreasByCityParameters",
+      "source": "src/Brouj.API/Requests/GetAreasByCityParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetAreasParameters",
+      "source": "src/Brouj.API/Requests/GetAreasParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetCitiesParameters",
+      "source": "src/Brouj.API/Requests/GetCitiesParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetCustomersParameters",
+      "source": "src/Brouj.API/Requests/GetCustomersParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isDeleted",
+          "csharpType": "bool?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetItemTemplatesParameters",
+      "source": "src/Brouj.API/Requests/GetItemTemplatesParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool?",
+          "nullable": true,
+          "requiredMember": true,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetMyOrdersParameters",
+      "source": "src/Brouj.API/Requests/GetMyOrdersParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "status",
+          "csharpType": "OrderStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetMyReservationsParameters",
+      "source": "src/Brouj.API/Requests/GetMyReservationsParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "status",
+          "csharpType": "ReservationStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetOrdersParameters",
+      "source": "src/Brouj.API/Requests/GetOrdersParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "status",
+          "csharpType": "OrderStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetProjectsParameters",
+      "source": "src/Brouj.API/Requests/GetProjectsParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "cityId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "areaId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectType",
+          "csharpType": "ProjectType?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetReservationsParameters",
+      "source": "src/Brouj.API/Requests/GetReservationsParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "status",
+          "csharpType": "ReservationStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetStageTemplatesParameters",
+      "source": "src/Brouj.API/Requests/GetStageTemplatesParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool?",
+          "nullable": true,
+          "requiredMember": true,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetTermsAndConditionsVersionsParameters",
+      "source": "src/Brouj.API/Requests/GetTermsAndConditionsVersionsParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        }
+      ]
+    },
+    {
+      "name": "GetUnitByIdParameters",
+      "source": "src/Brouj.API/Requests/GetUnitByIdParameters.cs",
+      "properties": [
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetUnitsByProjectParameters",
+      "source": "src/Brouj.API/Requests/GetUnitsByProjectParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetUsersParameters",
+      "source": "src/Brouj.API/Requests/GetUsersParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isDeleted",
+          "csharpType": "bool?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "role",
+          "csharpType": "UserRole?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ReorderPlanStageItemsRequest",
+      "source": "src/Brouj.API/Requests/ReorderPlanStageItemsRequest.cs",
+      "properties": [
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<ReorderItemInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ReorderStageItemImagesRequest",
+      "source": "src/Brouj.API/Requests/ReorderStageItemImagesRequest.cs",
+      "properties": [
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<ReorderItemInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ReorderTimePlanStagesRequest",
+      "source": "src/Brouj.API/Requests/ReorderTimePlanStagesRequest.cs",
+      "properties": [
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<ReorderItemInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ReplaceAreaAmenitiesRequest",
+      "source": "src/Brouj.API/Requests/ReplaceAreaAmenitiesRequest.cs",
+      "properties": [
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ReplaceProjectAmenitiesRequest",
+      "source": "src/Brouj.API/Requests/ReplaceProjectAmenitiesRequest.cs",
+      "properties": [
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ReplaceUnitAmenitiesRequest",
+      "source": "src/Brouj.API/Requests/ReplaceUnitAmenitiesRequest.cs",
+      "properties": [
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "SetItemTemplateActiveRequest",
+      "source": "src/Brouj.API/Requests/SetItemTemplateActiveRequest.cs",
+      "properties": [
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": true,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "SetStageTemplateActiveRequest",
+      "source": "src/Brouj.API/Requests/SetStageTemplateActiveRequest.cs",
+      "properties": [
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": true,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "SetStageTemplateItemsRequest",
+      "source": "src/Brouj.API/Requests/SetStageTemplateItemsRequest.cs",
+      "properties": [
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<StageTemplateItemInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "UpdateProjectImageRequest",
+      "source": "src/Brouj.API/Requests/UpdateProjectImageRequest.cs",
+      "properties": [
+        {
+          "name": "altText",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UpdateStageItemImageRequest",
+      "source": "src/Brouj.API/Requests/UpdateStageItemImageRequest.cs",
+      "properties": [
+        {
+          "name": "description",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UpdateUnitImageRequest",
+      "source": "src/Brouj.API/Requests/UpdateUnitImageRequest.cs",
+      "properties": [
+        {
+          "name": "altText",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UpdateUnitParameters",
+      "source": "src/Brouj.API/Requests/UpdateUnitParameters.cs",
+      "properties": [
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "AmenityDto",
+      "source": "src/Brouj.Application/Common/DTOs/AmenityDto.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "value",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "AuthSessionDto",
+      "source": "src/Brouj.Application/Common/DTOs/AuthSessionDto.cs",
+      "properties": [
+        {
+          "name": "actorId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "expiresAt",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ImageMetadataDto",
+      "source": "src/Brouj.Application/Common/DTOs/ImageMetadataDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "imagePath",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "altText",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "LoginInput",
+      "source": "src/Brouj.Application/Common/DTOs/LoginInput.cs",
+      "properties": [
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "password",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "PasswordChangeInput",
+      "source": "src/Brouj.Application/Common/DTOs/PasswordChangeInput.cs",
+      "properties": [
+        {
+          "name": "currentPassword",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "newPassword",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "UploadInput",
+      "source": "src/Brouj.Application/Common/DTOs/UploadInput.cs",
+      "properties": [
+        {
+          "name": "content",
+          "csharpType": "Stream",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "Stream.Null"
+        },
+        {
+          "name": "fileName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "contentType",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "length",
+          "csharpType": "long",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ActivityLogDto",
+      "source": "src/Brouj.Application/Features/ActivityLogs/DTOs/ActivityLogDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "entityType",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "entityId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "userId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "action",
+          "csharpType": "ActivityAction",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "createdAt",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "AreaDto",
+      "source": "src/Brouj.Application/Features/Areas/DTOs/AreaDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "cityId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "cityName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "AreaInput",
+      "source": "src/Brouj.Application/Features/Areas/DTOs/AreaInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "cityId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "AreaListDto",
+      "source": "src/Brouj.Application/Features/Areas/DTOs/AreaListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "cityId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "cityName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "CityDto",
+      "source": "src/Brouj.Application/Features/Cities/DTOs/CityDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "CityInput",
+      "source": "src/Brouj.Application/Features/Cities/DTOs/CityInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "CurrentCustomerDto",
+      "source": "src/Brouj.Application/Features/Customers/DTOs/CurrentCustomerDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "fName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "lName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "identityNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "CustomerDto",
+      "source": "src/Brouj.Application/Features/Customers/DTOs/CustomerDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "fName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "lName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "deletedAt",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "CustomerProfileInput",
+      "source": "src/Brouj.Application/Features/Customers/DTOs/CustomerProfileInput.cs",
+      "properties": [
+        {
+          "name": "fName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "lName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "identityNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "RegisterCustomerInput",
+      "source": "src/Brouj.Application/Features/Customers/DTOs/RegisterCustomerInput.cs",
+      "properties": [
+        {
+          "name": "fName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "lName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "identityNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "password",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "ItemTemplateDto",
+      "source": "src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ItemTemplateInput",
+      "source": "src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "ItemTemplateListDto",
+      "source": "src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "OrderDto",
+      "source": "src/Brouj.Application/Features/Orders/DTOs/OrderDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "reservationId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "projectName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "status",
+          "csharpType": "OrderStatus",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "totalPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "completedAt",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ProjectDto",
+      "source": "src/Brouj.Application/Features/Projects/DTOs/ProjectDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "areaId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "description",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "latitude",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "longitude",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectType",
+          "csharpType": "ProjectType",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "price",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorCount",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "plannedUnitCount",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "drawDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isGarage",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "true"
+        },
+        {
+          "name": "garagePrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "0m"
+        },
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        },
+        {
+          "name": "images",
+          "csharpType": "IReadOnlyList<ImageMetadataDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "ProjectInput",
+      "source": "src/Brouj.Application/Features/Projects/DTOs/ProjectInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "areaId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "description",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "latitude",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "longitude",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectType",
+          "csharpType": "ProjectType",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "price",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorCount",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "plannedUnitCount",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "drawDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ProjectListDto",
+      "source": "src/Brouj.Application/Features/Projects/DTOs/ProjectListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "areaId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "areaName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "cityId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectType",
+          "csharpType": "ProjectType",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "price",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ReservationDto",
+      "source": "src/Brouj.Application/Features/Reservations/DTOs/ReservationDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "projectName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "status",
+          "csharpType": "ReservationStatus",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "reservationDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "cancelledAt",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "orderId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageTemplateDto",
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<StageTemplateItemDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "StageTemplateInput",
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "StageTemplateItemDto",
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateItemDto.cs",
+      "properties": [
+        {
+          "name": "itemTemplateId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageTemplateItemInput",
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateItemInput.cs",
+      "properties": [
+        {
+          "name": "itemTemplateId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageTemplateListDto",
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "code",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "CreateTermsVersionInput",
+      "source": "src/Brouj.Application/Features/Terms/DTOs/CreateTermsVersionInput.cs",
+      "properties": [
+        {
+          "name": "title",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "content",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "versionNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "effectiveDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "TermsDto",
+      "source": "src/Brouj.Application/Features/Terms/DTOs/TermsDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "title",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "content",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "versionNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "effectiveDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "TermsListDto",
+      "source": "src/Brouj.Application/Features/Terms/DTOs/TermsListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "title",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "versionNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "effectiveDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isActive",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "PlanStageItemDto",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/PlanStageItemDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "status",
+          "csharpType": "PlanStageItemStatus",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "dueDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "confirmedDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "images",
+          "csharpType": "IReadOnlyList<StageItemImageDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "PlanStageItemInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/PlanStageItemInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "dueDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "confirmedDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ReorderItemInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/ReorderItemInput.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageDraftInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInput.cs",
+      "properties": [
+        {
+          "name": "stageTemplateId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<StageItemDraftInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "StageItemDraftInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInput.cs",
+      "properties": [
+        {
+          "name": "itemTemplateId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "dueDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "confirmedDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageItemImageDto",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemImageDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "imagePath",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "description",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "TimePlanDto",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "stages",
+          "csharpType": "IReadOnlyList<TimePlanStageDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "TimePlanInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "TimePlanStageDto",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanStageDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "sortOrder",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<PlanStageItemDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "UnitDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "meterPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborMeterPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "totalPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "percentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isAvailable",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isGarage",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "true"
+        },
+        {
+          "name": "garagePrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "0m"
+        },
+        {
+          "name": "amenities",
+          "csharpType": "IReadOnlyList<AmenityDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        },
+        {
+          "name": "images",
+          "csharpType": "IReadOnlyList<ImageMetadataDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "UnitInput",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitInput.cs",
+      "properties": [
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "meterPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborMeterPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UnitListDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitListDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "projectId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "meterPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborMeterPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "totalPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "percentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isAvailable",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "isGarage",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "true"
+        },
+        {
+          "name": "garagePrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "0m"
+        }
+      ]
+    },
+    {
+      "name": "CreateUserInput",
+      "source": "src/Brouj.Application/Features/Users/DTOs/CreateUserInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "role",
+          "csharpType": "UserRole",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "password",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "UpdateUserInput",
+      "source": "src/Brouj.Application/Features/Users/DTOs/UpdateUserInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "role",
+          "csharpType": "UserRole",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UserDto",
+      "source": "src/Brouj.Application/Features/Users/DTOs/UserDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "email",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "role",
+          "csharpType": "UserRole",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "deletedAt",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ApiResponse<T>",
+      "source": "src/Brouj.Application/Common/Models/ApiResponse.cs",
+      "properties": [
+        {
+          "name": "data",
+          "csharpType": "T",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "message",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "success",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "constant": true
+        }
+      ]
+    },
+    {
+      "name": "ApiErrorResponse",
+      "source": "src/Brouj.Application/Common/Models/ApiErrorResponse.cs",
+      "properties": [
+        {
+          "name": "code",
+          "csharpType": "FeatureErrorCode",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "message",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "errors",
+          "csharpType": "IReadOnlyDictionary<string, string[]>?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "success",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "constant": false
+        }
+      ]
+    },
+    {
+      "name": "PaginationResult<T>",
+      "source": "src/Brouj.Application/Common/Models/PaginationResult.cs",
+      "properties": [
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyCollection<T>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "totalCount",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "totalPages",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "ActivityAction",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/ActivityAction.cs",
+      "members": [
+        {
+          "name": "Created",
+          "value": 0
+        },
+        {
+          "name": "Updated",
+          "value": 1
+        },
+        {
+          "name": "Deleted",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "OrderStatus",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/OrderStatus.cs",
+      "members": [
+        {
+          "name": "Pending",
+          "value": 0
+        },
+        {
+          "name": "Processing",
+          "value": 1
+        },
+        {
+          "name": "Completed",
+          "value": 2
+        },
+        {
+          "name": "Cancelled",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "name": "PlanStageItemStatus",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/PlanStageItemStatus.cs",
+      "members": [
+        {
+          "name": "Pending",
+          "value": 0
+        },
+        {
+          "name": "Processing",
+          "value": 1
+        },
+        {
+          "name": "Completed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "ProjectType",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/ProjectType.cs",
+      "members": [
+        {
+          "name": "Regular",
+          "value": 0
+        },
+        {
+          "name": "Initiative",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "ReservationStatus",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/ReservationStatus.cs",
+      "members": [
+        {
+          "name": "Processing",
+          "value": 0
+        },
+        {
+          "name": "Cancelled",
+          "value": 1
+        },
+        {
+          "name": "Confirmed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "UserRole",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/UserRole.cs",
+      "members": [
+        {
+          "name": "SuperAdmin",
+          "value": 0
+        },
+        {
+          "name": "Admin",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "FeatureErrorCode",
+      "wireType": "number",
+      "source": "src/Brouj.Application/Common/Errors/FeatureErrorCode.cs",
+      "members": [
+        {
+          "name": "None",
+          "value": 0
+        },
+        {
+          "name": "InvalidCredentials",
+          "value": 1
+        },
+        {
+          "name": "ProjectNotFound",
+          "value": 2
+        },
+        {
+          "name": "ProjectHasReservations",
+          "value": 3
+        },
+        {
+          "name": "UnitNotFound",
+          "value": 4
+        },
+        {
+          "name": "ReservationNotFound",
+          "value": 5
+        },
+        {
+          "name": "ReservationAlreadyActive",
+          "value": 6
+        },
+        {
+          "name": "ReservationAlreadyCancelled",
+          "value": 7
+        },
+        {
+          "name": "OrderNotFound",
+          "value": 8
+        },
+        {
+          "name": "OrderAlreadyCompleted",
+          "value": 9
+        },
+        {
+          "name": "AccessDenied",
+          "value": 10
+        },
+        {
+          "name": "CustomerNotFound",
+          "value": 11
+        },
+        {
+          "name": "CustomerConflict",
+          "value": 12
+        },
+        {
+          "name": "CustomerInvalidInput",
+          "value": 13
+        },
+        {
+          "name": "UserNotFound",
+          "value": 14
+        },
+        {
+          "name": "UserConflict",
+          "value": 15
+        },
+        {
+          "name": "UserInvalidInput",
+          "value": 16
+        },
+        {
+          "name": "CityNotFound",
+          "value": 17
+        },
+        {
+          "name": "CityConflict",
+          "value": 18
+        },
+        {
+          "name": "CityInvalidInput",
+          "value": 19
+        },
+        {
+          "name": "AreaNotFound",
+          "value": 20
+        },
+        {
+          "name": "AreaConflict",
+          "value": 21
+        },
+        {
+          "name": "AreaInvalidInput",
+          "value": 22
+        },
+        {
+          "name": "ProjectConflict",
+          "value": 23
+        },
+        {
+          "name": "ProjectInvalidInput",
+          "value": 24
+        },
+        {
+          "name": "UnitConflict",
+          "value": 25
+        },
+        {
+          "name": "UnitInvalidInput",
+          "value": 26
+        },
+        {
+          "name": "ReservationConflict",
+          "value": 27
+        },
+        {
+          "name": "ReservationInvalidInput",
+          "value": 28
+        },
+        {
+          "name": "OrderConflict",
+          "value": 29
+        },
+        {
+          "name": "OrderInvalidInput",
+          "value": 30
+        },
+        {
+          "name": "TimePlanNotFound",
+          "value": 31
+        },
+        {
+          "name": "TimePlanConflict",
+          "value": 32
+        },
+        {
+          "name": "TimePlanInvalidInput",
+          "value": 33
+        },
+        {
+          "name": "StageTemplateNotFound",
+          "value": 34
+        },
+        {
+          "name": "StageTemplateConflict",
+          "value": 35
+        },
+        {
+          "name": "StageTemplateInvalidInput",
+          "value": 36
+        },
+        {
+          "name": "ItemTemplateNotFound",
+          "value": 37
+        },
+        {
+          "name": "ItemTemplateConflict",
+          "value": 38
+        },
+        {
+          "name": "ItemTemplateInvalidInput",
+          "value": 39
+        },
+        {
+          "name": "TermsNotFound",
+          "value": 40
+        },
+        {
+          "name": "TermsConflict",
+          "value": 41
+        },
+        {
+          "name": "TermsInvalidInput",
+          "value": 42
+        },
+        {
+          "name": "ActivityLogNotFound",
+          "value": 43
+        },
+        {
+          "name": "ActivityLogConflict",
+          "value": 44
+        },
+        {
+          "name": "ActivityLogInvalidInput",
+          "value": 45
+        }
+      ]
+    }
+  ],
+  "validators": [
+    {
+      "source": "src/Brouj.Application/Common/DTOs/AmenityDtoValidator.cs",
+      "rules": "public sealed class AmenityDtoValidator : AbstractValidator<AmenityDto>\n{\n    public AmenityDtoValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Value).NotEmpty().MaximumLength(32);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Common/DTOs/LoginInputValidator.cs",
+      "rules": "public sealed class LoginInputValidator : AbstractValidator<LoginInput>\n{\n    public LoginInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Password).NotNull().MinimumLength(1);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Common/DTOs/PasswordChangeInputValidator.cs",
+      "rules": "public sealed class PasswordChangeInputValidator : AbstractValidator<PasswordChangeInput>\n{\n    public PasswordChangeInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.CurrentPassword).NotNull().MinimumLength(1);\n        RuleFor(input => input.NewPassword).NotNull().MinimumLength(8);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Common/DTOs/UploadInputValidator.cs",
+      "rules": "public sealed class UploadInputValidator : AbstractValidator<UploadInput>\n{\n    public UploadInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Content).NotNull().Must(stream => stream is not null && stream.CanRead);\n        RuleFor(input => input.FileName).NotEmpty().MaximumLength(255);\n        RuleFor(input => input.ContentType).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Length).InclusiveBetween(1, 10 * 1024 * 1024);\n        // The storage adapter validates actual bytes, type signatures and its configured size limit.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/DTOs/AreaInputValidator.cs",
+      "rules": "public sealed class AreaInputValidator : AbstractValidator<AreaInput>\n{\n    public AreaInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.CityId).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/DTOs/CityInputValidator.cs",
+      "rules": "public sealed class CityInputValidator : AbstractValidator<CityInput>\n{\n    public CityInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/DTOs/CustomerProfileInputValidator.cs",
+      "rules": "public sealed class CustomerProfileInputValidator : AbstractValidator<CustomerProfileInput>\n{\n    public CustomerProfileInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber).NationalId();\n        RuleFor(input => input.Email).Email();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/DTOs/RegisterCustomerInputValidator.cs",
+      "rules": "public sealed class RegisterCustomerInputValidator : AbstractValidator<RegisterCustomerInput>\n{\n    public RegisterCustomerInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber).NationalId();\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Password).NotNull().MinimumLength(8);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateInputValidator.cs",
+      "rules": "public sealed class ItemTemplateInputValidator : AbstractValidator<ItemTemplateInput>\n{\n    public ItemTemplateInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Code).NotEmpty().MaximumLength(64);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/DTOs/ProjectInputValidator.cs",
+      "rules": "public sealed class ProjectInputValidator : AbstractValidator<ProjectInput>\n{\n    public ProjectInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.AreaId).NotEmpty();\n        RuleFor(input => input.Description).MaximumLength(20000);\n        RuleFor(input => input.Latitude).InclusiveBetween(-90m, 90m);\n        RuleFor(input => input.Longitude).InclusiveBetween(-180m, 180m);\n        RuleFor(input => input.Size).GreaterThan(0).PrecisionScale(18, 4, false);\n        RuleFor(input => input.Price).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.ProjectType).IsInEnum();\n        RuleFor(input => input.FloorCount).GreaterThanOrEqualTo(0);\n        RuleFor(input => input.PlannedUnitCount).GreaterThanOrEqualTo(0);\n        When(input => input.ProjectType == ProjectType.Initiative, () =>\n        {\n            RuleFor(input => input.Price).GreaterThan(0);\n            RuleFor(input => input.NeighborPrice).NotNull().GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n            RuleFor(input => input.DrawDate).NotNull();\n        });\n        When(input => input.ProjectType == ProjectType.Regular, () =>\n        {\n            RuleFor(input => input.NeighborPrice).Null();\n            RuleFor(input => input.DrawDate).Null();\n        });\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateInputValidator.cs",
+      "rules": "public sealed class StageTemplateInputValidator : AbstractValidator<StageTemplateInput>\n{\n    public StageTemplateInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Code).NotEmpty().MaximumLength(64);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/DTOs/StageTemplateItemInputValidator.cs",
+      "rules": "public sealed class StageTemplateItemInputValidator : AbstractValidator<StageTemplateItemInput>\n{\n    public StageTemplateItemInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.ItemTemplateId).NotEmpty();\n        RuleFor(input => input.SortOrder).GreaterThan(0);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/DTOs/CreateTermsVersionInputValidator.cs",
+      "rules": "public sealed class CreateTermsVersionInputValidator : AbstractValidator<CreateTermsVersionInput>\n{\n    public CreateTermsVersionInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Title).NotEmpty().MaximumLength(300);\n        RuleFor(input => input.Content).NotEmpty().MaximumLength(100000);\n        RuleFor(input => input.VersionNumber).GreaterThan(0);\n        RuleFor(input => input.EffectiveDate).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/PlanStageItemInputValidator.cs",
+      "rules": "public sealed class PlanStageItemInputValidator : AbstractValidator<PlanStageItemInput>\n{\n    public PlanStageItemInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.DueDate).NotNull().WithMessage(\"Pls insert the dates first\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/ReorderItemInputValidator.cs",
+      "rules": "public sealed class ReorderItemInputValidator : AbstractValidator<ReorderItemInput>\n{\n    public ReorderItemInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Id).NotEmpty();\n        RuleFor(input => input.SortOrder).GreaterThan(0);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInputValidator.cs",
+      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInputValidator.cs",
+      "rules": "public sealed class StageItemDraftInputValidator : AbstractValidator<StageItemDraftInput>\n{\n    public StageItemDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.ItemTemplateId is null);\n        RuleFor(input => input.DueDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.ItemTemplateId).NotEmpty().When(input => input.ItemTemplateId is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanInputValidator.cs",
+      "rules": "public sealed class TimePlanInputValidator : AbstractValidator<TimePlanInput>\n{\n    public TimePlanInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitInputValidator.cs",
+      "rules": "public sealed class UnitInputValidator : AbstractValidator<UnitInput>\n{\n    public UnitInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input).Must(input => Pricing.IsValidTotal(input.Size, input.MeterPrice))\n            .WithMessage(\"The calculated total exceeds the supported amount.\");\n\n        RuleFor(input => input.Number).NotEmpty().MaximumLength(64);\n        RuleFor(input => input.MeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.Size).GreaterThan(0).PrecisionScale(18, 4, false);\n        RuleFor(input => input.FloorNumber).GreaterThanOrEqualTo(0);\n        RuleFor(input => input.NeighborMeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/DTOs/CreateUserInputValidator.cs",
+      "rules": "public sealed class CreateUserInputValidator : AbstractValidator<CreateUserInput>\n{\n    public CreateUserInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.Role).IsInEnum();\n        RuleFor(input => input.Password).NotNull().MinimumLength(8);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/DTOs/UpdateUserInputValidator.cs",
+      "rules": "public sealed class UpdateUserInputValidator : AbstractValidator<UpdateUserInput>\n{\n    public UpdateUserInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.Role).IsInEnum();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ActivityLogs/Queries/GetAll/GetActivityLogsQueryValidator.cs",
+      "rules": "public sealed class GetActivityLogsQueryValidator : AbstractValidator<GetActivityLogsQuery>\n{\n    public GetActivityLogsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.UserId).NotEmpty().When(request => request.UserId is not null);\n        RuleFor(request => request.EntityType).MaximumLength(128);\n        RuleFor(request => request.Action).IsInEnum().When(request => request.Action is not null);\n        RuleFor(request => request.DateTo).GreaterThanOrEqualTo(request => request.DateFrom)\n            .When(request => request.DateFrom is not null && request.DateTo is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ActivityLogs/Queries/GetById/GetActivityLogByIdQueryValidator.cs",
+      "rules": "public sealed class GetActivityLogByIdQueryValidator : AbstractValidator<GetActivityLogByIdQuery>\n{\n    public GetActivityLogByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Commands/Create/CreateAreaCommandValidator.cs",
+      "rules": "public sealed class CreateAreaCommandValidator : AbstractValidator<CreateAreaCommand>\n{\n    public CreateAreaCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new AreaInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Commands/Delete/DeleteAreaCommandValidator.cs",
+      "rules": "public sealed class DeleteAreaCommandValidator : AbstractValidator<DeleteAreaCommand>\n{\n    public DeleteAreaCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Commands/ReplaceAmenities/ReplaceAreaAmenitiesCommandValidator.cs",
+      "rules": "public sealed class ReplaceAreaAmenitiesCommandValidator : AbstractValidator<ReplaceAreaAmenitiesCommand>\n{\n    public ReplaceAreaAmenitiesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.AreaId).NotEmpty();\n        RuleFor(request => request.Amenities).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(request => request.Amenities).NotNull().SetValidator(new AmenityDtoValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Commands/Update/UpdateAreaCommandValidator.cs",
+      "rules": "public sealed class UpdateAreaCommandValidator : AbstractValidator<UpdateAreaCommand>\n{\n    public UpdateAreaCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new AreaInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Queries/GetAll/GetAreasQueryValidator.cs",
+      "rules": "public sealed class GetAreasQueryValidator : AbstractValidator<GetAreasQuery>\n{\n    public GetAreasQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Queries/GetByCity/GetAreasByCityQueryValidator.cs",
+      "rules": "public sealed class GetAreasByCityQueryValidator : AbstractValidator<GetAreasByCityQuery>\n{\n    public GetAreasByCityQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n        RuleFor(request => request.CityId).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Areas/Queries/GetById/GetAreaByIdQueryValidator.cs",
+      "rules": "public sealed class GetAreaByIdQueryValidator : AbstractValidator<GetAreaByIdQuery>\n{\n    public GetAreaByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Commands/Create/CreateCityCommandValidator.cs",
+      "rules": "public sealed class CreateCityCommandValidator : AbstractValidator<CreateCityCommand>\n{\n    public CreateCityCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new CityInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Commands/Delete/DeleteCityCommandValidator.cs",
+      "rules": "public sealed class DeleteCityCommandValidator : AbstractValidator<DeleteCityCommand>\n{\n    public DeleteCityCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Commands/Update/UpdateCityCommandValidator.cs",
+      "rules": "public sealed class UpdateCityCommandValidator : AbstractValidator<UpdateCityCommand>\n{\n    public UpdateCityCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new CityInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Queries/GetAll/GetCitiesQueryValidator.cs",
+      "rules": "public sealed class GetCitiesQueryValidator : AbstractValidator<GetCitiesQuery>\n{\n    public GetCitiesQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Queries/GetById/GetCityByIdQueryValidator.cs",
+      "rules": "public sealed class GetCityByIdQueryValidator : AbstractValidator<GetCityByIdQuery>\n{\n    public GetCityByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/ChangePassword/ChangeCustomerPasswordCommandValidator.cs",
+      "rules": "public sealed class ChangeCustomerPasswordCommandValidator : AbstractValidator<ChangeCustomerPasswordCommand>\n{\n    public ChangeCustomerPasswordCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new PasswordChangeInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/Login/LoginCustomerCommandValidator.cs",
+      "rules": "public sealed class LoginCustomerCommandValidator : AbstractValidator<LoginCustomerCommand>\n{\n    public LoginCustomerCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new LoginInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/Logout/LogoutCustomerCommandValidator.cs",
+      "rules": "public sealed class LogoutCustomerCommandValidator : AbstractValidator<LogoutCustomerCommand>\n{\n    public LogoutCustomerCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/RefreshSession/RefreshCustomerSessionCommandValidator.cs",
+      "rules": "public sealed class RefreshCustomerSessionCommandValidator : AbstractValidator<RefreshCustomerSessionCommand>\n{\n    public RefreshCustomerSessionCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/Register/RegisterCustomerCommandValidator.cs",
+      "rules": "public sealed class RegisterCustomerCommandValidator : AbstractValidator<RegisterCustomerCommand>\n{\n    public RegisterCustomerCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new RegisterCustomerInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/Restore/RestoreCustomerCommandValidator.cs",
+      "rules": "public sealed class RestoreCustomerCommandValidator : AbstractValidator<RestoreCustomerCommand>\n{\n    public RestoreCustomerCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/SoftDelete/SoftDeleteCustomerCommandValidator.cs",
+      "rules": "public sealed class SoftDeleteCustomerCommandValidator : AbstractValidator<SoftDeleteCustomerCommand>\n{\n    public SoftDeleteCustomerCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Commands/UpdateProfile/UpdateCustomerProfileCommandValidator.cs",
+      "rules": "public sealed class UpdateCustomerProfileCommandValidator : AbstractValidator<UpdateCustomerProfileCommand>\n{\n    public UpdateCustomerProfileCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new CustomerProfileInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Queries/GetAll/GetCustomersQueryValidator.cs",
+      "rules": "public sealed class GetCustomersQueryValidator : AbstractValidator<GetCustomersQuery>\n{\n    public GetCustomersQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Queries/GetById/GetCustomerByIdQueryValidator.cs",
+      "rules": "public sealed class GetCustomerByIdQueryValidator : AbstractValidator<GetCustomerByIdQuery>\n{\n    public GetCustomerByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Customers/Queries/GetCurrent/GetCurrentCustomerQueryValidator.cs",
+      "rules": "public sealed class GetCurrentCustomerQueryValidator : AbstractValidator<GetCurrentCustomerQuery>\n{\n    public GetCurrentCustomerQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Commands/Create/CreateItemTemplateCommandValidator.cs",
+      "rules": "public sealed class CreateItemTemplateCommandValidator : AbstractValidator<CreateItemTemplateCommand>\n{\n    public CreateItemTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new ItemTemplateInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Commands/Delete/DeleteItemTemplateCommandValidator.cs",
+      "rules": "public sealed class DeleteItemTemplateCommandValidator : AbstractValidator<DeleteItemTemplateCommand>\n{\n    public DeleteItemTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Commands/SetActive/SetItemTemplateActiveCommandValidator.cs",
+      "rules": "public sealed class SetItemTemplateActiveCommandValidator : AbstractValidator<SetItemTemplateActiveCommand>\n{\n    public SetItemTemplateActiveCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Commands/Update/UpdateItemTemplateCommandValidator.cs",
+      "rules": "public sealed class UpdateItemTemplateCommandValidator : AbstractValidator<UpdateItemTemplateCommand>\n{\n    public UpdateItemTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new ItemTemplateInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Queries/GetAll/GetItemTemplatesQueryValidator.cs",
+      "rules": "public sealed class GetItemTemplatesQueryValidator : AbstractValidator<GetItemTemplatesQuery>\n{\n    public GetItemTemplatesQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ItemTemplates/Queries/GetById/GetItemTemplateByIdQueryValidator.cs",
+      "rules": "public sealed class GetItemTemplateByIdQueryValidator : AbstractValidator<GetItemTemplateByIdQuery>\n{\n    public GetItemTemplateByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Orders/Commands/CompleteInitiative/CompleteInitiativeOrderCommandValidator.cs",
+      "rules": "public sealed class CompleteInitiativeOrderCommandValidator : AbstractValidator<CompleteInitiativeOrderCommand>\n{\n    public CompleteInitiativeOrderCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Orders/Commands/CreateFromReservation/CreateOrderFromReservationCommandValidator.cs",
+      "rules": "public sealed class CreateOrderFromReservationCommandValidator : AbstractValidator<CreateOrderFromReservationCommand>\n{\n    public CreateOrderFromReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ReservationId).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Orders/Queries/GetAll/GetOrdersQueryValidator.cs",
+      "rules": "public sealed class GetOrdersQueryValidator : AbstractValidator<GetOrdersQuery>\n{\n    public GetOrdersQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Status).IsInEnum().When(request => request.Status is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Orders/Queries/GetById/GetOrderByIdQueryValidator.cs",
+      "rules": "public sealed class GetOrderByIdQueryValidator : AbstractValidator<GetOrderByIdQuery>\n{\n    public GetOrderByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Orders/Queries/GetMine/GetMyOrdersQueryValidator.cs",
+      "rules": "public sealed class GetMyOrdersQueryValidator : AbstractValidator<GetMyOrdersQuery>\n{\n    public GetMyOrdersQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Status).IsInEnum().When(request => request.Status is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/AddImage/AddProjectImageCommandValidator.cs",
+      "rules": "public sealed class AddProjectImageCommandValidator : AbstractValidator<AddProjectImageCommand>\n{\n    public AddProjectImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.File).NotNull().SetValidator(new UploadInputValidator());\n        RuleFor(request => request.AltText).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/Create/CreateProjectCommandValidator.cs",
+      "rules": "public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>\n{\n    public CreateProjectCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new ProjectInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/Delete/DeleteProjectCommandValidator.cs",
+      "rules": "public sealed class DeleteProjectCommandValidator : AbstractValidator<DeleteProjectCommand>\n{\n    public DeleteProjectCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/DeleteImage/DeleteProjectImageCommandValidator.cs",
+      "rules": "public sealed class DeleteProjectImageCommandValidator : AbstractValidator<DeleteProjectImageCommand>\n{\n    public DeleteProjectImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/ReplaceAmenities/ReplaceProjectAmenitiesCommandValidator.cs",
+      "rules": "public sealed class ReplaceProjectAmenitiesCommandValidator : AbstractValidator<ReplaceProjectAmenitiesCommand>\n{\n    public ReplaceProjectAmenitiesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Amenities).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(request => request.Amenities).NotNull().SetValidator(new AmenityDtoValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/Update/UpdateProjectCommandValidator.cs",
+      "rules": "public sealed class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand>\n{\n    public UpdateProjectCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new ProjectInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Commands/UpdateImage/UpdateProjectImageCommandValidator.cs",
+      "rules": "public sealed class UpdateProjectImageCommandValidator : AbstractValidator<UpdateProjectImageCommand>\n{\n    public UpdateProjectImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.AltText).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Queries/GetAll/GetProjectsQueryValidator.cs",
+      "rules": "public sealed class GetProjectsQueryValidator : AbstractValidator<GetProjectsQuery>\n{\n    public GetProjectsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n        RuleFor(request => request.CityId).NotEmpty().When(request => request.CityId is not null);\n        RuleFor(request => request.AreaId).NotEmpty().When(request => request.AreaId is not null);\n        RuleFor(request => request.ProjectType).IsInEnum().When(request => request.ProjectType is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Queries/GetById/GetProjectByIdQueryValidator.cs",
+      "rules": "public sealed class GetProjectByIdQueryValidator : AbstractValidator<GetProjectByIdQuery>\n{\n    public GetProjectByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Commands/Cancel/CancelReservationCommandValidator.cs",
+      "rules": "public sealed class CancelReservationCommandValidator : AbstractValidator<CancelReservationCommand>\n{\n    public CancelReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Commands/Create/CreateReservationCommandValidator.cs",
+      "rules": "public sealed class CreateReservationCommandValidator : AbstractValidator<CreateReservationCommand>\n{\n    public CreateReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Queries/GetAll/GetReservationsQueryValidator.cs",
+      "rules": "public sealed class GetReservationsQueryValidator : AbstractValidator<GetReservationsQuery>\n{\n    public GetReservationsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Status).IsInEnum().When(request => request.Status is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Queries/GetById/GetReservationByIdQueryValidator.cs",
+      "rules": "public sealed class GetReservationByIdQueryValidator : AbstractValidator<GetReservationByIdQuery>\n{\n    public GetReservationByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Queries/GetDetails/GetReservationDetailsQueryValidator.cs",
+      "rules": "public sealed class GetReservationDetailsQueryValidator : AbstractValidator<GetReservationDetailsQuery>\n{\n    public GetReservationDetailsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Queries/GetMine/GetMyReservationsQueryValidator.cs",
+      "rules": "public sealed class GetMyReservationsQueryValidator : AbstractValidator<GetMyReservationsQuery>\n{\n    public GetMyReservationsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Status).IsInEnum().When(request => request.Status is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Commands/Create/CreateStageTemplateCommandValidator.cs",
+      "rules": "public sealed class CreateStageTemplateCommandValidator : AbstractValidator<CreateStageTemplateCommand>\n{\n    public CreateStageTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageTemplateInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Commands/Delete/DeleteStageTemplateCommandValidator.cs",
+      "rules": "public sealed class DeleteStageTemplateCommandValidator : AbstractValidator<DeleteStageTemplateCommand>\n{\n    public DeleteStageTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Commands/SetActive/SetStageTemplateActiveCommandValidator.cs",
+      "rules": "public sealed class SetStageTemplateActiveCommandValidator : AbstractValidator<SetStageTemplateActiveCommand>\n{\n    public SetStageTemplateActiveCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Commands/SetItems/SetStageTemplateItemsCommandValidator.cs",
+      "rules": "public sealed class SetStageTemplateItemsCommandValidator : AbstractValidator<SetStageTemplateItemsCommand>\n{\n    public SetStageTemplateItemsCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(request => request.Items).NotNull().SetValidator(new StageTemplateItemInputValidator());\n        RuleFor(request => request.Items).Must(items =>\n            items.Select(item => item.ItemTemplateId).Distinct().Count() == items.Count &&\n            items.Select(item => item.SortOrder).Order().SequenceEqual(Enumerable.Range(1, items.Count)))\n            .WithMessage(\"Supply unique templates and contiguous one-based positions.\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Commands/Update/UpdateStageTemplateCommandValidator.cs",
+      "rules": "public sealed class UpdateStageTemplateCommandValidator : AbstractValidator<UpdateStageTemplateCommand>\n{\n    public UpdateStageTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageTemplateInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Queries/GetAll/GetStageTemplatesQueryValidator.cs",
+      "rules": "public sealed class GetStageTemplatesQueryValidator : AbstractValidator<GetStageTemplatesQuery>\n{\n    public GetStageTemplatesQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/StageTemplates/Queries/GetById/GetStageTemplateByIdQueryValidator.cs",
+      "rules": "public sealed class GetStageTemplateByIdQueryValidator : AbstractValidator<GetStageTemplateByIdQuery>\n{\n    public GetStageTemplateByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/Commands/Activate/ActivateTermsAndConditionsCommandValidator.cs",
+      "rules": "public sealed class ActivateTermsAndConditionsCommandValidator : AbstractValidator<ActivateTermsAndConditionsCommand>\n{\n    public ActivateTermsAndConditionsCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/Commands/CreateVersion/CreateTermsAndConditionsVersionCommandValidator.cs",
+      "rules": "public sealed class CreateTermsAndConditionsVersionCommandValidator : AbstractValidator<CreateTermsAndConditionsVersionCommand>\n{\n    public CreateTermsAndConditionsVersionCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new CreateTermsVersionInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/Queries/GetActive/GetActiveTermsAndConditionsQueryValidator.cs",
+      "rules": "public sealed class GetActiveTermsAndConditionsQueryValidator : AbstractValidator<GetActiveTermsAndConditionsQuery>\n{\n    public GetActiveTermsAndConditionsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/Queries/GetById/GetTermsAndConditionsByIdQueryValidator.cs",
+      "rules": "public sealed class GetTermsAndConditionsByIdQueryValidator : AbstractValidator<GetTermsAndConditionsByIdQuery>\n{\n    public GetTermsAndConditionsByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Terms/Queries/GetVersions/GetTermsAndConditionsVersionsQueryValidator.cs",
+      "rules": "public sealed class GetTermsAndConditionsVersionsQueryValidator : AbstractValidator<GetTermsAndConditionsVersionsQuery>\n{\n    public GetTermsAndConditionsVersionsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStage/AddTimePlanStageCommandValidator.cs",
+      "rules": "public sealed class AddTimePlanStageCommandValidator : AbstractValidator<AddTimePlanStageCommand>\n{\n    public AddTimePlanStageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageDraftInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStageFromTemplate/AddStageFromTemplateCommandValidator.cs",
+      "rules": "public sealed class AddStageFromTemplateCommandValidator : AbstractValidator<AddStageFromTemplateCommand>\n{\n    public AddStageFromTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageDraftInputValidator());\n        RuleFor(request => request.Input.StageTemplateId).NotNull().NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStageItem/AddPlanStageItemCommandValidator.cs",
+      "rules": "public sealed class AddPlanStageItemCommandValidator : AbstractValidator<AddPlanStageItemCommand>\n{\n    public AddPlanStageItemCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.StageId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new PlanStageItemInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStageItemImage/AddStageItemImageCommandValidator.cs",
+      "rules": "public sealed class AddStageItemImageCommandValidator : AbstractValidator<AddStageItemImageCommand>\n{\n    public AddStageItemImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ItemId).NotEmpty();\n        RuleFor(request => request.File).NotNull().SetValidator(new UploadInputValidator());\n        RuleFor(request => request.Description).MaximumLength(20000);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/ChangeStageItemStatus/ChangePlanStageItemStatusCommandValidator.cs",
+      "rules": "public sealed class ChangePlanStageItemStatusCommandValidator : AbstractValidator<ChangePlanStageItemStatusCommand>\n{\n    public ChangePlanStageItemStatusCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.StageId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Status).IsInEnum();\n        RuleFor(request => request.ConfirmedDate).NotNull().When(request => request.Status == PlanStageItemStatus.Completed).WithMessage(\"Pls insert the dates first\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/Create/CreateTimePlanCommandValidator.cs",
+      "rules": "public sealed class CreateTimePlanCommandValidator : AbstractValidator<CreateTimePlanCommand>\n{\n    public CreateTimePlanCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new TimePlanInputValidator());\n        RuleFor(request => request.Stages).NotNull().Must(stages => stages.Count <= 100);\n        RuleForEach(request => request.Stages).NotNull().SetValidator(new StageDraftInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/Delete/DeleteTimePlanCommandValidator.cs",
+      "rules": "public sealed class DeleteTimePlanCommandValidator : AbstractValidator<DeleteTimePlanCommand>\n{\n    public DeleteTimePlanCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/DeleteStage/DeleteTimePlanStageCommandValidator.cs",
+      "rules": "public sealed class DeleteTimePlanStageCommandValidator : AbstractValidator<DeleteTimePlanStageCommand>\n{\n    public DeleteTimePlanStageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/DeleteStageItem/DeletePlanStageItemCommandValidator.cs",
+      "rules": "public sealed class DeletePlanStageItemCommandValidator : AbstractValidator<DeletePlanStageItemCommand>\n{\n    public DeletePlanStageItemCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.StageId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/DeleteStageItemImage/DeleteStageItemImageCommandValidator.cs",
+      "rules": "public sealed class DeleteStageItemImageCommandValidator : AbstractValidator<DeleteStageItemImageCommand>\n{\n    public DeleteStageItemImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ItemId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/ReorderStageItemImages/ReorderStageItemImagesCommandValidator.cs",
+      "rules": "public sealed class ReorderStageItemImagesCommandValidator : AbstractValidator<ReorderStageItemImagesCommand>\n{\n    public ReorderStageItemImagesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ItemId).NotEmpty();\n        RuleFor(request => request.Items).NotNull().Must(items => items.Count <= 1000);\n        RuleForEach(request => request.Items).NotNull().SetValidator(new ReorderItemInputValidator());\n        RuleFor(request => request.Items).Must(items =>\n            items.Select(item => item.Id).Distinct().Count() == items.Count &&\n            items.Select(item => item.SortOrder).Order().SequenceEqual(Enumerable.Range(1, items.Count)))\n            .WithMessage(\"Use unique sibling IDs and contiguous one-based positions.\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/ReorderStageItems/ReorderPlanStageItemsCommandValidator.cs",
+      "rules": "public sealed class ReorderPlanStageItemsCommandValidator : AbstractValidator<ReorderPlanStageItemsCommand>\n{\n    public ReorderPlanStageItemsCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.StageId).NotEmpty();\n        RuleFor(request => request.Items).NotNull().Must(items => items.Count <= 1000);\n        RuleForEach(request => request.Items).NotNull().SetValidator(new ReorderItemInputValidator());\n        RuleFor(request => request.Items).Must(items =>\n            items.Select(item => item.Id).Distinct().Count() == items.Count &&\n            items.Select(item => item.SortOrder).Order().SequenceEqual(Enumerable.Range(1, items.Count)))\n            .WithMessage(\"Use unique sibling IDs and contiguous one-based positions.\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/ReorderStages/ReorderTimePlanStagesCommandValidator.cs",
+      "rules": "public sealed class ReorderTimePlanStagesCommandValidator : AbstractValidator<ReorderTimePlanStagesCommand>\n{\n    public ReorderTimePlanStagesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Items).NotNull().Must(items => items.Count <= 1000);\n        RuleForEach(request => request.Items).NotNull().SetValidator(new ReorderItemInputValidator());\n        RuleFor(request => request.Items).Must(items =>\n            items.Select(item => item.Id).Distinct().Count() == items.Count &&\n            items.Select(item => item.SortOrder).Order().SequenceEqual(Enumerable.Range(1, items.Count)))\n            .WithMessage(\"Use unique sibling IDs and contiguous one-based positions.\");\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/Update/UpdateTimePlanCommandValidator.cs",
+      "rules": "public sealed class UpdateTimePlanCommandValidator : AbstractValidator<UpdateTimePlanCommand>\n{\n    public UpdateTimePlanCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new TimePlanInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/UpdateStage/UpdateTimePlanStageCommandValidator.cs",
+      "rules": "public sealed class UpdateTimePlanStageCommandValidator : AbstractValidator<UpdateTimePlanStageCommand>\n{\n    public UpdateTimePlanStageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new TimePlanInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/UpdateStageItem/UpdatePlanStageItemCommandValidator.cs",
+      "rules": "public sealed class UpdatePlanStageItemCommandValidator : AbstractValidator<UpdatePlanStageItemCommand>\n{\n    public UpdatePlanStageItemCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.StageId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new PlanStageItemInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Commands/UpdateStageItemImage/UpdateStageItemImageCommandValidator.cs",
+      "rules": "public sealed class UpdateStageItemImageCommandValidator : AbstractValidator<UpdateStageItemImageCommand>\n{\n    public UpdateStageItemImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ItemId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Description).MaximumLength(20000);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/Queries/GetByProject/GetProjectTimePlanQueryValidator.cs",
+      "rules": "public sealed class GetProjectTimePlanQueryValidator : AbstractValidator<GetProjectTimePlanQuery>\n{\n    public GetProjectTimePlanQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/AddImage/AddUnitImageCommandValidator.cs",
+      "rules": "public sealed class AddUnitImageCommandValidator : AbstractValidator<AddUnitImageCommand>\n{\n    public AddUnitImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.File).NotNull().SetValidator(new UploadInputValidator());\n        RuleFor(request => request.AltText).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/Create/CreateUnitCommandValidator.cs",
+      "rules": "public sealed class CreateUnitCommandValidator : AbstractValidator<CreateUnitCommand>\n{\n    public CreateUnitCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new UnitInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/Delete/DeleteUnitCommandValidator.cs",
+      "rules": "public sealed class DeleteUnitCommandValidator : AbstractValidator<DeleteUnitCommand>\n{\n    public DeleteUnitCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/DeleteImage/DeleteUnitImageCommandValidator.cs",
+      "rules": "public sealed class DeleteUnitImageCommandValidator : AbstractValidator<DeleteUnitImageCommand>\n{\n    public DeleteUnitImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/ReplaceAmenities/ReplaceUnitAmenitiesCommandValidator.cs",
+      "rules": "public sealed class ReplaceUnitAmenitiesCommandValidator : AbstractValidator<ReplaceUnitAmenitiesCommand>\n{\n    public ReplaceUnitAmenitiesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.Amenities).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(request => request.Amenities).NotNull().SetValidator(new AmenityDtoValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/Update/UpdateUnitCommandValidator.cs",
+      "rules": "public sealed class UpdateUnitCommandValidator : AbstractValidator<UpdateUnitCommand>\n{\n    public UpdateUnitCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new UnitInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/UpdateImage/UpdateUnitImageCommandValidator.cs",
+      "rules": "public sealed class UpdateUnitImageCommandValidator : AbstractValidator<UpdateUnitImageCommand>\n{\n    public UpdateUnitImageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.AltText).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Queries/GetById/GetUnitByIdQueryValidator.cs",
+      "rules": "public sealed class GetUnitByIdQueryValidator : AbstractValidator<GetUnitByIdQuery>\n{\n    public GetUnitByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Queries/GetByProject/GetUnitsByProjectQueryValidator.cs",
+      "rules": "public sealed class GetUnitsByProjectQueryValidator : AbstractValidator<GetUnitsByProjectQuery>\n{\n    public GetUnitsByProjectQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.ProjectId).NotEmpty();\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/ChangePassword/ChangeUserPasswordCommandValidator.cs",
+      "rules": "public sealed class ChangeUserPasswordCommandValidator : AbstractValidator<ChangeUserPasswordCommand>\n{\n    public ChangeUserPasswordCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new PasswordChangeInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/Create/CreateUserCommandValidator.cs",
+      "rules": "public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>\n{\n    public CreateUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new CreateUserInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/Login/LoginUserCommandValidator.cs",
+      "rules": "public sealed class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>\n{\n    public LoginUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new LoginInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/Logout/LogoutUserCommandValidator.cs",
+      "rules": "public sealed class LogoutUserCommandValidator : AbstractValidator<LogoutUserCommand>\n{\n    public LogoutUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/RefreshSession/RefreshUserSessionCommandValidator.cs",
+      "rules": "public sealed class RefreshUserSessionCommandValidator : AbstractValidator<RefreshUserSessionCommand>\n{\n    public RefreshUserSessionCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/Restore/RestoreUserCommandValidator.cs",
+      "rules": "public sealed class RestoreUserCommandValidator : AbstractValidator<RestoreUserCommand>\n{\n    public RestoreUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/SoftDelete/SoftDeleteUserCommandValidator.cs",
+      "rules": "public sealed class SoftDeleteUserCommandValidator : AbstractValidator<SoftDeleteUserCommand>\n{\n    public SoftDeleteUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Commands/Update/UpdateUserCommandValidator.cs",
+      "rules": "public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>\n{\n    public UpdateUserCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new UpdateUserInputValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Queries/GetAll/GetUsersQueryValidator.cs",
+      "rules": "public sealed class GetUsersQueryValidator : AbstractValidator<GetUsersQuery>\n{\n    public GetUsersQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Search).MaximumLength(100);\n        RuleFor(request => request.Role).IsInEnum().When(request => request.Role is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Queries/GetById/GetUserByIdQueryValidator.cs",
+      "rules": "public sealed class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>\n{\n    public GetUserByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Users/Queries/GetCurrent/GetCurrentUserQueryValidator.cs",
+      "rules": "public sealed class GetCurrentUserQueryValidator : AbstractValidator<GetCurrentUserQuery>\n{\n    public GetCurrentUserQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        // No client-writable fields exist for this operation.\n    }\n}"
+    }
+  ]
+}

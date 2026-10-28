@@ -10,8 +10,8 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 
 | Phase | Document | Status |
 |---|---|---|
-| 01 | [Foundation and backend contract](Part_01_Foundation_and_Backend_Contract.md) | Not started |
-| 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Not started |
+| 01 | [Foundation and backend contract](Part_01_Foundation_and_Backend_Contract.md) | Approved |
+| 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Awaiting approval |
 | 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Not started |
 | 04 | [Authentication and session lifecycle](Part_04_Authentication_and_Session_Lifecycle.md) | Not started |
 | 05 | [Routing, layouts, access control](Part_05_Routing_Layouts_and_Access_Control.md) | Not started |
@@ -23,6 +23,10 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 | 11 | [Admin governance and staff](Part_11_Admin_Governance_and_Staff.md) | Not started |
 | 12 | [SignalR readiness](Part_12_SignalR_Readiness.md) | Not started |
 | 13 | [Final verification and release](Part_13_Final_Verification_and_Release.md) | Not started |
+
+Phase 01 evidence (2026-10-28): [completion report](../docs/part_01_completion.md). Approved by the user in this conversation: "part 1 is approved"; the user also confirmed that HTTPS certificates are created and the project runs successfully. Automated Part 01 browser execution was not claimed at its original handoff.
+
+Phase 02 revised evidence (2026-10-28): [completion report and refreshed bilingual screenshots](../docs/part_02_completion.md). The latest luxury architectural/editorial redesign adds layered navy, champagne-gold and warm ivory backgrounds while preserving the owner-approved fonts and shared 16px component radius. Owner-requested Tailwind, navy/gold/white hierarchy, fade-in/shimmer, modal backdrop and five-second interval notification behavior remain implemented. Build/typecheck/lint, 56 unit tests and 14 trusted-HTTPS browser tests pass, including 375px/1440px review. Only src/Styles contains source CSS; showcase stays out of production. Completion approval has not yet been received.
 
 ## Architecture decision
 
@@ -37,12 +41,12 @@ Dependency direction: pages/components -> focused Context providers/hooks -> fea
 - Use src/API.tsx, src/Services/, src/Context/, src/Router/routePaths.ts, src/Router/router.tsx, and src/App.tsx exactly as requested. Add Pages, Components, Types, Hooks, Styles, and i18n directories.
 - Only API.tsx imports Axios at runtime and calls axios.create. Services receive no raw credentials and export typed feature functions. Type-only Axios imports elsewhere are allowed.
 - routePaths.ts exports distinct routePaths and apiPaths groups with parameter builders. appRoutes is RouteObject[], imported from react-router-dom, passed to createBrowserRouter. App.tsx wraps lazy content in Suspense.
-- Use React/TypeScript, Vite, react-router-dom, Axios, i18next/react-i18next, CSS Modules, Vitest, React Testing Library, and Playwright. Select mutually compatible supported stable versions in Part 01, record the runtime requirement, and commit package-lock.json. Avoid speculative package installation.
+- Use React/TypeScript, Vite, react-router-dom, Axios, i18next/react-i18next, Tailwind CSS, Vitest, React Testing Library, and Playwright. The user's Part 02 revision replaces CSS Modules with Tailwind utilities; keep source CSS only in src/Styles. Select compatible stable dependencies, record runtime requirements, and retain package-lock.json.
 - Use focused contexts, reducer state where useful, request cancellation and latest-response protection. Mount feature providers near their routes. Mutation success reloads affected authoritative data; private data is never persisted.
 - Arabic is the initial language; explicit selection persists as brouj.locale. English is the translation fallback. Update html lang/dir before initial rendering; use logical CSS and directional icon treatment. Keep URLs language-neutral.
 - Translate UI, labels, statuses, validation, notifications, empty/error states, alt fallbacks, and accessible names. Existing backend names/descriptions/terms are single values; show them as supplied. Never fabricate bilingual content or auto-translate legal terms.
 - Use locale formatting with Gregorian dates; isolate email, phone, identifiers, and codes as LTR where needed. Business currency must be explicitly configured for release, not inferred from language. Without configuration show a localized number without a currency symbol in development.
-- Primary #1b4564, secondary #bfae89, background #FFFFFF. Use gold as an accent; check text contrast rather than assuming white-on-gold is readable.
+- Primary #1b4564, secondary gold #bfae89, third white #FFFFFF. Follow the user's 3:2:1 visual hierarchy: dominant navy, substantial gold surfaces, restrained white surfaces. Vary page backgrounds with layered gradients and shades derived from these colors: deep navy, champagne gold and warm ivory. Use dark text on gold and check contrast. Preserve the owner-approved, locally bundled Manrope / IBM Plex Sans Arabic. Use a luxury architectural/editorial direction with generous spacing, fine gold rules and a shared 16px component radius. Add fade-in transitions and shimmer skeletons; honor reduced motion.
 - Plain text rendering is the default for backend content, including terms; do not inject raw HTML. Shared controls need keyboard support, visible focus, appropriate labels, and reduced-motion behavior.
 - Forms use React state/shared field components, client validation aligned to actual backend validators, and server field errors. Preserve edits on failure; disable duplicate submission.
 

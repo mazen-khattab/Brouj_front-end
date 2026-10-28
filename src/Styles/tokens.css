@@ -1,0 +1,48 @@
+@theme static {
+  --color-primary: #1b4564;
+  --color-primary-deep: #0d293e;
+  --color-primary-light: #2b526b;
+  --color-accent: #bfae89;
+  --color-accent-light: #e6dcc5;
+  --color-accent-shade: #c5b38d;
+  --color-ivory: #faf8f2;
+  --color-background: #ffffff;
+  --color-surface: #f4f1ea;
+  --color-text: #19364b;
+  --color-muted: #526575;
+  --color-border: #dbe3e9;
+  --color-control-border: #6d7f8e;
+  --color-error: #a12132;
+  --color-error-surface: #fff3f4;
+  --color-success: #176447;
+  --color-success-surface: #eef8f2;
+  --font-sans: "Manrope Variable", "IBM Plex Sans Arabic", sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", sans-serif;
+  --font-latin: "Manrope Variable", sans-serif;
+  --radius-ui: 16px;
+  --shadow-panel: 0 20px 65px #0b263b26;
+  --animate-fade-in: fade-in 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-toast-life: toast-life 5s linear both;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+  @keyframes toast-life {
+    from { scale: 1 1; }
+    to { scale: 0 1; }
+  }
+}
+:root {
+  --color-overlay: #0a233dd1;
+  --font-body: var(--font-sans);
+  --line-body: 1.8;
+  --reading-width: 65ch;
+  --focus-ring: 3px solid var(--color-primary);
+  --z-toast: 50;
+  --z-dialog: 100;
+}
