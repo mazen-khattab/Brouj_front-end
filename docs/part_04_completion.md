@@ -1,6 +1,6 @@
 # Part 04 completion report
 
-Date: 2026-10-29. Status: **Awaiting approval**, with the explicit real-backend verification dependency below. Part 03 was approved by the owner before this invocation. Its report and the master ledger record that approval. Part 05 is not implemented.
+Date: 2026-10-29. Status: **Approved** by the user in the Part 05 invocation, with the explicit real-backend verification dependency below. Part 03 was approved by the owner before this phase. Its report and the master ledger record that approval. This report describes Part 04 at its handoff; subsequent routing work is recorded in the Part 05 report.
 
 ## Delivered
 
@@ -65,4 +65,4 @@ The Part 04 plan allows real-backend evidence **or an explicit environment depen
 
 Real-backend checks remain open environment work, with concrete steps in [session-verification.md](session-verification.md). Backend budget/cache/capacity limitations, release currency, initial staff provisioning and media delivery retain their earlier boundaries. Chromium desktop/mobile is covered; Firefox/WebKit and human screen-reader playback are not claimed.
 
-All required frontend checks pass and the allowed environment dependency is explicitly documented. Part 04 is **Awaiting approval**. Part 05 remains **Not started**; no approval is inferred.
+All required frontend checks pass and the allowed environment dependency is explicitly documented. Part 04 was **Approved** by the user on 2026-10-29 in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 05 invocation. The real-backend environment dependency remains recorded above.

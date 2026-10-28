@@ -1,6 +1,6 @@
 # Authentication and session lifecycle
 
-Part 04 adds the root AuthProvider, useAuth, the plain session coordinator and reusable customer login/registration and staff login pages. The internal development review is `/__auth`. Public `/login`, `/register`, `/admin/login`, layouts and route guards remain Part 05 work.
+Part 04 adds the root AuthProvider, useAuth, the plain session coordinator and reusable customer login/registration and staff login pages. Part 05 connects `/login`, `/register` and `/admin/login` to the guarded public/account/admin route trees. The internal development review remains `/__auth`. See [routing and access](routing-access.md) for layout and navigation behavior.
 
 ## State and ownership
 
@@ -40,6 +40,8 @@ Reload probes the selected actor hint first, or customer first without a hint. O
 If neither profile identifies an actor, only the persisted selected actor may refresh, and only with cross-tab locking. No hint means anonymous with no refresh attempt. The hint `brouj.actor-hint` contains only customer/staff; it is navigation metadata, never authorization. No profile, password, national ID, bearer credential or proof is stored.
 
 Auth actions require an anonymous identified state and reject conflicting transitions or in-flight business mutations. An existing/known actor must first log out. Under the shared lock, login checks profiles again so it cannot silently overwrite a peer's newly established actor. After accepted login/registration, proof is invalidated/rebound and the matching profile is hydrated before state is authenticated. Profile failure exposes safe retry with no fabricated actor. Inputs remain local, are aborted on form unmount, and are cleared after successful acceptance/hydration or identity changes. Invalid credentials retain edits.
+
+Part 05 detaches the pending form's cancellation listener before publishing a confirmed identity. The resulting redirect may immediately unmount the form; that cleanup must not cancel the established session's controller or break later logout. See [routing and access](routing-access.md) for anonymous-only navigation and authorized return paths.
 
 Registration sends only the six actual fields. Names are required and capped at 100; mobile/national ID use the backend ASCII patterns; registration passwords require eight characters while existing login passwords require one. Email is trimmed and follows InputRules.Email's delegated [.NET 10 EmailAddressAttribute implementation](https://raw.githubusercontent.com/dotnet/runtime/v10.0.0/src/libraries/System.ComponentModel.Annotations/src/System/ComponentModel/DataAnnotations/EmailAddressAttribute.cs), rather than inventing a stronger mailbox regex. There is no terms field, password recovery flow or staff registration endpoint.
 

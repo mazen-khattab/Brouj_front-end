@@ -31,11 +31,9 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
     return route.fulfill({ headers: cors, json: { success: true, data: mutationId, message: null } });
   });
   await page.goto('/');
-  await expect.poll(() => page.evaluate(async () => {
-    const path = '/src/Services/session.ts';
-    const { sessionCoordinator } = await import(path) as typeof import('../../src/Services/session');
-    return sessionCoordinator.getSnapshot().status;
-  })).toBe('staff');
+  if (test.info().project.name.includes('mobile')) await page.getByRole('button', { name: 'القائمة', exact: true }).click();
+  // Wait for the actual mounted session rather than importing a second HMR-versioned singleton.
+  await expect(page.getByRole('button', { name: 'تسجيل الخروج', exact: true })).toBeVisible();
   const result = await page.evaluate(async (id) => {
     const servicePath = '/src/Services/Projects.ts';
     const { addProjectImage } = await import(servicePath) as typeof import('../../src/Services/Projects');

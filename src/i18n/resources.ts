@@ -4,10 +4,13 @@ import arErrors from "./locales/ar/errors.json";
 import enErrors from "./locales/en/errors.json";
 import arAuth from './locales/ar/auth.json';
 import enAuth from './locales/en/auth.json';
+import arRouting from './locales/ar/routing.json';
+import enRouting from './locales/en/routing.json';
 
 export const namespaces = [
   "common",
   "auth",
+  "routing",
   "catalogue",
   "account",
   "admin",
@@ -21,6 +24,7 @@ export const resources = {
   ar: {
     common: ar,
     auth: arAuth,
+    routing: arRouting,
     catalogue: {},
     account: {},
     admin: {},
@@ -30,6 +34,7 @@ export const resources = {
   en: {
     common: en,
     auth: enAuth,
+    routing: enRouting,
     catalogue: {},
     account: {},
     admin: {},

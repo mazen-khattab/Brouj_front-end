@@ -54,6 +54,20 @@ test('anonymous bootstrap probes both profiles and never guesses a refresh actor
   expect(f.services.staffProfile).toHaveBeenCalledTimes(1);
   expect(f.services.refresh).not.toHaveBeenCalled();
 });
+
+test('login route unmount after identity publication does not cancel the established session controller', async () => {
+  const f = fixture(); await f.start();
+  const request = new AbortController();
+  const unsubscribe = f.coordinator.subscribe(() => {
+    if (f.coordinator.getSnapshot().actor === 'customer') request.abort();
+  });
+  await f.coordinator.loginCustomer(input, request.signal);
+  unsubscribe();
+  expect(request.signal.aborted).toBe(true);
+  await f.coordinator.logout();
+  expect(f.services.logout).toHaveBeenCalledTimes(1);
+  expect(f.coordinator.getSnapshot().status).toBe('anonymous');
+});
 test.each(['customer', 'staff'] as const)('restores the current %s with a fresh profile', async (actor) => {
   const f = fixture({ hint: actor, actor }); await f.start();
   expect(f.coordinator.getSnapshot()).toMatchObject({ status: actor, actor, profile: actor === 'customer' ? customer : staff });

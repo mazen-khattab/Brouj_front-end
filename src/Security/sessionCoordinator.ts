@@ -187,7 +187,10 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
         current(expected);
         // Never overwrite an actor established by a peer while this tab waited for the lock.
         const existing = await profiles(platform.readHint() ?? actor, expected);
-        if (existing) { accept(existing); throw new SessionActionError('logoutRequired'); }
+        if (existing) {
+          signal?.removeEventListener('abort', cancel);
+          accept(existing); throw new SessionActionError('logoutRequired');
+        }
         services.invalidateProof();
         await services.proof(controlAbort.signal); current(expected);
         const session = await send(controlAbort.signal); current(expected);
@@ -196,6 +199,9 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
         await services.proof(controlAbort.signal); current(expected);
         const identity = await profile(actor, expected);
         if (!identity || identity.actor === null || identity.profile.id !== session.actorId) throw new ApiError('transport');
+        // Publishing identity can immediately unmount the login route. Its form owns only
+        // the pending attempt; cancelling that form must not abort the established session.
+        signal?.removeEventListener('abort', cancel);
         accept(identity); platform.publish('changed');
       });
     } catch (error: unknown) {

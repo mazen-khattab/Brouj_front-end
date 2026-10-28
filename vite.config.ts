@@ -40,6 +40,7 @@ export default defineConfig(({ command, mode }) => {
   const https = command === "serve" ? localHttps(env) : undefined;
   return {
     plugins: [react(), tailwindcss()],
+    build: { manifest: true },
     // Services are loaded lazily; prepare Axios before their first import to avoid a dev reload.
     optimizeDeps: { include: ['axios'] },
     server: {

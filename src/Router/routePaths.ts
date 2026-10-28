@@ -2,7 +2,7 @@
 
 import { ApiError } from '../Types/failures';
 
-export const routePaths = { home: '/' } as const;
+export { routePaths } from './browserPaths';
 
 function segment(value: string): string {
   if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');

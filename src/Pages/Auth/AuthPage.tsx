@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../Hooks/useAuth';
 import { Button } from '../../Components/Button';
@@ -17,11 +17,14 @@ import { apiFailureMessage } from '../../i18n/apiFailures';
 import type { TranslationMessage } from '../../i18n/resources';
 import { emptyAuthValues, validateAuth } from './validation';
 import type { AuthField, AuthIssue, AuthMode } from './validation';
+import { RouteHeading } from '../../Router/RouteFeedback';
+import { routePaths } from '../../Router/routePaths';
 
 export interface AuthPageProps { onModeChange?: (mode: AuthMode) => void }
 export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMode }) {
   const { t } = useTranslation('auth');
   const auth = useAuth();
+  const location = useLocation();
   const [values, setValues] = useState({ ...emptyAuthValues });
   const [issues, setIssues] = useState<AuthIssue[]>([]);
   const [error, setError] = useState<TranslationMessage>();
@@ -79,7 +82,7 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
     }
   }
 
-  return <main className="relative isolate min-h-svh text-white">
+  return <main id="route-content" tabIndex={-1} className="relative isolate min-h-svh text-white">
     <LuxuryBackdrop />
     <div className="mx-auto max-w-[1320px] px-5 sm:px-10 lg:px-14">
       <header className="flex items-center justify-between gap-5 border-b border-accent/25 py-6">
@@ -95,7 +98,7 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
           {onModeChange && <nav aria-label={t('session')} className="mb-8 flex flex-wrap gap-2 border-b border-accent/40 pb-6">
             {(['customer', 'register', 'staff'] as const).map((option) => <Button key={option} variant={option === mode ? 'primary' : 'secondary'} disabled={auth.pending} aria-pressed={mode === option} onClick={() => onModeChange(option)}>{t(option + 'Tab')}</Button>)}
           </nav>}
-          <h1 id="auth-title" className="text-3xl font-medium leading-relaxed sm:text-4xl">{t(mode + 'Title')}</h1>
+          <div id="auth-title"><RouteHeading>{t(mode + 'Title')}</RouteHeading></div>
           <p className="mt-3 mb-7 text-sm leading-7 text-muted">{t(mode + 'Description')}</p>
           {message && <div className="mb-6"><Alert tone="error">{t(message.key, { ns: message.namespace, ...message.values })}</Alert></div>}
           {auth.status === 'bootstrapping' ? <div className="grid gap-5" aria-busy="true"><Loading label={t('checking')} /><Skeleton height="3rem" /><Skeleton height="3rem" /></div> :
@@ -122,7 +125,12 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
               </div>
               <Button type="submit" pending={auth.pending} pendingLabel={t('working')}>{t(mode === 'register' ? 'register' : 'signIn')}</Button>
             </form>}
-          <Link to="/" className="mt-8 inline-block text-sm underline">{t('home')}</Link>
+          {!onModeChange && <nav aria-label={t('authAlternative', { ns: 'routing' })} className="mt-8 flex flex-wrap gap-5 text-sm">
+            {mode !== 'customer' && <Link className="underline" to={routePaths.login + location.search}>{t('customerTab')}</Link>}
+            {mode !== 'register' && <Link className="underline" to={routePaths.register + location.search}>{t('registerTab')}</Link>}
+            {mode !== 'staff' && <Link className="underline" to={routePaths.staffLogin + location.search}>{t('staffTab')}</Link>}
+          </nav>}
+          <Link to={routePaths.home} className="mt-8 inline-block text-sm underline">{t('home')}</Link>
         </section>
       </div>
     </div>

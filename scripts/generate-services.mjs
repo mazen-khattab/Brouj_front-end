@@ -62,7 +62,7 @@ for (const name of [...selected].sort()) {
 output('src/Types/contracts.ts', types);
 
 const groups = Map.groupBy(matrix.operations, (operation) => operation.service.split('/')[1]);
-let paths = `${banner}\nimport { ApiError } from '../Types/failures';\n\nexport const routePaths = { home: '/' } as const;\n\nfunction segment(value: string): string {\n  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');\n  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }\n}\n\nexport const apiPaths = {\n  Security: { csrf: '/api/v1/auth/csrf' },\n`;
+let paths = `${banner}\nimport { ApiError } from '../Types/failures';\n\nexport { routePaths } from './browserPaths';\n\nfunction segment(value: string): string {\n  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');\n  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }\n}\n\nexport const apiPaths = {\n  Security: { csrf: '/api/v1/auth/csrf' },\n`;
 const lower = (value) => value[0].toLowerCase() + value.slice(1);
 for (const [group, operations] of groups) {
   paths += `  ${group}: {\n`;
