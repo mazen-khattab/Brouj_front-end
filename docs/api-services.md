@@ -1,12 +1,12 @@
 # API transport and services
 
-Implemented in Part 03. Feature pages and session state arrive in their own phases. The approved Part 02 design is unchanged.
+Implemented in Part 03, with Part 04 session integration. See [authentication and lifecycle](authentication.md) for the coordinator, context, cross-tab locking and bounded 401 replay. Other feature pages remain in their own phases. The approved Part 02 design is unchanged.
 
 ## Ownership and contracts
 
 `src/API.tsx` is the only runtime Axios import and creation site. Services use its `apiRequest` facade, not an Axios instance or arbitrary request configuration. The application owns one transport. `createApiTransport` accepts an adapter and isolated security/channel objects for tests; production services use the single module instance. HMR disposes that instance, ejects its interceptors and invalidates its proof before replacement.
 
-The transport uses the validated HTTPS API origin, credentials, a 15-second request timeout and explicit CSRF headers. Axios automatic cookie-based XSRF discovery is disabled. No Authorization header, cookie reading, browser credential storage, DTO cache, automatic retry, refresh, navigation or React dependency exists in this layer. A bootstrap and the write that follows each have their own finite timeout.
+The transport uses the validated HTTPS API origin, credentials, a 15-second request timeout and explicit CSRF headers. Axios automatic cookie-based XSRF discovery is disabled. There is no Authorization header, cookie reading, browser credential storage, DTO cache, navigation or React dependency. There are no general retries; Part 04 permits one replay only after definitive eligible 401 recovery through the plain session boundary. A bootstrap and its following write each have a finite timeout.
 
 `src/Types/contracts.ts`, the API portion of `routePaths.ts`, and 16 feature service modules are generated as explicit TypeScript from the verified contract inventory. Run:
 
@@ -39,7 +39,7 @@ const savedId = await updateUnit(
 );
 ```
 
-Only signal is forwarded from request options. Bodies never include route identifiers unless the backend body explicitly contains them. Auth, profile, catalogue, reservations/orders, schedules/templates, governance and activity-log operations all have their actual matrix-mapped functions, without new screens or policies.
+Signal and the explicit session-coordinator control/recovery opt-out flags are forwarded from request options. They cannot override method, URL, body or arbitrary Axios configuration. Profile probes and auth endpoints always opt out of automatic recovery. Bodies never include route identifiers unless the backend body explicitly contains them. All feature operations keep their matrix-mapped functions and policies.
 
 Image services accept `{ body: { file: File, altText: string | null } }`, or description for stage-item images, plus their route arguments. They create FormData with File and only the approved AltText/Description field. Null metadata is omitted. The browser chooses the multipart boundary; no blanket JSON or multipart Content-Type is supplied. JSON metadata updates remain separate. Backend file size/type/signature rules still apply. A returned imagePath is not a public URL; this phase provides no media delivery resolver.
 
@@ -51,9 +51,9 @@ Each waiter can cancel independently. One canceled waiter does not stop others; 
 
 Register/login/refresh/logout/password-change requests invalidate proof after reaching dispatch, including uncertain/failed outcomes. The next unsafe request bootstraps a fresh proof. This conservative invalidation does not mean the mutation succeeded. Canceling a dispatched mutation does not prove it did not commit, and the transport never replays it.
 
-Part 04 can import `invalidateCsrfProof` and `sessionGeneration` from the plain security module or Security service. It must invalidate before known identity changes and expired-access refresh so a cached proof for the old authenticated identity is not reused for an anonymous refresh bootstrap. It must coordinate session requests and cancel obsolete work. This phase does not implement refresh scheduling or expiry inference.
+The Part 04 coordinator consumes the plain proof invalidation boundary before known identity transitions and expired-access refresh, then obtains fresh proof after cookie identity changes. It controls request admission/cancellation and a separate monotonic identity epoch through sessionBoundary. It does not schedule refresh from expiresAt or decode cookies/tokens.
 
-`authenticationFailures.subscribe(listener)` reserves a disposable observer for a current-generation protected request's definitive 401. Auth endpoints opt out; bootstrap failures are not attributed to a business request. Metadata includes operation, authenticated requirement, recovery opt-out and generation. Listener errors do not replace the normalized request failure. There is no navigation or replay mechanism yet.
+`authenticationFailures.subscribe(listener)` remains an optional disposable failure observer. The plain sessionBoundary now coordinates eligible current-identity 401 recovery before a final failure is returned. Auth endpoints, profile probes, session-control and already-replayed calls are excluded. Bootstrap failures are not attributed to a business request. Listener/recovery failures cannot expose raw diagnostics. API.tsx still performs no navigation or React state management.
 
 ## Failure presentation
 

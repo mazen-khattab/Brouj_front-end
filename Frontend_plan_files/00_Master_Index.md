@@ -12,9 +12,9 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 |---|---|---|
 | 01 | [Foundation and backend contract](Part_01_Foundation_and_Backend_Contract.md) | Approved |
 | 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Approved |
-| 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Awaiting approval |
-| 04 | [Authentication and session lifecycle](Part_04_Authentication_and_Session_Lifecycle.md) | Not started |
-| 05 | [Routing, layouts, access control](Part_05_Routing_Layouts_and_Access_Control.md) | Not started |
+| 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Approved |
+| 04 | [Authentication and session lifecycle](Part_04_Authentication_and_Session_Lifecycle.md) | Approved |
+| 05 | [Routing, layouts, access control](Part_05_Routing_Layouts_and_Access_Control.md) | Awaiting approval |
 | 06 | [Public Website and property browsing](Part_06_Public_Website_and_Property_Browsing.md) | Not started |
 | 07 | [Customer account and reservations](Part_07_Customer_Account_and_Reservations.md) | Not started |
 | 08 | [Admin catalogue and media](Part_08_Admin_Catalogue_and_Media.md) | Not started |
@@ -28,7 +28,11 @@ Phase 01 evidence (2026-10-28): [completion report](../docs/part_01_completion.m
 
 Phase 02 revised evidence (2026-10-28): [completion report and refreshed bilingual screenshots](../docs/part_02_completion.md). The latest luxury architectural/editorial redesign adds layered navy, champagne-gold and warm ivory backgrounds while preserving the owner-approved fonts and shared 16px component radius. Owner-requested Tailwind, navy/gold/white hierarchy, fade-in/shimmer, modal backdrop and five-second interval notification behavior remain implemented. Build/typecheck/lint, 56 unit tests and 14 trusted-HTTPS browser tests pass, including 375px/1440px review. Only src/Styles contains source CSS; showcase stays out of production. Approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part."
 
-Phase 03 evidence (2026-10-29): [completion report](../docs/part_03_completion.md) and [transport/service guide](../docs/api-services.md). All 101 typed business operations, in-memory generation-bound CSRF, credentialed Axios transport, safe bilingual failures and Part 04 coordination interfaces are implemented. Live contract/generation checks, build/typecheck/lint, 211 unit tests and 18 trusted-HTTPS browser tests pass. Part 03 awaits explicit approval; Part 04 remains Not started.
+Phase 03 evidence (2026-10-29): [completion report](../docs/part_03_completion.md) and [transport/service guide](../docs/api-services.md). All 101 typed business operations, in-memory generation-bound CSRF, credentialed Axios transport, safe bilingual failures and Part 04 coordination interfaces are implemented. Live contract/generation checks, build/typecheck/lint, 211 unit tests and 18 trusted-HTTPS browser tests pass. Approved by the owner in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 04 invocation.
+
+Phase 04 evidence (2026-10-29): [completion report/screenshots](../docs/part_04_completion.md), [session state diagram and guide](../docs/authentication.md), and [explicit real-backend verification dependency](../docs/session-verification.md). Customer/staff authentication pages, profile-based restoration, coordinated one-time 401 recovery, cross-tab locks/invalidation, and safe logout are implemented. Build/typecheck/lint, live contract/generation checks, 256 unit tests and 36 trusted-HTTPS browser tests pass. Actual backend cookie issuance/expiry/rotation/logout verification remains an environment dependency: local API port 7249 is not listening and an existing dedicated account/configuration reference was not supplied. Approved by the user on 2026-10-29 in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 05 invocation.
+
+Phase 05 evidence (2026-10-29): [completion report and 12 bilingual screenshots](../docs/part_05_completion.md), [route/access matrix](../docs/routing-access.md). All 44 browser routes, lazy public/account/admin layouts, actor/member/SuperAdmin guards, safe login returns, localized errors/titles/breadcrumbs, focus and scroll restoration are implemented. Build/typecheck/lint, live contract/service checks, production chunk inspection and 280 unit tests pass. All 62 trusted-HTTPS browser cases pass across the full run and targeted rerun of the corrected history-test harness. Later business screens remain translated placeholders; the Part 04 real-backend session dependency remains open. Part 05 awaits explicit approval; Part 06 remains Not started.
 
 ## Architecture decision
 

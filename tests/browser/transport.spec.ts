@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './sessionFixtures';
 
 const cors = {
   'access-control-allow-origin': 'https://localhost:5173',
@@ -18,6 +18,8 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
   await page.route('https://localhost:7249/api/**', async (route) => {
     const request = route.request();
     if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+    if (request.url().endsWith('/customers/me')) return route.fulfill({ status: 403, headers: cors, json: { status: 403 } });
+    if (request.url().endsWith('/users/me')) return route.fulfill({ headers: cors, json: { success: true, data: { id: mutationId, name: 'Staff fixture', email: 'staff@example.test', phone: '01000000000', role: 1, deletedAt: null }, message: null } });
     if (request.url().endsWith('/auth/csrf')) {
       bootstrapCalls += 1;
       return route.fulfill({ headers: cors, json: { success: true, data: { requestToken: 'browser-fixture-proof' }, message: null } });
@@ -29,6 +31,9 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
     return route.fulfill({ headers: cors, json: { success: true, data: mutationId, message: null } });
   });
   await page.goto('/');
+  if (test.info().project.name.includes('mobile')) await page.getByRole('button', { name: 'القائمة', exact: true }).click();
+  // Wait for the actual mounted session rather than importing a second HMR-versioned singleton.
+  await expect(page.getByRole('button', { name: 'تسجيل الخروج', exact: true })).toBeVisible();
   const result = await page.evaluate(async (id) => {
     const servicePath = '/src/Services/Projects.ts';
     const { addProjectImage } = await import(servicePath) as typeof import('../../src/Services/Projects');
@@ -49,6 +54,7 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
 test('real HTTP 429 exposes Retry-After and safe bilingual presentation without a bootstrap', async ({ page }) => {
   const requests: string[] = [];
   await page.route('https://localhost:7249/api/**', async (route) => {
+    if (/\/(customers|users)\/me$/.test(route.request().url())) return route.fulfill({ status: 401, headers: cors, json: { status: 401 } });
     requests.push(route.request().url());
     return route.fulfill({ status: 429, headers: { ...cors, 'Retry-After': '9' },
       json: { status: 429, title: 'Untrusted diagnostic must not be shown', detail: 'private stack', traceId: 'browser-safe-trace' } });

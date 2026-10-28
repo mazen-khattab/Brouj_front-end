@@ -13,11 +13,14 @@ import {
   authenticationFailures,
   createAuthenticationFailureChannel,
 } from "./Security/authenticationFailures";
+import { createSessionBoundary, sessionBoundary } from './Security/sessionBoundary';
+import type { SessionStamp } from './Security/sessionBoundary';
 
 interface InternalMetadata extends RequestMetadata {
   generation: number;
   csrfBootstrap?: boolean;
   onDispatch?: () => void;
+  sessionStamp?: SessionStamp;
 }
 
 type InternalConfig = InternalAxiosRequestConfig & { brouj?: InternalMetadata };
@@ -51,11 +54,23 @@ function normalize(error: unknown): ApiError {
   return new ApiError("unknown");
 }
 
+/** Cancel one request's wait without canceling the shared session refresh. */
+function waitForRecovery(work: Promise<boolean>, signal?: AbortSignal): Promise<boolean> {
+  if (!signal) return work;
+  if (signal.aborted) return Promise.reject(new ApiError('canceled'));
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(new ApiError('canceled'));
+    signal.addEventListener('abort', abort, { once: true });
+    work.then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
+  });
+}
+
 /** Adapter-boundary test seam. Application services use only the single instance below. */
 export function createApiTransport(
   adapter?: AxiosAdapter,
   security = createCsrfCoordinator(),
   authFailures = createAuthenticationFailureChannel(),
+  boundary = createSessionBoundary(),
 ) {
   const client = axios.create({
     baseURL: environment.apiOrigin,
@@ -75,6 +90,7 @@ export function createApiTransport(
       config.brouj?.generation !== security.generation()
     )
       throw new ApiError("canceled");
+    if (config.brouj) boundary.assert(config.brouj, !safe.has((config.method ?? 'GET').toUpperCase()), config.brouj.sessionStamp);
   }
 
   // Recheck at dispatch, after request interceptors and body transformation.
@@ -92,6 +108,7 @@ export function createApiTransport(
         authenticated: false,
         skipAuthenticationRecovery: true,
         csrfBootstrap: true,
+        sessionControl: true,
         generation: security.generation(),
       },
     };
@@ -151,10 +168,19 @@ export function createApiTransport(
 
   let disposed = false;
 
-  async function request<T>(input: ApiRequest): Promise<T> {
+  async function execute<T>(input: ApiRequest, replayed = false): Promise<T> {
     const generation = security.generation();
+    const stamp = boundary.stamp();
     let dispatched = false;
+    let leave = () => {};
+    const signals = [input.signal, boundary.signal(input.metadata)].filter((signal): signal is AbortSignal => !!signal);
+    const linked = new AbortController();
+    const abort = () => linked.abort();
+    if (signals.length > 1) for (const signal of signals) { if (signal.aborted) linked.abort(); else signal.addEventListener('abort', abort, { once: true }); }
+    const requestSignal = signals.length === 1 ? signals[0] : signals.length ? linked.signal : undefined;
     try {
+      boundary.assert(input.metadata, !safe.has(input.method), stamp);
+      leave = boundary.enter(input.metadata, !safe.has(input.method));
       if (
         disposed ||
         !input.path.startsWith("/api/v1/") ||
@@ -170,18 +196,26 @@ export function createApiTransport(
         brouj: {
           ...input.metadata,
           generation,
+          ...(stamp ? { sessionStamp: stamp } : {}),
           onDispatch: () => {
             dispatched = true;
           },
         },
-        ...(input.signal ? { signal: input.signal } : {}),
+        ...(requestSignal ? { signal: requestSignal } : {}),
       };
       const response = await client.request<{ success: true; data: T }>(config);
+      if (stamp && boundary.stamp()?.generation !== stamp.generation) throw new ApiError('canceled');
       if (input.metadata.authenticated && generation !== security.generation())
         throw new ApiError("canceled");
       return response.data.data;
     } catch (error: unknown) {
       const failure = normalize(error);
+      const eligible = dispatched && failure.status === 401 && input.metadata.authenticated &&
+        !input.metadata.skipAuthenticationRecovery && !input.metadata.sessionControl && stamp;
+      if (eligible && !replayed && !input.signal?.aborted) {
+        const recovered = await waitForRecovery(boundary.recover(stamp), input.signal).catch((error: unknown) => { throw normalize(error); });
+        if (recovered && boundary.stamp()?.generation === stamp.generation && !input.signal?.aborted) return execute<T>(input, true);
+      } else if (eligible && replayed) boundary.rejected(stamp);
       if (
         dispatched &&
         failure.status === 401 &&
@@ -196,11 +230,13 @@ export function createApiTransport(
         });
       throw failure;
     } finally {
+      leave();
+      for (const signal of signals) signal.removeEventListener('abort', abort);
       if (dispatched && input.metadata.changesIdentity) security.invalidate();
     }
   }
   return {
-    request,
+    request: <T,>(input: ApiRequest) => execute<T>(input),
     async csrf(signal?: AbortSignal) {
       if (disposed) throw new ApiError("canceled");
       try {
@@ -223,6 +259,7 @@ const transport = createApiTransport(
   undefined,
   csrfCoordinator,
   authenticationFailures,
+  sessionBoundary,
 );
 
 export const apiRequest = transport.request;

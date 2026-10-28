@@ -79,7 +79,7 @@ for (const operation of matrix.operations) {
     expect(calls.filter((config) => config.url?.endsWith('/csrf'))).toHaveLength(unsafe ? 1 : 0);
     expect(request.headers.get('X-CSRF-TOKEN')).toBe(unsafe ? 'fixture-proof' : undefined);
     expect((request as InternalAxiosRequestConfig & { brouj: object }).brouj).toMatchObject({
-      authenticated: operation.policy !== 'Anonymous', skipAuthenticationRecovery: operation.route.startsWith('/api/v1/auth/'),
+      authenticated: operation.policy !== 'Anonymous', skipAuthenticationRecovery: operation.route.startsWith('/api/v1/auth/') || ['GetCurrentCustomer', 'GetCurrentUser'].includes(operation.action),
     });
     if (operation.response === 'ApiResponse<Guid>') expect(actual).toBe(guid);
   });

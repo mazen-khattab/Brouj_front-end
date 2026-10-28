@@ -62,7 +62,7 @@ for (const name of [...selected].sort()) {
 output('src/Types/contracts.ts', types);
 
 const groups = Map.groupBy(matrix.operations, (operation) => operation.service.split('/')[1]);
-let paths = `${banner}\nimport { ApiError } from '../Types/failures';\n\nexport const routePaths = { home: '/' } as const;\n\nfunction segment(value: string): string {\n  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');\n  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }\n}\n\nexport const apiPaths = {\n  Security: { csrf: '/api/v1/auth/csrf' },\n`;
+let paths = `${banner}\nimport { ApiError } from '../Types/failures';\n\nexport { routePaths } from './browserPaths';\n\nfunction segment(value: string): string {\n  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');\n  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }\n}\n\nexport const apiPaths = {\n  Security: { csrf: '/api/v1/auth/csrf' },\n`;
 const lower = (value) => value[0].toLowerCase() + value.slice(1);
 for (const [group, operations] of groups) {
   paths += `  ${group}: {\n`;
@@ -106,7 +106,8 @@ for (const [group, operations] of groups) {
     const method = lower(operation.action);
     const path = `apiPaths.${group}.${method}${parameters.length ? `(${parameters.map((name) => `args.${name}`).join(', ')})` : ''}`;
     const identityChange = ['RegisterCustomer', 'LoginCustomer', 'LoginUser', 'RefreshCustomerSession', 'RefreshUserSession', 'LogoutCustomer', 'LogoutUser', 'ChangeCustomerPassword', 'ChangeUserPassword'].includes(operation.action);
-    const metadata = `{ operation: '${operation.action}', authenticated: ${operation.policy !== 'Anonymous'}, skipAuthenticationRecovery: ${operation.route.startsWith('/api/v1/auth/')}, changesIdentity: ${identityChange} }`;
+    const excluded = operation.route.startsWith('/api/v1/auth/') || ['GetCurrentCustomer', 'GetCurrentUser'].includes(operation.action);
+    const metadata = `{ operation: '${operation.action}', authenticated: ${operation.policy !== 'Anonymous'}, skipAuthenticationRecovery: ${excluded ? 'true' : 'options.skipAuthenticationRecovery === true'}, changesIdentity: ${identityChange}, sessionControl: options.sessionControl === true }`;
     functions.push(`/** ${operation.method} ${operation.route} — ${operation.policy}; returns unwrapped domain data. */\nexport async function ${method}(${args}options: RequestOptions = {}): Promise<${result}> {\n${setup}  return apiRequest<${result}>({ method: '${operation.method}', path: ${path},${operation.query ? '\n    query: approvedQuery(args.query, ' + JSON.stringify(schemas.get(operation.query).properties.map((property) => property.name)) + '),' : ''}${body ? `\n    body: ${body},` : ''}\n    metadata: ${metadata}, ...(options.signal ? { signal: options.signal } : {}) });\n}\n`);
   }
   output(`src/Services/${group}.ts`, `${banner}\nimport { apiRequest } from '../API';\nimport { apiPaths } from '../Router/routePaths';\nimport type { RequestOptions } from '../Types/transport';\n${operations.some((operation) => operation.query) ? "import { approvedQuery } from './query';\n" : ''}import type { ${[...imports].sort().join(', ')} } from '../Types/contracts';\n\n${functions.join('\n')}`);
