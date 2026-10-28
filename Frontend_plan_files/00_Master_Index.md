@@ -1,0 +1,65 @@
+# Brouj frontend master plan
+
+Prepared: 2026-10-28. Deliverable: a React/TypeScript SPA containing the public Website, customer account, and Admin Dashboard. Arabic/English and RTL/LTR are mandatory across all three.
+
+## Authorization and execution rules
+
+This document set is a plan, not frontend implementation. Creating these files does not authorize implementing every phase. Implement one phase at a time. Phase N+1 requires completed acceptance checks, a completion report, and explicit user approval of Phase N. Do not infer approval from silence, a passing build, or approval of this overall plan. Correct failed checks within the current phase before requesting approval.
+
+Use statuses: Not started, In progress, Awaiting approval, Approved. Update this ledger with actual evidence and approval references; never mark future phases approved.
+
+| Phase | Document | Status |
+|---|---|---|
+| 01 | [Foundation and backend contract](Part_01_Foundation_and_Backend_Contract.md) | Not started |
+| 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Not started |
+| 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Not started |
+| 04 | [Authentication and session lifecycle](Part_04_Authentication_and_Session_Lifecycle.md) | Not started |
+| 05 | [Routing, layouts, access control](Part_05_Routing_Layouts_and_Access_Control.md) | Not started |
+| 06 | [Public Website and property browsing](Part_06_Public_Website_and_Property_Browsing.md) | Not started |
+| 07 | [Customer account and reservations](Part_07_Customer_Account_and_Reservations.md) | Not started |
+| 08 | [Admin catalogue and media](Part_08_Admin_Catalogue_and_Media.md) | Not started |
+| 09 | [Admin customers, reservations, orders](Part_09_Admin_Customers_Reservations_and_Orders.md) | Not started |
+| 10 | [Admin time plans and templates](Part_10_Admin_Time_Plans_and_Templates.md) | Not started |
+| 11 | [Admin governance and staff](Part_11_Admin_Governance_and_Staff.md) | Not started |
+| 12 | [SignalR readiness](Part_12_SignalR_Readiness.md) | Not started |
+| 13 | [Final verification and release](Part_13_Final_Verification_and_Release.md) | Not started |
+
+## Architecture decision
+
+Use one Vite React/TypeScript SPA and one deployment, not Turborepo/Nx or separate apps. The approved frontend origin is https://brouj.com and the API is https://api.brouj.com. Separate lazy-loaded route trees and layouts provide clear public/account/admin boundaries. Share contracts, localization, theme, transport, and components. SEO is deferred because launch acquisition uses social media and advertising. Preserve route metadata and feature boundaries for later SEO work; SSR or prerendering will need a separate design.
+
+Separate bundles would not create independent authentication: customer and staff endpoints currently issue the same API-host cookie names. One browser session has one active actor. Admin/SuperAdmin are staff roles, not customer roles. UI guards improve navigation; server policies and ownership rules remain authoritative.
+
+Dependency direction: pages/components -> focused Context providers/hooks -> feature Services -> the sole Axios instance in src/API.tsx -> backend. API.tsx must not import a React provider. Session coordination can use a plain TypeScript module with subscription/callback interfaces to avoid circular dependencies. Do not use Redux or a second server-state framework in V1.
+
+## Shared implementation standards
+
+- Use src/API.tsx, src/Services/, src/Context/, src/Router/routePaths.ts, src/Router/router.tsx, and src/App.tsx exactly as requested. Add Pages, Components, Types, Hooks, Styles, and i18n directories.
+- Only API.tsx imports Axios at runtime and calls axios.create. Services receive no raw credentials and export typed feature functions. Type-only Axios imports elsewhere are allowed.
+- routePaths.ts exports distinct routePaths and apiPaths groups with parameter builders. appRoutes is RouteObject[], imported from react-router-dom, passed to createBrowserRouter. App.tsx wraps lazy content in Suspense.
+- Use React/TypeScript, Vite, react-router-dom, Axios, i18next/react-i18next, CSS Modules, Vitest, React Testing Library, and Playwright. Select mutually compatible supported stable versions in Part 01, record the runtime requirement, and commit package-lock.json. Avoid speculative package installation.
+- Use focused contexts, reducer state where useful, request cancellation and latest-response protection. Mount feature providers near their routes. Mutation success reloads affected authoritative data; private data is never persisted.
+- Arabic is the initial language; explicit selection persists as brouj.locale. English is the translation fallback. Update html lang/dir before initial rendering; use logical CSS and directional icon treatment. Keep URLs language-neutral.
+- Translate UI, labels, statuses, validation, notifications, empty/error states, alt fallbacks, and accessible names. Existing backend names/descriptions/terms are single values; show them as supplied. Never fabricate bilingual content or auto-translate legal terms.
+- Use locale formatting with Gregorian dates; isolate email, phone, identifiers, and codes as LTR where needed. Business currency must be explicitly configured for release, not inferred from language. Without configuration show a localized number without a currency symbol in development.
+- Primary #1b4564, secondary #bfae89, background #FFFFFF. Use gold as an accent; check text contrast rather than assuming white-on-gold is readable.
+- Plain text rendering is the default for backend content, including terms; do not inject raw HTML. Shared controls need keyboard support, visible focus, appropriate labels, and reduced-motion behavior.
+- Forms use React state/shared field components, client validation aligned to actual backend validators, and server field errors. Preserve edits on failure; disable duplicate submission.
+
+## Backend truth and boundaries
+
+Backend root: F:/Mazen/Projects/Brouj. Primary sources are docs/Brouj.Docs/Part8.EndpointContracts.json and .md, Part8.ApiConfiguration.md, Part12.FinalVerification.md, API controllers/request DTOs, Application handlers/validators, and Domain enums. Source code wins over stale documentation; record discrepancies.
+
+There are 101 approved business operations, plus supporting transport endpoints. The CSRF endpoint is GET /api/v1/auth/csrf. API success uses {success,data,message}; failures use feature errors or safe Problem Details. Unknown JSON properties are rejected. PATCH means full approved update DTO, not JSON Patch. Lists are paginated, maximum 100. Request cancellation is not proof a mutation did not commit.
+
+Cookies are HttpOnly, Secure, host-only, path /, SameSite Strict. Use HTTPS locally at https://localhost:5173 against https://localhost:7249; use exact allowed origins with credentials. Never read cookies or store access/refresh tokens in browser storage. AuthSessionDto carries actorId and expiresAt; expiresAt is refresh-session expiry, not a reliable access-token timer.
+
+ImagePath is a storage identifier, not a promised browser URL. The backend handoff explicitly says uploads are not served by the API. Build a media resolver boundary with placeholders; browser delivery requires an approved host/CDN or backend contract before real image display can pass release checks. Do not expose disk paths, invent a file endpoint, or concatenate storage paths into arbitrary URLs.
+
+No payment gateway, password recovery, analytics endpoint, contact-submission endpoint, automatic translation, independent dual login, live SignalR hub, or backend schema change is authorized by this plan. Known backend capacity/cache limitations remain documented; frontend pagination and debouncing do not constitute backend optimization.
+
+## Completion report required for every phase
+
+Record changed files, implemented behavior, exact checks and results, manual Arabic/English review, API limitations/dependencies, and remaining issues. Include approval date/reference when received. Do not put secret values, customer identifiers, cookies, or sensitive request bodies in evidence.
+
+Reference tools: [Vite](https://vite.dev/guide/), [React Suspense](https://react.dev/reference/react/Suspense), [React Router](https://reactrouter.com/), [Axios](https://axios-http.com/docs/intro), [react-i18next](https://react.i18next.com/latest/using-with-hooks), [Vitest](https://vitest.dev/guide/), [Playwright](https://playwright.dev/docs/intro).
