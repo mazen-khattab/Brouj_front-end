@@ -1,5 +1,8 @@
 export interface RequestOptions {
   signal?: AbortSignal;
+  /** Session coordinator only: profile probes/auth transitions must never recursively recover. */
+  skipAuthenticationRecovery?: boolean;
+  sessionControl?: boolean;
 }
 /** RFC Problem Details is distinct from the feature failure envelope. */
 export interface ProblemDetails {
@@ -18,6 +21,7 @@ export interface RequestMetadata {
   readonly skipAuthenticationRecovery: boolean;
   /** Clear proof after an attempted identity change; no replay is implied. */
   readonly changesIdentity?: boolean;
+  readonly sessionControl?: boolean;
 }
 export interface ApiRequest extends RequestOptions {
   method: "GET" | "HEAD" | "OPTIONS" | "POST" | "PATCH" | "PUT" | "DELETE";

@@ -6,7 +6,7 @@ export interface AuthenticationFailureEvent {
   readonly generation: number;
 }
 type Listener = (event: AuthenticationFailureEvent) => void | Promise<void>;
-/** Observation only in Part 03. Part 04 owns recovery and any bounded replay. */
+/** Optional failure observation; sessionBoundary independently coordinates bounded recovery. */
 export function createAuthenticationFailureChannel() {
   let listener: Listener | undefined;
   return {

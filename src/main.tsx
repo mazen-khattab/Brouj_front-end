@@ -6,6 +6,7 @@ import { bootstrapLocale } from "./i18n/bootstrap";
 import "./Styles/global.css";
 import { LocaleProvider } from './Context/LocaleProvider';
 import { ToastProvider } from './Context/ToastProvider';
+import { AuthProvider } from './Context/AuthProvider';
 
 // Validate public configuration and set direction before the first React render.
 void environment;
@@ -14,6 +15,6 @@ const root = document.getElementById("root");
 if (!root) throw new Error("The application root element is missing.");
 createRoot(root).render(
   <StrictMode>
-    <LocaleProvider><ToastProvider><App /></ToastProvider></LocaleProvider>
+    <LocaleProvider><AuthProvider><ToastProvider><App /></ToastProvider></AuthProvider></LocaleProvider>
   </StrictMode>,
 );

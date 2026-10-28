@@ -1,6 +1,6 @@
 # Brouj frontend
 
-One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–03**: the foundation, Arabic/English shared UI, typed services for all 101 business operations, and credentialed API transport with in-memory CSRF protection. The approved design uses layered navy/gold/ivory surfaces, self-hosted Manrope/IBM Plex Sans Arabic, 16px corners, fade-ins and shimmer skeletons. Identity and feature screens follow their separately approved phases in [the master index](Frontend_plan_files/00_Master_Index.md).
+One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–04**: the foundation, Arabic/English shared UI, all 101 typed services, CSRF transport, and coordinated customer/staff session lifecycle. The approved design uses layered navy/gold/ivory surfaces, self-hosted Manrope/IBM Plex Sans Arabic, 16px corners, fade-ins and shimmer skeletons. Public authentication routes, access guards and feature screens follow their separately approved phases in [the master index](Frontend_plan_files/00_Master_Index.md).
 
 ## Requirements and install
 
@@ -58,7 +58,7 @@ npm run contracts:check
 npm run services:check
 ```
 
-The unit suite exercises the application/shared UI, public configuration, all 101 service mappings at the adapter boundary, CSRF concurrency/cancellation/generation protection, safe errors, and the enforced Axios ownership rule. Only `src/API.tsx` imports Axios at runtime. It owns the single application transport; no authentication context or automatic refresh/retry exists yet. See [the transport guide](docs/api-services.md) for service calls, error presentation and Part 04 coordination interfaces.
+The unit suite exercises shared UI/configuration, all 101 service mappings, CSRF/session concurrency and cancellation, bounded 401 recovery, credentials/private notice clearing, safe errors, and the enforced Axios ownership rule. Only `src/API.tsx` imports Axios at runtime. It owns the single application transport; the plain session coordinator connects it to AuthContext without a React dependency in transport. See [the transport guide](docs/api-services.md) and [authentication guide](docs/authentication.md).
 
 Browser checks require trusted PEM configuration and Playwright's browser binary:
 
@@ -72,7 +72,7 @@ Playwright starts the HTTPS server, checks Arabic/English at 1440px/375px, captu
 
 ## Shared UI showcase
 
-While running `npm run dev`, visit **https://localhost:5173/__showcase**. The homepage also links to it in development. Review the form, table, dialog, notifications and loading states, then switch language without losing entered values. Idle modals close on a backdrop click; pending actions remain protected. Notifications close automatically after five seconds using an interval. This is an internal preview with in-memory fixtures and no API calls. The route and sample data are excluded from the production build; `npm run preview` does not expose it. Source CSS is restricted to `src/Styles`; components/pages use Tailwind utilities.
+While running `npm run dev`, visit **https://localhost:5173/__showcase**. The homepage also links to it in development. Review the form, table, dialog, notifications and loading states, then switch language without losing entered values. Idle modals close on a backdrop click; pending actions remain protected. Notifications close automatically after five seconds using an interval. Showcase fixtures remain in memory; the root session provider now performs read-only profile bootstrap. The route and sample data are excluded from production; `npm run preview` does not expose it. Source CSS is restricted to `src/Styles`; components/pages use Tailwind utilities.
 
 The luxury architectural/editorial design preserves the approved fonts and uses 16px component corners, generous spacing and fine gold detailing. Layered navy gradients, champagne-gold backdrops and warm ivory surfaces replace the single flat page background. The [shared UI guide](docs/shared-ui.md) documents component interfaces, localization/validation conventions, formatting helpers and theme tokens. Saved visual evidence is linked from the [completion report](docs/part_02_completion.md). The locally bundled decorative architectural artwork and its generation prompt are documented in [artwork notes](docs/architectural-artwork.md).
 
@@ -82,4 +82,6 @@ Start with [the API/UI matrix](docs/contracts/api-ui-matrix.md) and [wire contra
 
 Required directories are under `src/`: `API.tsx`, `App.tsx`, `Services`, `Context`, `Router`, `Pages`, `Components`, `Types`, `Hooks`, `Styles`, and `i18n`. Empty future-layer directories are retained with `.gitkeep`; they contain no simulated services. The locale bootstrap respects a previously selected `brouj.locale`; Arabic is the initial language. Locale and toast providers live outside the route tree so navigation retains their shared state.
 
-See the [Part 01 report](docs/part_01_completion.md) and [Part 02 report](docs/part_02_completion.md) for the approved foundation and design, and the [Part 03 report](docs/part_03_completion.md) for transport verification. Media hosting, release currency configuration, real authentication environment, initial SuperAdmin provisioning and backend request/rate budgets remain deployment inputs. Part 04 requires explicit Part 03 approval in accordance with the master plan.
+Visit **https://localhost:5173/__auth** during development to review customer login/registration and staff login. The pages use actual services and need a configured running API to identify the current session; an unavailable API shows safe retry rather than a fabricated anonymous state. Saved bilingual screenshots and the [Part 04 report](docs/part_04_completion.md) support review without real accounts. Public `/login`, `/register` and `/admin/login` routing belongs to Part 05.
+
+See the [Part 01](docs/part_01_completion.md), [Part 02](docs/part_02_completion.md) and [Part 03](docs/part_03_completion.md) reports for approved prerequisites. [Real-backend session verification](docs/session-verification.md), media hosting, release currency, initial staff provisioning and backend budgets remain environment inputs. Part 05 requires explicit Part 04 approval.

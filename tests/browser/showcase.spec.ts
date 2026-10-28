@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './sessionFixtures';
 
 for (const locale of ['ar', 'en'] as const) {
   test(`showcase layout, translation and keyboard review in ${locale}`, async ({ page }, testInfo) => {

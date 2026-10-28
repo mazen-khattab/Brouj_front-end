@@ -2,6 +2,8 @@ import ar from "./locales/ar/common.json";
 import en from "./locales/en/common.json";
 import arErrors from "./locales/ar/errors.json";
 import enErrors from "./locales/en/errors.json";
+import arAuth from './locales/ar/auth.json';
+import enAuth from './locales/en/auth.json';
 
 export const namespaces = [
   "common",
@@ -18,7 +20,7 @@ export type Namespace = (typeof namespaces)[number];
 export const resources = {
   ar: {
     common: ar,
-    auth: {},
+    auth: arAuth,
     catalogue: {},
     account: {},
     admin: {},
@@ -27,7 +29,7 @@ export const resources = {
   },
   en: {
     common: en,
-    auth: {},
+    auth: enAuth,
     catalogue: {},
     account: {},
     admin: {},

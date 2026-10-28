@@ -16,5 +16,7 @@ export const appRoutes: RouteObject[] = [
 if (import.meta.env.DEV) {
   const ComponentShowcase = lazy(() => import("../Pages/ComponentShowcase"));
   appRoutes.push({ path: "/__showcase", element: <ComponentShowcase /> });
+  const AuthPreview = lazy(() => import('../Pages/AuthPreview'));
+  appRoutes.push({ path: '/__auth', element: <AuthPreview /> });
 }
 export const router = createBrowserRouter(appRoutes);
