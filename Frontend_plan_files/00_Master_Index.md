@@ -11,8 +11,8 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 | Phase | Document | Status |
 |---|---|---|
 | 01 | [Foundation and backend contract](Part_01_Foundation_and_Backend_Contract.md) | Approved |
-| 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Awaiting approval |
-| 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Not started |
+| 02 | [Bilingual theme and shared UI](Part_02_Bilingual_Theme_and_Shared_UI.md) | Approved |
+| 03 | [API services and CSRF](Part_03_API_Services_and_CSRF.md) | Awaiting approval |
 | 04 | [Authentication and session lifecycle](Part_04_Authentication_and_Session_Lifecycle.md) | Not started |
 | 05 | [Routing, layouts, access control](Part_05_Routing_Layouts_and_Access_Control.md) | Not started |
 | 06 | [Public Website and property browsing](Part_06_Public_Website_and_Property_Browsing.md) | Not started |
@@ -26,7 +26,9 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 
 Phase 01 evidence (2026-10-28): [completion report](../docs/part_01_completion.md). Approved by the user in this conversation: "part 1 is approved"; the user also confirmed that HTTPS certificates are created and the project runs successfully. Automated Part 01 browser execution was not claimed at its original handoff.
 
-Phase 02 revised evidence (2026-10-28): [completion report and refreshed bilingual screenshots](../docs/part_02_completion.md). The latest luxury architectural/editorial redesign adds layered navy, champagne-gold and warm ivory backgrounds while preserving the owner-approved fonts and shared 16px component radius. Owner-requested Tailwind, navy/gold/white hierarchy, fade-in/shimmer, modal backdrop and five-second interval notification behavior remain implemented. Build/typecheck/lint, 56 unit tests and 14 trusted-HTTPS browser tests pass, including 375px/1440px review. Only src/Styles contains source CSS; showcase stays out of production. Completion approval has not yet been received.
+Phase 02 revised evidence (2026-10-28): [completion report and refreshed bilingual screenshots](../docs/part_02_completion.md). The latest luxury architectural/editorial redesign adds layered navy, champagne-gold and warm ivory backgrounds while preserving the owner-approved fonts and shared 16px component radius. Owner-requested Tailwind, navy/gold/white hierarchy, fade-in/shimmer, modal backdrop and five-second interval notification behavior remain implemented. Build/typecheck/lint, 56 unit tests and 14 trusted-HTTPS browser tests pass, including 375px/1440px review. Only src/Styles contains source CSS; showcase stays out of production. Approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part."
+
+Phase 03 evidence (2026-10-29): [completion report](../docs/part_03_completion.md) and [transport/service guide](../docs/api-services.md). All 101 typed business operations, in-memory generation-bound CSRF, credentialed Axios transport, safe bilingual failures and Part 04 coordination interfaces are implemented. Live contract/generation checks, build/typecheck/lint, 211 unit tests and 18 trusted-HTTPS browser tests pass. Part 03 awaits explicit approval; Part 04 remains Not started.
 
 ## Architecture decision
 

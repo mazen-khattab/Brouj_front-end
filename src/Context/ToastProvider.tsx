@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ToastContext } from "./ToastContext";
 import type { Notice } from "./ToastContext";
-import { Toast } from '../Components/Toast';
-import { ui as styles } from '../Components/ui';
+import { Toast } from "../Components/Toast";
+import { ui as styles } from "../Components/ui";
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
@@ -21,7 +21,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext value={notify}>
       {children}
       <aside aria-label={t("notifications")} className={styles.toasts}>
-        {notices.map((notice) => <Toast key={notice.id} notice={notice} dismiss={dismiss} />)}
+        {notices.map((notice) => (
+          <Toast key={notice.id} notice={notice} dismiss={dismiss} />
+        ))}
       </aside>
     </ToastContext>
   );

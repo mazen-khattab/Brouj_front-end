@@ -17,7 +17,9 @@
     "test": "vitest run",
     "test:browser": "playwright test",
     "contracts:check": "node scripts/verify-contract.mjs",
-    "contracts:update": "node scripts/verify-contract.mjs --write"
+    "contracts:update": "node scripts/verify-contract.mjs --write",
+    "services:generate": "node scripts/generate-services.mjs",
+    "services:check": "node scripts/generate-services.mjs --check"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "5.3.0",

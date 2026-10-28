@@ -1,6 +1,6 @@
 # Brouj frontend
 
-One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–02**: the foundation and verified contract inventory, Arabic/English localization, Tailwind styling, and shared UI. The revised design uses navy/gold/white in a 3:2:1 hierarchy, self-hosted Manrope/IBM Plex Sans Arabic, fade-ins and shimmer skeletons. Services, identity and feature screens follow their separately approved phases in [the master index](Frontend_plan_files/00_Master_Index.md).
+One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–03**: the foundation, Arabic/English shared UI, typed services for all 101 business operations, and credentialed API transport with in-memory CSRF protection. The approved design uses layered navy/gold/ivory surfaces, self-hosted Manrope/IBM Plex Sans Arabic, 16px corners, fade-ins and shimmer skeletons. Identity and feature screens follow their separately approved phases in [the master index](Frontend_plan_files/00_Master_Index.md).
 
 ## Requirements and install
 
@@ -55,9 +55,10 @@ npm run lint
 npm test
 npm run build
 npm run contracts:check
+npm run services:check
 ```
 
-The unit suite exercises the actual lazy-loaded application route, locale persistence/storage denial, translation parity/fallback, dynamic validation/notifications, controls, pagination, formatting, token contrast, public environment validation, and the enforced Axios ownership rule. Only `src/API.tsx` may import Axios at runtime; type-only Axios imports elsewhere remain allowed. `API.tsx` is deliberately empty until Part 03.
+The unit suite exercises the application/shared UI, public configuration, all 101 service mappings at the adapter boundary, CSRF concurrency/cancellation/generation protection, safe errors, and the enforced Axios ownership rule. Only `src/API.tsx` imports Axios at runtime. It owns the single application transport; no authentication context or automatic refresh/retry exists yet. See [the transport guide](docs/api-services.md) for service calls, error presentation and Part 04 coordination interfaces.
 
 Browser checks require trusted PEM configuration and Playwright's browser binary:
 
@@ -81,4 +82,4 @@ Start with [the API/UI matrix](docs/contracts/api-ui-matrix.md) and [wire contra
 
 Required directories are under `src/`: `API.tsx`, `App.tsx`, `Services`, `Context`, `Router`, `Pages`, `Components`, `Types`, `Hooks`, `Styles`, and `i18n`. Empty future-layer directories are retained with `.gitkeep`; they contain no simulated services. The locale bootstrap respects a previously selected `brouj.locale`; Arabic is the initial language. Locale and toast providers live outside the route tree so navigation retains their shared state.
 
-See the [Part 01 report](docs/part_01_completion.md) for the approved foundation and the [Part 02 report](docs/part_02_completion.md) for current verification. Media hosting, release currency configuration, real authentication environment, initial SuperAdmin provisioning and backend request/rate budgets remain deployment inputs. Part 03 requires explicit Part 02 approval in accordance with the master plan.
+See the [Part 01 report](docs/part_01_completion.md) and [Part 02 report](docs/part_02_completion.md) for the approved foundation and design, and the [Part 03 report](docs/part_03_completion.md) for transport verification. Media hosting, release currency configuration, real authentication environment, initial SuperAdmin provisioning and backend request/rate budgets remain deployment inputs. Part 04 requires explicit Part 03 approval in accordance with the master plan.

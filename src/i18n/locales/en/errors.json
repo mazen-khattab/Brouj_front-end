@@ -1,0 +1,19 @@
+{
+  "generic": "The request could not be completed. Please try again.",
+  "network": "Unable to reach the service. Check your connection and try again.",
+  "canceled": "The request was canceled.",
+  "invalidCredentials": "The sign-in details are incorrect.",
+  "authenticationRequired": "Please sign in to continue.",
+  "forbidden": "You do not have permission to perform this action.",
+  "notFound": "The requested item could not be found.",
+  "conflict": "The item has changed or this action conflicts with its current state. Reload it before trying again.",
+  "invalidInput": "Check the entered values and try again.",
+  "projectHasReservations": "This project cannot be deleted while it has reservations.",
+  "reservationAlreadyActive": "You already have an active reservation for this unit.",
+  "reservationAlreadyCancelled": "This reservation has already been canceled.",
+  "orderAlreadyCompleted": "This order has already been completed.",
+  "payloadTooLarge": "The submitted content is too large.",
+  "unsupportedContent": "The submitted content type is not supported.",
+  "rateLimited": "Too many requests. Wait before trying again.",
+  "retryAfter": "Try again in {{count}} seconds."
+}
