@@ -1,5 +1,7 @@
 import ar from "./locales/ar/common.json";
 import en from "./locales/en/common.json";
+import arErrors from "./locales/ar/errors.json";
+import enErrors from "./locales/en/errors.json";
 
 export const namespaces = [
   "common",
@@ -21,7 +23,7 @@ export const resources = {
     account: {},
     admin: {},
     timePlans: {},
-    errors: {},
+    errors: arErrors,
   },
   en: {
     common: en,
@@ -30,7 +32,7 @@ export const resources = {
     account: {},
     admin: {},
     timePlans: {},
-    errors: {},
+    errors: enErrors,
   },
 };
 

@@ -45,7 +45,7 @@ One browser has one active actor because customer/staff sessions share the API-h
 
 Browser calls must use credentials over approved HTTPS origins: development `https://localhost:5173` to `https://localhost:7249`; production `https://brouj.com` to `https://api.brouj.com`. Cookies are HttpOnly, Secure, host-only, path `/`, SameSite Strict. Never read cookies or store authentication tokens/private DTOs in localStorage. `expiresAt` describes refresh-session expiry, not a reliable access-token timer.
 
-Part 03 will bootstrap `GET /api/v1/auth/csrf`, keep its request proof in memory, attach `X-CSRF-TOKEN` to POST/PATCH/PUT/DELETE including auth operations, and renew proof after an actor change. This phase creates no transport instance. Missing/invalid CSRF or wrong actor may stop a request before its business handler.
+Part 03 now bootstraps `GET /api/v1/auth/csrf` through the sole Axios transport, keeps its proof only in memory, and attaches `X-CSRF-TOKEN` to every unsafe request including auth operations. Identity-changing attempts that reached dispatch invalidate proof; the next unsafe request obtains a new one. A plain generation boundary lets Part 04 invalidate before identity/expired-access refresh transitions. Missing/invalid CSRF or wrong actor may stop a request before its business handler. See [API services](../api-services.md).
 
 ## Files, media and release dependencies
 
