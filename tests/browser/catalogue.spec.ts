@@ -112,7 +112,7 @@ test('reservation CTA returns a customer to the selected unit and never submits 
   await page.goto(path); await page.getByRole('link', { name: 'Sign in to request a reservation' }).click();
   expect(new URL(page.url()).searchParams.get('returnTo')).toBe(path + '#reservation');
   await signIn(page); await expect(page).toHaveURL(new RegExp(ids.unit + '#reservation$'));
-  await expect(page.getByText('Reservation requests are being prepared.', { exact: false })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Request reservation', exact: true })).toBeVisible();
   expect(session.calls.some((path) => path === '/api/v1/reservations')).toBe(false);
   await page.goto('/projects/' + ids.project); await page.getByRole('link', { name: 'Project time plan', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/time-plan$`));

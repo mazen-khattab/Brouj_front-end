@@ -307,6 +307,20 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
       };
     },
     retryBootstrap: bootstrap,
+    async reloadIdentity() {
+      if (transition || state.pending || writes) throw new SessionActionError('busy');
+      if (!state.actor) throw new SessionActionError('signInRequired');
+      const expected = generation;
+      const actor = state.actor;
+      const id = state.profile.id;
+      const identity = await profile(actor, expected);
+      // Refresh a confirmed profile without remounting private forms or inventing a logout.
+      // A definitive rejected identity does invalidate every private route and in-flight read.
+      if (!identity || identity.actor !== actor || identity.profile.id !== id) {
+        expire('expired'); platform.publish('changed'); return;
+      }
+      accept(identity);
+    },
     loginCustomer: (input: LoginInput, signal?: AbortSignal) => authenticate('customer', (signal) => services.loginCustomer(input, signal), signal),
     registerCustomer: (input: RegisterCustomerInput, signal?: AbortSignal) => authenticate('customer', (signal) => services.registerCustomer(input, signal), signal),
     loginStaff: (input: LoginInput, signal?: AbortSignal) => authenticate('staff', (signal) => services.loginStaff(input, signal), signal),

@@ -19,6 +19,11 @@ import { RouteHeading } from "../../Router/RouteFeedback";
 import { routePaths } from "../../Router/routePaths";
 import { formatDateTime, formatNumber } from "../../i18n/format";
 import { BidiText } from "../../Components/BidiText";
+import { lazy, Suspense } from 'react';
+import { useAuth } from '../../Hooks/useAuth';
+import { PageLoading } from '../../Router/RouteFeedback';
+
+const CustomerScope = lazy(() => import('../Account/CustomerScope'));
 
 const panel =
   "grid min-w-0 gap-8 rounded-ui border border-accent/40 bg-ivory p-6 text-primary shadow-panel sm:p-9";
@@ -167,6 +172,7 @@ function DetailView({ terms = false }: { terms?: boolean }) {
   );
 }
 export default function CataloguePage({ kind }: { kind: string }) {
+  const auth = useAuth();
   const { cityId, areaId, projectId, unitId } = useParams();
   const { t } = useTranslation("routing");
   const catalogue = useTranslation("catalogue");
@@ -200,7 +206,9 @@ export default function CataloguePage({ kind }: { kind: string }) {
           id={cityId ?? areaId ?? unitId ?? projectId}
           projectId={projectId}
         >
-          <DetailView terms={kind === "terms"} />
+          {kind === 'unit' && auth.actor === 'customer' ? <Suspense fallback={<PageLoading />}>
+            <CustomerScope key={`${auth.profile.id}:${auth.generation}:${unitId}`}><DetailView /></CustomerScope>
+          </Suspense> : <DetailView terms={kind === "terms"} />}
         </CatalogueDetailProvider>
       )}
     </div>

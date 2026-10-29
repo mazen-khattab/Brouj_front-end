@@ -1,6 +1,6 @@
 # Part 06 completion report
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 05 was explicitly approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 06 invocation. Its report and master ledger record that approval. Part 07 is not implemented.
+Date: 2026-10-29. Status: **Approved** by the user on 2026-10-29 with the Part 07 invocation: "Ok, Approved. Now, let's navigate to the next part.". Part 05 was explicitly approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 06 invocation. Its report and master ledger record that approval. This report describes the Part 06 handoff; subsequent work is recorded in Part 07.
 
 ## Delivered
 
@@ -87,4 +87,4 @@ The local configured API has no listener on port 7249 during inspection. Real in
 
 **Media disposition:** localized placeholders are acceptable for this phase under its plan. Real image display cannot pass release verification until an approved delivery host/mapping exists, or the owner explicitly approves the remaining image-display limitation at release. Merely setting VITE_MEDIA_ORIGIN is insufficient. No URL mapping or release approval is inferred from Part 06 approval.
 
-Release currency, staff provisioning, API budgets and production hosting remain existing owner/deployment inputs. Reservation confirmation/submission, customer self-service and time-plan data are reserved for Part 07; admin operations, SignalR and release remain later phases. All required Part 06 frontend checks pass, and permitted dependencies are recorded. Part 06 is **Awaiting approval**; Part 07 remains **Not started**. The implementation skill requires requesting phase approval at this gate; no Part 06 or release approval is inferred.
+Release currency, staff provisioning, API budgets and production hosting remain existing owner/deployment inputs. Reservation confirmation/submission, customer self-service and time-plan data are reserved for Part 07; admin operations, SignalR and release remain later phases. All required Part 06 frontend checks pass, and permitted dependencies are recorded. Part 06 was explicitly **Approved** by the user with the Part 07 invocation, quoted above. No release approval is inferred.

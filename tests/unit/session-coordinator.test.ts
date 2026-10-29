@@ -55,6 +55,24 @@ test('anonymous bootstrap probes both profiles and never guesses a refresh actor
   expect(f.services.refresh).not.toHaveBeenCalled();
 });
 
+test('an authoritative profile reload updates the current profile without advancing identity or refreshing cookies', async () => {
+  const f = fixture({ actor: 'customer' }); await f.start();
+  const generation = f.coordinator.getSnapshot().generation;
+  f.services.customerProfile.mockResolvedValue({ ...customer, fName: 'Changed' });
+  await f.coordinator.reloadIdentity();
+  expect(f.coordinator.getSnapshot()).toMatchObject({ actor: 'customer', generation, profile: { fName: 'Changed' } });
+  expect(f.services.refresh).not.toHaveBeenCalled();
+});
+test('network failure while rechecking a saved profile retains identity; definitive rejection clears it', async () => {
+  const f = fixture({ actor: 'customer' }); await f.start();
+  f.services.customerProfile.mockRejectedValueOnce(new ApiError('network'));
+  await expect(f.coordinator.reloadIdentity()).rejects.toMatchObject({ kind: 'network' });
+  expect(f.coordinator.getSnapshot().actor).toBe('customer');
+  f.server.actor = undefined; await f.coordinator.reloadIdentity();
+  expect(f.coordinator.getSnapshot()).toMatchObject({ status: 'anonymous', reason: 'expired' });
+  expect(f.services.refresh).not.toHaveBeenCalled();
+});
+
 test('login route unmount after identity publication does not cancel the established session controller', async () => {
   const f = fixture(); await f.start();
   const request = new AbortController();

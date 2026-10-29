@@ -26,6 +26,7 @@ export function AuthProvider({
         loginStaff: coordinator.loginStaff,
         logout: coordinator.logout,
         retryBootstrap: coordinator.retryBootstrap,
+        reloadIdentity: coordinator.reloadIdentity,
       }}
     >
       {children}

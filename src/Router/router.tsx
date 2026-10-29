@@ -17,7 +17,8 @@ const AccountLayout = lazy(() => import("../Layouts/AccountLayout"));
 const AdminLayout = lazy(() => import("../Layouts/AdminLayout"));
 const WelcomePage = lazy(() => import("../Pages/WelcomePage"));
 const CataloguePage = lazy(() => import("../Pages/Catalogue/CataloguePage"));
-const Placeholder = lazy(() => import("../Pages/RoutePlaceholder"));
+const AccountPage = lazy(() => import("../Pages/Account/AccountPage"));
+const TimePlanPage = lazy(() => import("../Pages/Account/TimePlanPage"));
 const AdminPlaceholder = lazy(() => import("../Pages/Admin/AdminPlaceholder"));
 const DashboardPage = lazy(() => import("../Pages/Admin/DashboardPage"));
 const CustomerLoginPage = lazy(() => import("../Pages/Auth/CustomerLoginPage"));
@@ -74,7 +75,7 @@ export const appRoutes: RouteObject[] = [
               {
                 path: memberPage.path,
                 handle: memberPage,
-                element: <Placeholder title={memberPage.title} />,
+                element: <TimePlanPage />,
                 errorElement: <RouteErrorView />,
               },
             ],
@@ -91,7 +92,7 @@ export const appRoutes: RouteObject[] = [
                       ? { index: true as const }
                       : { path: page.path.slice("/account/".length) }),
                     handle: page,
-                    element: <Placeholder title={page.title} />,
+                    element: <AccountPage kind={page.title as 'profile' | 'reservations' | 'reservation' | 'orders' | 'order'} />,
                     errorElement: <RouteErrorView />,
                   })),
                   { path: "*", element: <RouteMessage /> },

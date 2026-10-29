@@ -4,6 +4,8 @@ Part 04 adds the root AuthProvider, useAuth, the plain session coordinator and r
 
 ## State and ownership
 
+Part 07 adds `reloadIdentity()` for an explicit read of the current actor after profile/password changes. It accepts only the same actor and ID, keeps the generation for a successful read, and retains confirmed identity on a network failure so form edits survive. Definitive rejection expires the identity and clears guarded private state. It does not guess an authentication refresh. A wrong-current-password feature response is a business 401: that mutation explicitly skips transport authentication recovery, preventing automatic password-request replay. The current backend updates the password hash without revoking its session; the frontend rechecks identity and follows any actual rejection.
+
 AuthContext exposes bootstrapping, anonymous, customer, staff or unavailable. Customer includes CurrentCustomerDto; staff includes UserDto and its numeric Admin/SuperAdmin role. Login metadata contains only actorId and refresh-session expiresAt, so it never establishes a role. Neither JWTs nor HttpOnly cookies are read by application JavaScript.
 
 ```mermaid
