@@ -1,6 +1,6 @@
 # Part 05 completion report
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 04 was explicitly approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 05 invocation. That approval is recorded in its report and the master ledger. Part 06 has not been implemented.
+Date: 2026-10-29. Status: **Approved** by the user in this conversation with the Part 06 invocation: "Ok, Approved. Now, let's navigate to the next part." Part 04's prerequisite approval is recorded in its report and the master ledger. This report describes Part 05 at handoff; subsequent browsing work is recorded in Part 06.
 
 ## Delivered
 
@@ -76,4 +76,4 @@ Browser APIs are intercepted, using trusted frontend HTTPS and native browser na
 
 Media delivery, currency, staff provisioning, API budgets/capacity and production SPA hosting remain their documented dependencies. This phase makes no business data calls beyond the existing session/auth flow. Public browsing, account operations and admin management remain in Parts 06–11; SignalR and release remain Parts 12–13. Production rewrite/deployment checks, Firefox/WebKit and human screen-reader playback are not claimed.
 
-All required Part 05 frontend checks pass. Part 05 is **Awaiting approval**. Approval has not been inferred, and Part 06 remains **Not started**. The implementation skill requires: "Report the result and request phase approval when that gate is reached"; the master separately requires explicit approval before Part 06.
+All required Part 05 frontend checks pass. Part 05 was explicitly **Approved** by the user on 2026-10-29 with the Part 06 invocation, quoted above. Existing environment dependencies remain recorded.

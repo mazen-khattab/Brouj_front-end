@@ -5,7 +5,7 @@ import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 
 const heading = (page: Page) => page.getByRole('heading', { level: 1 });
-const placeholderFile = /\/src\/Pages\/RoutePlaceholder\.tsx(?:\?.*)?$/;
+const placeholderFile = /\/src\/Pages\/Catalogue\/CataloguePage\.tsx(?:\?.*)?$/;
 for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
   test(`all route permissions and deep links for ${actor}`, async ({ page, context }) => {
     test.setTimeout(120_000);
@@ -26,7 +26,8 @@ for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
         await expect(heading(page)).toHaveText(forbidden ? 'Access unavailable' : route.path === '/' ? 'Brouj' : en[route.title as keyof typeof en]);
       }
     }
-    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path))).toBe(true);
+    // Public browsing now makes catalogue reads; private business reads remain absent.
+    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path) || /^\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(\/|$)/.test(path))).toBe(true);
     if (actor === 'anonymous' || actor === 'customer') expect(adminFiles).toEqual([]);
   });
 }

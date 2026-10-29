@@ -21,8 +21,9 @@ export function formatCurrency(
   locale: InitialLocale,
   currency = environment.businessCurrency,
 ) {
+  // Preserve the backend's four-decimal price fields, including prices per square metre.
   return currency
-    ? new Intl.NumberFormat(locale, { style: "currency", currency }).format(
+    ? new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 4 }).format(
         finite(value),
       )
     : formatNumber(value, locale, { maximumFractionDigits: 4 });

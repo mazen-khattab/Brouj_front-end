@@ -13,6 +13,7 @@ export default function WelcomePage() {
       <p className="mt-5 text-2xl leading-relaxed">{t('welcome')}</p>
       <p className="mt-5 max-w-[35ch] text-base leading-8 text-white/75">{t('design.homeDescription')}</p>
       <Link className="mt-9 inline-flex items-center gap-5 rounded-ui bg-accent px-6 py-4 font-medium text-primary no-underline hover:bg-accent-light" to={routePaths.projects}>{t('browse', { ns: 'routing' })}<span aria-hidden="true" className="rtl:-scale-x-100">↗</span></Link>
+      <div className="mt-6 flex flex-wrap gap-6 text-sm text-accent-light"><Link className="underline" to={routePaths.cities}>{t('discoverCities', { ns: 'catalogue' })}</Link><Link className="underline" to={routePaths.account}>{t('accountEntry', { ns: 'catalogue' })}</Link></div>
       {import.meta.env.DEV && <Link className="mt-7 block text-sm text-accent-light underline" to="/__showcase">{t('showcase.open')}</Link>}
     </div>
     <ArchitecturalVisual className="h-[390px] sm:h-[520px] lg:h-[580px]" />

@@ -5,6 +5,7 @@ test('numbers are localized without modifying numeric payloads or inferring curr
   const payload = { price: 1234.5 };
   expect(formatCurrency(payload.price, 'en', '')).toBe('1,234.5');
   expect(formatCurrency(payload.price, 'en', 'USD')).toContain('$');
+  expect(formatCurrency(1.2345, 'en', 'USD')).toBe('$1.2345');
   expect(formatCurrency(payload.price, 'ar', 'EUR')).toContain('€');
   expect(formatNumber(payload.price, 'ar', { numberingSystem: 'arab' })).toMatch(/[٠-٩]/);
   expect(payload).toEqual({ price: 1234.5 });

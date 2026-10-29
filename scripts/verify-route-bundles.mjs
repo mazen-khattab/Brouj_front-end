@@ -13,7 +13,7 @@ function staticImports(key, visited = new Set()) {
 }
 const startup = staticImports('index.html');
 const browsing = new Set(startup);
-for (const key of ['src/Layouts/PublicLayout.tsx', 'src/Pages/WelcomePage.tsx', 'src/Pages/RoutePlaceholder.tsx', 'src/Layouts/AccountLayout.tsx']) {
+for (const key of ['src/Layouts/PublicLayout.tsx', 'src/Pages/WelcomePage.tsx', 'src/Pages/Catalogue/CataloguePage.tsx', 'src/Pages/RoutePlaceholder.tsx', 'src/Layouts/AccountLayout.tsx']) {
   staticImports(key, browsing);
 }
 const publicFiles = new Set([...browsing].map((key) => manifest[key].file));

@@ -1,0 +1,2 @@
+# This file is checked byte-for-byte against the verified service generator.
+src/Router/routePaths.ts
