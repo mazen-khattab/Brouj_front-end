@@ -1,6 +1,6 @@
 # Part 09 — Admin customers, reservations and orders
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 08 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_09`. This report covers Part 09 only. Part 10 implementation and deployment are excluded.
+Date: 2026-10-29. Status: **Approved**. Approved by the user on 2026-10-29 in this conversation with the Part 10 invocation: "Ok, Approved. Now, let's navigate to the next part." Part 08 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_09`. This report covers Part 09 only. Part 10 implementation and deployment are excluded.
 
 ## Delivered behavior
 
@@ -93,4 +93,4 @@ OrderDto omits project type; completion button eligibility therefore uses the cu
 
 No API listener was present on local port 7249 during inspection. Intercepted browser fixtures do not establish actual SQL mutations/locking, real account authorization, actual cookie lifecycle or multi-instance behavior. The inherited [real-backend verification dependency](session-verification.md) still requires a configured API and dedicated verification accounts/inventory. No backend edits, provisioning or fabricated live interactions were performed.
 
-Existing release currency, media delivery, performance budgets and hosting inputs remain deployment dependencies; these workflows add no media URL assumptions or performance claim. Chromium desktop/mobile is covered. Firefox/WebKit, human screen-reader playback and production deployment are not claimed. Required frontend acceptance items have passing evidence with the permitted live-environment dependencies stated. Part 10 remains Not started and requires explicit Part 09 approval.
+Existing release currency, media delivery, performance budgets and hosting inputs remain deployment dependencies; these workflows add no media URL assumptions or performance claim. Chromium desktop/mobile is covered. Firefox/WebKit, human screen-reader playback and production deployment are not claimed. Required frontend acceptance items have passing evidence with the permitted live-environment dependencies stated. Part 09 approval was received on 2026-10-29 with the Part 10 invocation; Part 10 is tracked separately.

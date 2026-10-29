@@ -22,6 +22,8 @@ export interface StaffOperation extends StaffOperationState {
   check: () => Promise<void>;
 }
 export interface StaffJob {
+  /** Ordering must check the authoritative sibling collection even after a non-conflict rejection. */
+  reconcileOnFailure?: boolean;
   id: string;
   write: (signal: AbortSignal) => Promise<string>;
   refresh: (returnedId: string, signal: AbortSignal) => Promise<unknown>;
@@ -81,7 +83,7 @@ export function useStaffOperation(name: string, gate: RefObject<StaffWriteGate>)
       }
       const uncertain = acknowledged || uncertainWrite(failure);
       let blocked = uncertain;
-      if (!acknowledged && [403, 404, 409].includes(failure.status ?? 0)) {
+      if (!acknowledged && (job.reconcileOnFailure || [403, 404, 409].includes(failure.status ?? 0))) {
         // Permissions and business eligibility may have changed since the row was loaded.
         try {
           await job.reconcile(request.signal);

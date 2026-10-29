@@ -11,6 +11,7 @@ import { getMyOrders, getOrderById } from '../Services/Orders';
 import { getProjectTimePlan } from '../Services/TimePlans';
 import { ApiError } from '../Types/failures';
 import { isGuid } from '../Catalogue/query';
+import { useRealtimeReload } from '../Hooks/useRealtimeReload';
 
 export function AccountDataProvider({ kind, id, children }: { kind: AccountData['kind']; id?: string | undefined; children: ReactNode }) {
   const auth = useAuth();
@@ -48,6 +49,8 @@ export function AccountDataProvider({ kind, id, children }: { kind: AccountData[
   }, [kind, id, allowed, page, pageSize, status, reloadIdentity]);
   const scope = auth.actor ? `${auth.actor}:${auth.profile.id}:${auth.generation}` : 'anonymous';
   const { result, reload } = useCatalogueRead(`private:${scope}:${kind}:${id ?? ''}:${queryKey}`, load, allowed);
+  const feature = kind === 'reservation' || kind === 'reservations' ? 'reservations' : kind === 'order' || kind === 'orders' ? 'orders' : kind === 'plan' ? 'timePlan' : undefined;
+  useRealtimeReload(allowed ? feature : undefined, `${scope}:${kind}:${id ?? ''}:${queryKey}`, result.status === 'loading', reload, list ? undefined : id);
   useEffect(() => {
     if (result.status !== 'success' || (result.data.kind !== 'reservations' && result.data.kind !== 'orders')) return;
     const last = Math.max(1, result.data.value.totalPages);

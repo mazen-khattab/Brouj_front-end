@@ -58,13 +58,13 @@ All paths below are registered now. “Placeholder” means translated heading/p
 | `/admin/templates` | Staff | Placeholder and template links / 10 |
 | `/admin/templates/stages` | Staff | Placeholder / 10 |
 | `/admin/templates/items` | Staff | Placeholder / 10 |
-| `/admin/terms` | Staff | Placeholder / 11 |
-| `/admin/terms/:termsId` | Staff | Placeholder / 11 |
-| `/admin/activity-logs` | Staff | Placeholder / 11 |
-| `/admin/activity-logs/:logId` | Staff | Placeholder / 11 |
-| `/admin/users` | SuperAdmin | Placeholder / 11 |
-| `/admin/users/:userId` | SuperAdmin | Placeholder / 11 |
-| `/admin/account` | Staff | Settings placeholder / 11 |
+| `/admin/terms` | Staff | Paginated versions and `?create=1` plain-text creation / 11 |
+| `/admin/terms/:termsId` | Staff | Immutable version detail and confirmed activation / 11 |
+| `/admin/activity-logs` | Staff | Paginated audit records and supported filters / 11 |
+| `/admin/activity-logs/:logId` | Staff | Safe actor/resource/action/time inspection / 11 |
+| `/admin/users` | SuperAdmin | Paginated staff, search/role/deletion filters and `?create=1` creation / 11 |
+| `/admin/users/:userId` | SuperAdmin | Full approved update, confirmed soft-delete/restore / 11 |
+| `/admin/account` | Staff | Read-only staff profile and password change / 11 |
 
 `/__showcase` and `/__auth` remain development-only tools. Production excludes their routes, modules and fixtures.
 
@@ -81,7 +81,7 @@ flowchart TD
     Root --> AnonymousGuard[Anonymous guard → lazy auth pages]
     Root --> StaffGuard[Staff guard]
     StaffGuard --> Admin[Lazy AdminLayout · sidebar and topbar]
-    Admin --> AdminPages[Lazy dashboard, catalogue, customer/order operations and remaining phase placeholders]
+    Admin --> AdminPages[Lazy dashboard, catalogue, operations, planning and governance]
     Admin --> SuperGuard[SuperAdmin guard → staff pages]
 ```
 

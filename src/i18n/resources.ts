@@ -12,6 +12,10 @@ import arAccount from './locales/ar/account.json';
 import enAccount from './locales/en/account.json';
 import arAdmin from './locales/ar/admin.json';
 import enAdmin from './locales/en/admin.json';
+import arTimePlans from './locales/ar/timePlans.json';
+import enTimePlans from './locales/en/timePlans.json';
+import arGovernance from './locales/ar/governance.json';
+import enGovernance from './locales/en/governance.json';
 
 export const namespaces = [
   "common",
@@ -21,6 +25,7 @@ export const namespaces = [
   "account",
   "admin",
   "timePlans",
+  "governance",
   "errors",
 ] as const;
 export type Namespace = (typeof namespaces)[number];
@@ -34,7 +39,8 @@ export const resources = {
     catalogue: arCatalogue,
     account: arAccount,
     admin: arAdmin,
-    timePlans: {},
+    timePlans: arTimePlans,
+    governance: arGovernance,
     errors: arErrors,
   },
   en: {
@@ -44,7 +50,8 @@ export const resources = {
     catalogue: enCatalogue,
     account: enAccount,
     admin: enAdmin,
-    timePlans: {},
+    timePlans: enTimePlans,
+    governance: enGovernance,
     errors: enErrors,
   },
 };

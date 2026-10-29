@@ -19,9 +19,10 @@ const WelcomePage = lazy(() => import("../Pages/WelcomePage"));
 const CataloguePage = lazy(() => import("../Pages/Catalogue/CataloguePage"));
 const AccountPage = lazy(() => import("../Pages/Account/AccountPage"));
 const TimePlanPage = lazy(() => import("../Pages/Account/TimePlanPage"));
-const AdminPlaceholder = lazy(() => import("../Pages/Admin/AdminPlaceholder"));
+const AdminGovernancePage = lazy(() => import("../Pages/Admin/GovernancePage"));
 const AdminCataloguePage = lazy(() => import("../Pages/Admin/CataloguePage"));
 const AdminOperationsPage = lazy(() => import("../Pages/Admin/OperationsPage"));
+const AdminPlanningPage = lazy(() => import("../Pages/Admin/PlanningPage"));
 const DashboardPage = lazy(() => import("../Pages/Admin/DashboardPage"));
 const CustomerLoginPage = lazy(() => import("../Pages/Auth/CustomerLoginPage"));
 const CustomerRegistrationPage = lazy(
@@ -42,8 +43,10 @@ const adminChildren: RouteObject[] = adminPages.map((page) => ({
       <AdminCataloguePage title={page.title} />
     ) : page.phase === 9 ? (
       <AdminOperationsPage title={page.title} />
+    ) : page.phase === 10 ? (
+      <AdminPlanningPage title={page.title} />
     ) : (
-      <AdminPlaceholder title={page.title} />
+      <AdminGovernancePage title={page.title} />
     ),
 }));
 

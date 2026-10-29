@@ -7,6 +7,7 @@ export type CatalogueRead<T> = { status: "loading" } | { status: "idle" } | { st
 export function useCatalogueRead<T>(key: string, load: (signal: AbortSignal) => Promise<T>, enabled = true) {
   const [revision, refresh] = useReducer((value: number) => value + 1, 0);
   const [stored, setStored] = useState<{ key: string; revision: number; result: CatalogueRead<T> }>();
+
   useEffect(() => {
     if (!enabled) return;
     const controller = new AbortController();
@@ -31,6 +32,7 @@ export function useCatalogueRead<T>(key: string, load: (signal: AbortSignal) => 
       controller.abort();
     };
   }, [key, revision, load, enabled]);
+
   const result: CatalogueRead<T> = !enabled
     ? { status: "idle" }
     : stored?.key === key && stored.revision === revision
