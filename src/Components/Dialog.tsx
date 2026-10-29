@@ -95,7 +95,8 @@ export function Dialog({
         if (!pending) onClose();
       }}
       onClose={() => {
-        if (open && !pending) onClose();
+        // StrictMode can close and reopen a newly mounted dialog before the queued close event fires.
+        if (open && !pending && !ref.current?.open) { onClose(); }
       }}
     >
       <Button

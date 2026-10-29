@@ -1,6 +1,6 @@
 # Part 07 — Customer account and reservations
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 06 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_07`. No Part 08 work or deployment is included.
+Date: 2026-10-29. Status: **Approved**. Approved by the user on 2026-10-29 in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_08`. Part 06 had been approved with the Part 07 invocation. This report covers Part 07 only; no deployment is included.
 
 ## Delivered behavior
 
@@ -84,4 +84,4 @@ Port 7249 had no listener during inspection. Intercepted browser fixtures exerci
 
 Progress/property imagePath is a storage identifier. No approved delivery mapping exists, so the inherited localized placeholders remain; paths never become DOM content or guessed URLs. Release requires an approved host/mapping or explicit disposition of the remaining image-display limitation. Release currency, provisioning, API budgets and hosting remain existing inputs. Chromium desktop/mobile is covered; Firefox/WebKit, human screen-reader playback and production deployment are not claimed. Phase approval does not grant release approval.
 
-All required frontend acceptance items have passing evidence, with the permitted environment/media dependencies stated above. Part 07 awaits the user's explicit approval; Part 08 remains Not started.
+All required frontend acceptance items have passing evidence, with the permitted environment/media dependencies stated above. The user's explicit Part 07 approval was received with the Part 08 invocation; subsequent phase work is recorded separately.

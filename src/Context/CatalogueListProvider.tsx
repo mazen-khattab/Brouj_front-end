@@ -11,6 +11,7 @@ import { useCatalogueRead } from '../Hooks/useCatalogueRead';
 import { isGuid, readCatalogueQuery, writeCatalogueQuery } from '../Catalogue/query';
 import type { CatalogueQuery } from '../Catalogue/query';
 import { ApiError } from '../Types/failures';
+import { useCatalogueInvalidation } from '../Catalogue/invalidation';
 
 export function CatalogueListProvider({ kind, scopeId, children }: { kind: CatalogueListData['kind']; scopeId?: string; children: ReactNode }) {
   const [search, setSearch] = useSearchParams();
@@ -29,6 +30,7 @@ export function CatalogueListProvider({ kind, scopeId, children }: { kind: Catal
     }
   }, [kind, params, scopeId]);
   const { result, reload } = useCatalogueRead(`${kind}:${scopeId ?? ''}:${canonical}`, load);
+  useCatalogueInvalidation(reload);
   useEffect(() => {
     if (result.status !== 'success') return;
     const last = Math.max(1, result.data.page.totalPages);

@@ -9,8 +9,7 @@ import { i18n } from "../i18n/instance";
 
 function LocaleBridge({ children }: { children: ReactNode }) {
   const { i18n: instance } = useTranslation();
-  const locale: InitialLocale =
-    instance.resolvedLanguage === "en" ? "en" : "ar";
+  const locale: InitialLocale = instance.resolvedLanguage === "en" ? "en" : "ar";
   const direction: LocaleState["direction"] = locale === "ar" ? "rtl" : "ltr";
   useLayoutEffect(() => {
     document.documentElement.lang = locale;
@@ -30,20 +29,11 @@ function LocaleBridge({ children }: { children: ReactNode }) {
     },
     [instance],
   );
-  const value = useMemo(
-    () => ({ locale, direction, setLocale }),
-    [locale, direction, setLocale],
-  );
+  const value = useMemo(() => ({ locale, direction, setLocale }), [locale, direction, setLocale]);
   return <LocaleContext value={value}>{children}</LocaleContext>;
 }
 
-export function LocaleProvider({
-  children,
-  instance = i18n,
-}: {
-  children: ReactNode;
-  instance?: I18nInstance;
-}) {
+export function LocaleProvider({ children, instance = i18n }: { children: ReactNode; instance?: I18nInstance }) {
   return (
     <I18nextProvider i18n={instance}>
       <LocaleBridge>{children}</LocaleBridge>

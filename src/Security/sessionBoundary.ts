@@ -26,15 +26,12 @@ export function createSessionBoundary() {
     },
     stamp: () => handler?.stamp(),
     assert(metadata: RequestMetadata, unsafe: boolean, stamp?: SessionStamp) {
-      if (stamp && handler && stamp.generation !== handler.stamp().generation)
-        throw new ApiError("canceled");
+      if (stamp && handler && stamp.generation !== handler.stamp().generation) throw new ApiError("canceled");
       handler?.assertRequest(metadata, unsafe);
     },
-    enter: (metadata: RequestMetadata, unsafe: boolean) =>
-      handler?.enter(metadata, unsafe) ?? (() => {}),
+    enter: (metadata: RequestMetadata, unsafe: boolean) => handler?.enter(metadata, unsafe) ?? (() => {}),
     signal: (metadata: RequestMetadata) => handler?.signal(metadata),
-    recover: (stamp: SessionStamp) =>
-      handler?.recover(stamp) ?? Promise.resolve(false),
+    recover: (stamp: SessionStamp) => handler?.recover(stamp) ?? Promise.resolve(false),
     rejected: (stamp: SessionStamp) => handler?.rejected(stamp),
   };
 }
