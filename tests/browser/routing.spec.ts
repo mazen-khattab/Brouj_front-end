@@ -26,8 +26,8 @@ for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
         await expect(heading(page)).toHaveText(forbidden ? 'Access unavailable' : route.path === '/' ? 'Brouj' : en[route.title as keyof typeof en]);
       }
     }
-    // Public browsing now makes catalogue reads; private business reads remain absent.
-    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path) || /^\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(\/|$)/.test(path))).toBe(true);
+    // Customer lists load only for a confirmed customer; other actors never request them.
+    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path) || /^\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(\/|$)/.test(path) || (actor === 'customer' && ['/api/v1/reservations/me', '/api/v1/orders/me'].includes(path)))).toBe(true);
     if (actor === 'anonymous' || actor === 'customer') expect(adminFiles).toEqual([]);
   });
 }

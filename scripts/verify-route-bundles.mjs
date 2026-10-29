@@ -13,14 +13,21 @@ function staticImports(key, visited = new Set()) {
 }
 const startup = staticImports('index.html');
 const browsing = new Set(startup);
-for (const key of ['src/Layouts/PublicLayout.tsx', 'src/Pages/WelcomePage.tsx', 'src/Pages/Catalogue/CataloguePage.tsx', 'src/Pages/RoutePlaceholder.tsx', 'src/Layouts/AccountLayout.tsx']) {
+for (const key of ['src/Layouts/PublicLayout.tsx', 'src/Pages/WelcomePage.tsx', 'src/Pages/Catalogue/CataloguePage.tsx']) {
   staticImports(key, browsing);
 }
 const publicFiles = new Set([...browsing].map((key) => manifest[key].file));
-const adminKeys = ['src/Layouts/AdminLayout.tsx', 'src/Pages/Admin/AdminPlaceholder.tsx', 'src/Pages/Admin/DashboardPage.tsx'];
+for (const key of ['src/Pages/Account/AccountPage.tsx', 'src/Pages/Account/TimePlanPage.tsx', 'src/Pages/Account/CustomerScope.tsx', 'src/Pages/Account/CustomerReservation.tsx']) {
+  assert(manifest[key]?.isDynamicEntry, `${key} must be lazy`);
+  assert(!publicFiles.has(manifest[key].file), `${key} entered anonymous public imports`);
+}
+staticImports('src/Layouts/AccountLayout.tsx', browsing);
+staticImports('src/Pages/Account/AccountPage.tsx', browsing);
+const publicAndAccountFiles = new Set([...browsing].map((key) => manifest[key].file));
+const adminKeys = ['src/Layouts/AdminLayout.tsx', 'src/Pages/Admin/AdminPlaceholder.tsx', 'src/Pages/Admin/DashboardPage.tsx', 'src/Pages/Admin/CataloguePage.tsx'];
 for (const key of adminKeys) {
   assert(manifest[key]?.isDynamicEntry, `${key} must be lazy`);
-  assert(!publicFiles.has(manifest[key].file), `${key} entered the public/startup imports`);
+  assert(!publicAndAccountFiles.has(manifest[key].file), `${key} entered the public/startup imports`);
 }
 for (const key of browsing) assert(!manifest[key].name?.match(/^(AdminLayout|AdminPlaceholder|DashboardPage|navigation)$/), 'Admin code entered public static imports');
 for (const file of readdirSync(resolve(root, 'dist/assets')).filter((file) => file.endsWith('.js'))) {

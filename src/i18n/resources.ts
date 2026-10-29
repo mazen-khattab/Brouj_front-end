@@ -8,6 +8,10 @@ import arRouting from './locales/ar/routing.json';
 import enRouting from './locales/en/routing.json';
 import arCatalogue from './locales/ar/catalogue.json';
 import enCatalogue from './locales/en/catalogue.json';
+import arAccount from './locales/ar/account.json';
+import enAccount from './locales/en/account.json';
+import arAdmin from './locales/ar/admin.json';
+import enAdmin from './locales/en/admin.json';
 
 export const namespaces = [
   "common",
@@ -28,8 +32,8 @@ export const resources = {
     auth: arAuth,
     routing: arRouting,
     catalogue: arCatalogue,
-    account: {},
-    admin: {},
+    account: arAccount,
+    admin: arAdmin,
     timePlans: {},
     errors: arErrors,
   },
@@ -38,8 +42,8 @@ export const resources = {
     auth: enAuth,
     routing: enRouting,
     catalogue: enCatalogue,
-    account: {},
-    admin: {},
+    account: enAccount,
+    admin: enAdmin,
     timePlans: {},
     errors: enErrors,
   },

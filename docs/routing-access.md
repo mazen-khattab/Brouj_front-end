@@ -1,6 +1,6 @@
 # Routing and access matrix
 
-Part 05 routing, extended by Part 06 browsing on 2026-10-29. Browser paths are language-neutral. `src/Router/routePaths.ts` exports the handwritten browser constants/builders from `browserPaths.ts` alongside the independently generated `apiPaths`. Regeneration preserves this boundary. `routeDefinitions.ts` supplies route metadata and return-path authorization without importing pages.
+Part 05 routing, extended by Part 06 browsing and Part 07 customer/member pages on 2026-10-29. Browser paths are language-neutral. `src/Router/routePaths.ts` exports the handwritten browser constants/builders from `browserPaths.ts` alongside the independently generated `apiPaths`. Regeneration preserves this boundary. `routeDefinitions.ts` supplies route metadata and return-path authorization without importing pages.
 
 ## Access behavior
 
@@ -27,17 +27,17 @@ All paths below are registered now. “Placeholder” means translated heading/p
 | `/areas/:areaId` | Public | Area, amenities and projects / 06 |
 | `/projects` | Public | Project search/location/type filters / 06 |
 | `/projects/:projectId` | Public | Project, gallery, amenities and units / 06 |
-| `/projects/:projectId/units/:unitId` | Public | Unit, gallery and login reservation entry / 06 |
+| `/projects/:projectId/units/:unitId` | Public | Unit, gallery and customer reservation confirmation / 06–07 |
 | `/terms` | Public | Current published terms / 06 |
 | `/login` | Anonymous only | Customer login / 04 |
 | `/register` | Anonymous only | Customer registration / 04 |
 | `/admin/login` | Anonymous only | Staff login / 04 |
-| `/account` | Customer | Profile placeholder / 07 |
-| `/account/reservations` | Customer | Placeholder / 07 |
-| `/account/reservations/:reservationId` | Customer | Placeholder / 07 |
-| `/account/orders` | Customer | Placeholder / 07 |
-| `/account/orders/:orderId` | Customer | Placeholder / 07 |
-| `/projects/:projectId/time-plan` | Member | Placeholder / 07, shared staff access |
+| `/account` | Customer | Profile edit and password change / 07 |
+| `/account/reservations` | Customer | Own paginated reservations / 07 |
+| `/account/reservations/:reservationId` | Customer | Own detail and confirmed cancellation / 07 |
+| `/account/orders` | Customer | Own paginated orders / 07 |
+| `/account/orders/:orderId` | Customer | Own read-only order detail / 07 |
+| `/projects/:projectId/time-plan` | Member | Published time plan / 07, shared staff access |
 | `/admin` | Staff | Operational navigation and current profile / 05 |
 | `/admin/catalogue` | Staff | Placeholder and catalogue links / 08 |
 | `/admin/catalogue/cities` | Staff | Placeholder / 08 |
@@ -81,7 +81,7 @@ flowchart TD
     Root --> AnonymousGuard[Anonymous guard → lazy auth pages]
     Root --> StaffGuard[Staff guard]
     StaffGuard --> Admin[Lazy AdminLayout · sidebar and topbar]
-    Admin --> AdminPages[Lazy dashboard and placeholders]
+    Admin --> AdminPages[Lazy dashboard, catalogue and remaining phase placeholders]
     Admin --> SuperGuard[SuperAdmin guard → staff pages]
 ```
 

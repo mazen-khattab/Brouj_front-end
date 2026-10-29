@@ -10,6 +10,7 @@ import { getActiveTermsAndConditions } from '../Services/Terms';
 import { useCatalogueRead } from '../Hooks/useCatalogueRead';
 import { isGuid } from '../Catalogue/query';
 import { ApiError } from '../Types/failures';
+import { useCatalogueInvalidation } from '../Catalogue/invalidation';
 
 export function CatalogueDetailProvider({ kind, id, projectId, children }: { kind: CatalogueDetailData['kind']; id?: string | undefined; projectId?: string | undefined; children: ReactNode }) {
   const load = useCallback(async (signal: AbortSignal): Promise<CatalogueDetailData> => {
@@ -23,5 +24,6 @@ export function CatalogueDetailProvider({ kind, id, projectId, children }: { kin
     }
   }, [kind, id, projectId]);
   const read = useCatalogueRead(`${kind}:${id ?? ''}:${projectId ?? ''}`, load);
+  useCatalogueInvalidation(read.reload);
   return <CatalogueDetailContext value={read}>{children}</CatalogueDetailContext>;
 }

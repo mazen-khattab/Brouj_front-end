@@ -4,7 +4,7 @@ export type AuthField = keyof RegisterCustomerInput;
 export type AuthIssue = { field: AuthField; key: string };
 export const emptyAuthValues: RegisterCustomerInput = { email: '', password: '', fName: '', lName: '', phone: '', identityNumber: '' };
 
-function validEmail(value: string) {
+export function validEmail(value: string) {
   const text = value.trim();
   const at = text.indexOf('@');
   // InputRules.Email delegates to .NET 10 EmailAddressAttribute, not an RFC mailbox regex.

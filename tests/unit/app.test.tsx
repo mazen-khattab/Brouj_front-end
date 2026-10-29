@@ -8,7 +8,7 @@ import type { AuthValue } from '../../src/Context/AuthContext';
 import { vi } from 'vitest';
 
 const anonymous: AuthValue = { status: 'anonymous', actor: null, generation: 0, pending: false, automaticRefresh: true, logoutRequired: false,
-  loginCustomer: vi.fn(), registerCustomer: vi.fn(), loginStaff: vi.fn(), logout: vi.fn(), retryBootstrap: vi.fn() };
+  loginCustomer: vi.fn(), registerCustomer: vi.fn(), loginStaff: vi.fn(), logout: vi.fn(), retryBootstrap: vi.fn(), reloadIdentity: vi.fn() };
 
 test.each(['ar', 'en'] as const)('the real lazy route renders the %s welcome page', async (locale) => {
   localStorage.setItem('brouj.locale', locale);

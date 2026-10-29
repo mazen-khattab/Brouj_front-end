@@ -4,6 +4,9 @@ import { useAuth } from "../../Hooks/useAuth";
 import { routePaths } from "../../Router/routePaths";
 import { Button } from "../Button";
 import type { UnitDto } from "../../Types/contracts";
+import { lazy, Suspense } from 'react';
+import { Loading } from '../Feedback';
+const CustomerReservation = lazy(() => import('../../Pages/Account/CustomerReservation'));
 
 export function ReservationEntry({ unit }: { unit: UnitDto }) {
   const auth = useAuth();
@@ -18,7 +21,7 @@ export function ReservationEntry({ unit }: { unit: UnitDto }) {
       <h2 id="reservation-title" className="text-2xl font-medium">
         {t("reservationTitle")}
       </h2>
-      {!unit.isAvailable ? (
+      {auth.actor === 'customer' ? <Suspense fallback={<Loading />}><CustomerReservation unit={unit} /></Suspense> : !unit.isAvailable ? (
         <p>{t("unavailable")}</p>
       ) : auth.status === "anonymous" && !auth.logoutRequired ? (
         <>
@@ -28,13 +31,6 @@ export function ReservationEntry({ unit }: { unit: UnitDto }) {
             to={`${routePaths.login}?${new URLSearchParams({ returnTo })}`}
           >
             {t("reserve")}
-          </Link>
-        </>
-      ) : auth.actor === "customer" ? (
-        <>
-          <p className="leading-8">{t("reservationSoon")}</p>
-          <Link className="underline" to={routePaths.account}>
-            {t("account")}
           </Link>
         </>
       ) : auth.actor === "staff" ? (
