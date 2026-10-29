@@ -1,6 +1,6 @@
 # Brouj frontend
 
-One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–05**: foundation, Arabic/English shared UI, all 101 typed services, CSRF transport, coordinated sessions, lazy route trees, layouts and actor guards. The approved design uses layered navy/gold/ivory surfaces, self-hosted Manrope/IBM Plex Sans Arabic, 16px corners, fade-ins and shimmer skeletons. Business screens remain translated placeholders until their separately approved phases in [the master index](Frontend_plan_files/00_Master_Index.md). See the [route/access matrix](docs/routing-access.md).
+One Vite React/TypeScript SPA for the Website, customer account, and Admin Dashboard. This checkout implements **Parts 01–06**: foundation, Arabic/English shared UI, all 101 typed services, CSRF transport, coordinated sessions, guarded lazy layouts and public property browsing. The approved design uses layered navy/gold/ivory surfaces, self-hosted Manrope/IBM Plex Sans Arabic, 16px corners, fade-ins and shimmer skeletons. Customer transactions and admin management remain translated placeholders until their approved phases in [the master index](Frontend_plan_files/00_Master_Index.md). See the [route/access matrix](docs/routing-access.md) and [catalogue/media guide](docs/catalogue.md).
 
 ## Requirements and install
 
@@ -69,7 +69,7 @@ $env:NODE_USE_SYSTEM_CA = '1'
 npm run test:browser
 ```
 
-Playwright starts the HTTPS server, checks Arabic/English at 1440px/375px, captures screenshots under ignored `test-results/`, and verifies shared UI, sessions, every route/actor combination, deep links, reloads, history, focus, return URLs, local loading and failed page imports. It verifies certificates. See the [Part 05 report](docs/part_05_completion.md) for routing results and saved screenshots. Build output is in ignored `dist/`; `npm run preview` is a local HTTPS preview, not a production deployment server. Production hosting must serve HTTPS and rewrite SPA navigation to `index.html`, while preserving real static assets.
+Playwright starts the HTTPS server, checks Arabic/English at 1440px/375px, captures screenshots under ignored `test-results/`, and verifies shared UI, sessions, every route/actor combination, deep links, history, focus, safe returns, lazy loading and public catalogue journeys/filtering/pagination/failures. It verifies certificates. See the [Part 06 report](docs/part_06_completion.md) for browsing results and saved screenshots. Build output is in ignored `dist/`; `npm run preview` is a local HTTPS preview, not a production deployment server. Production hosting must serve HTTPS and rewrite SPA navigation to `index.html`, while preserving real static assets.
 
 ## Shared UI showcase
 
@@ -85,4 +85,6 @@ Required directories are under `src/`: `API.tsx`, `App.tsx`, `Services`, `Contex
 
 Use `/login`, `/register` and `/admin/login` for authentication. `/account` is customer-only; `/admin` is staff-only, with `/admin/users` requiring SuperAdmin. Visit **https://localhost:5173/__auth** during development to review the underlying auth forms without the anonymous-only navigation guard. The pages use actual services and need a configured running API to identify the current session; an unavailable API shows safe retry rather than a fabricated anonymous state. Saved bilingual screenshots and the [Part 04 report](docs/part_04_completion.md) support review without real accounts.
 
-See the [Part 01](docs/part_01_completion.md), [Part 02](docs/part_02_completion.md), [Part 03](docs/part_03_completion.md) and [Part 04](docs/part_04_completion.md) reports for approved prerequisites. [Real-backend session verification](docs/session-verification.md), media hosting, release currency, initial staff provisioning and backend budgets remain environment inputs. Part 06 requires explicit Part 05 approval.
+Public browsing now covers city/area discovery, project filters and details, nested unit search/details and current terms. URL filters use approved backend fields and bounded pagination, with 300ms search debouncing and obsolete-read cancellation. Property images use localized placeholders until a real approved delivery mapping exists. Anonymous reservation entry returns through customer login to the selected unit; actual reservation confirmation/submission and member time-plan data remain Part 07.
+
+See the [Part 01](docs/part_01_completion.md), [Part 02](docs/part_02_completion.md), [Part 03](docs/part_03_completion.md), [Part 04](docs/part_04_completion.md) and [Part 05](docs/part_05_completion.md) reports for approved prerequisites. [Real-backend session verification](docs/session-verification.md), media hosting/mapping, release currency, staff provisioning and backend budgets remain environment inputs. Part 07 requires explicit Part 06 approval.

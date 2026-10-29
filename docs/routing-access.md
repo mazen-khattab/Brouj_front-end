@@ -1,6 +1,6 @@
 # Routing and access matrix
 
-Part 05, verified 2026-10-29. Browser paths are language-neutral. `src/Router/routePaths.ts` exports the handwritten browser constants/builders from `browserPaths.ts` alongside the independently generated `apiPaths`. Regeneration preserves this boundary. `routeDefinitions.ts` supplies route metadata and return-path authorization without importing pages.
+Part 05 routing, extended by Part 06 browsing on 2026-10-29. Browser paths are language-neutral. `src/Router/routePaths.ts` exports the handwritten browser constants/builders from `browserPaths.ts` alongside the independently generated `apiPaths`. Regeneration preserves this boundary. `routeDefinitions.ts` supplies route metadata and return-path authorization without importing pages.
 
 ## Access behavior
 
@@ -21,14 +21,14 @@ All paths below are registered now. “Placeholder” means translated heading/p
 
 | Path | Access | Current content / feature phase |
 |---|---|---|
-| `/` | Public | Welcome; public browsing in 06 |
-| `/cities` | Public | Placeholder / 06 |
-| `/cities/:cityId` | Public | Placeholder / 06 |
-| `/areas/:areaId` | Public | Placeholder / 06 |
-| `/projects` | Public | Placeholder / 06 |
-| `/projects/:projectId` | Public | Placeholder / 06 |
-| `/projects/:projectId/units/:unitId` | Public | Placeholder / 06 |
-| `/terms` | Public | Placeholder / 06 |
+| `/` | Public | Welcome, discovery/account entry links / 06 |
+| `/cities` | Public | Paginated city search / 06 |
+| `/cities/:cityId` | Public | City and paginated areas / 06 |
+| `/areas/:areaId` | Public | Area, amenities and projects / 06 |
+| `/projects` | Public | Project search/location/type filters / 06 |
+| `/projects/:projectId` | Public | Project, gallery, amenities and units / 06 |
+| `/projects/:projectId/units/:unitId` | Public | Unit, gallery and login reservation entry / 06 |
+| `/terms` | Public | Current published terms / 06 |
 | `/login` | Anonymous only | Customer login / 04 |
 | `/register` | Anonymous only | Customer registration / 04 |
 | `/admin/login` | Anonymous only | Staff login / 04 |
@@ -74,7 +74,7 @@ All paths below are registered now. “Placeholder” means translated heading/p
 flowchart TD
     Foundations[Locale → Auth → Toast → App Suspense] --> Root[RootLayout · focus and scroll restoration]
     Root --> Public[Lazy PublicLayout · header, footer, mobile menu]
-    Public --> PublicPages[Lazy welcome and public placeholders]
+    Public --> PublicPages[Lazy welcome and catalogue list/detail providers]
     Public --> CustomerGuard[Customer guard]
     CustomerGuard --> Account[Lazy AccountLayout and account pages]
     Public --> MemberGuard[Member guard → project time plan]
@@ -89,7 +89,7 @@ There is one module-scope `createBrowserRouter(appRoutes)` and one `RouterProvid
 
 Locale/Auth/Toast foundations live above the routes. The admin layout and pages load only after the staff guard succeeds. No future feature providers were mounted early. Protected outlets key their content by actor, profile ID and generation, so later feature providers placed **inside those outlets** and local private state remount at an identity boundary. Every future async feature must still cancel requests and reject stale results; transport already supplies generation cancellation.
 
-Page headings set localized document titles. Breadcrumbs use route metadata and static translated labels without exposing identifiers; links use the actual matched path. Navigation waits for a lazy heading before focusing it with `preventScroll`, while Router scroll restoration owns scroll positions. Mobile navigation is a non-modal disclosure with `aria-expanded`, Escape dismissal, trigger focus return and closure on navigation. Keyboard focus on navy chrome uses a gold outline.
+Page headings set localized document titles. Breadcrumbs use route metadata and static translated labels without exposing identifiers; links use actual matched paths. Path navigation waits for a lazy heading before focusing it with `preventScroll`; query-only edits preserve focus in filter controls. Router scroll restoration owns positions, with query edits opting out of resets. Mobile navigation is a non-modal disclosure with `aria-expanded`, Escape dismissal, trigger focus return and closure on navigation. Keyboard focus on navy chrome uses a gold outline. See [catalogue state and media boundaries](catalogue.md).
 
 ## Return paths and authentication integration
 

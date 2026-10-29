@@ -1,7 +1,10 @@
-import { ApiError } from '../Types/failures';
-import type { RequestMetadata } from '../Types/transport';
+import { ApiError } from "../Types/failures";
+import type { RequestMetadata } from "../Types/transport";
 
-export interface SessionStamp { generation: number; revision: number }
+export interface SessionStamp {
+  generation: number;
+  revision: number;
+}
 export interface SessionBoundaryHandler {
   stamp(): SessionStamp;
   assertRequest(metadata: RequestMetadata, unsafe: boolean): void;
@@ -17,16 +20,21 @@ export function createSessionBoundary() {
   return {
     bind(next: SessionBoundaryHandler) {
       handler = next;
-      return () => { if (handler === next) handler = undefined; };
+      return () => {
+        if (handler === next) handler = undefined;
+      };
     },
     stamp: () => handler?.stamp(),
     assert(metadata: RequestMetadata, unsafe: boolean, stamp?: SessionStamp) {
-      if (stamp && handler && stamp.generation !== handler.stamp().generation) throw new ApiError('canceled');
+      if (stamp && handler && stamp.generation !== handler.stamp().generation)
+        throw new ApiError("canceled");
       handler?.assertRequest(metadata, unsafe);
     },
-    enter: (metadata: RequestMetadata, unsafe: boolean) => handler?.enter(metadata, unsafe) ?? (() => {}),
+    enter: (metadata: RequestMetadata, unsafe: boolean) =>
+      handler?.enter(metadata, unsafe) ?? (() => {}),
     signal: (metadata: RequestMetadata) => handler?.signal(metadata),
-    recover: (stamp: SessionStamp) => handler?.recover(stamp) ?? Promise.resolve(false),
+    recover: (stamp: SessionStamp) =>
+      handler?.recover(stamp) ?? Promise.resolve(false),
     rejected: (stamp: SessionStamp) => handler?.rejected(stamp),
   };
 }
