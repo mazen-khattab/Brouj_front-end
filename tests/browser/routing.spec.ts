@@ -27,7 +27,7 @@ for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
       }
     }
     // Own lists require a customer; staff operational reads stay inside the admin branch.
-    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path) || /^\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(\/|$)/.test(path) || (actor === 'customer' && ['/api/v1/reservations/me', '/api/v1/orders/me'].includes(path)) || (['admin', 'superAdmin'].includes(actor) && /^\/api\/v1\/admin\/(customers|reservations|orders|stage-templates|item-templates)(\/|$)/.test(path)))).toBe(true);
+    expect(server.calls.every((path) => /\/(customers|users)\/me$/.test(path) || /^\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(\/|$)/.test(path) || (actor === 'customer' && ['/api/v1/reservations/me', '/api/v1/orders/me'].includes(path)) || (['admin', 'superAdmin'].includes(actor) && /^\/api\/v1\/admin\/(customers|reservations|orders|stage-templates|item-templates|terms-and-conditions|activity-logs)(\/|$)/.test(path)) || (actor === 'superAdmin' && /^\/api\/v1\/admin\/users(\/|$)/.test(path)))).toBe(true);
     if (actor === 'anonymous' || actor === 'customer') expect(adminFiles).toEqual([]);
   });
 }

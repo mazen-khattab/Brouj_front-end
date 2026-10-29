@@ -1,6 +1,6 @@
 # Part 10 — Admin time plans and templates
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 09 was approved by the user in this conversation with `$implement-brouj-frontend-part part_10`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 10 only. Part 10 approval has not yet been received.
+Date: 2026-10-29. Status: **Approved**. Part 09 was approved by the user in this conversation with `$implement-brouj-frontend-part part_10`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 10 only. Part 10 was approved on 2026-10-29 in this conversation with the Part 11 invocation: “Ok, Approved. Now, let's navigate to the next part.”
 
 ## Delivered behavior
 
@@ -73,4 +73,4 @@ Read-only evidence includes the current endpoint JSON/Markdown, API configuratio
 
 No local API listener was present on port 7249. Live SQL mutations/cascades/order transactions, real account authorization/cookies and storage validation remain an environment dependency, not a claimed live success. The existing [session verification dependency](session-verification.md) remains open. Persisted images use the permitted resolver placeholders pending an approved media delivery mapping. Upload/metadata frontend workflows do not claim real delivery. No backend edits, new endpoint, ETag/version field, dependency installation or deployment was performed.
 
-Required frontend acceptance has passing evidence with the permitted live-environment dependencies stated. Firefox/WebKit, human screen-reader playback, real SQL/storage execution and deployment are not claimed. Existing release currency/hosting/performance inputs remain inherited dependencies. Part 10 is **Awaiting approval**; Part 11 remains Not started. The skill/master require explicit approval before advancing.
+Required frontend acceptance has passing evidence with the permitted live-environment dependencies stated. Firefox/WebKit, human screen-reader playback, real SQL/storage execution and deployment are not claimed. Existing release currency/hosting/performance inputs remain inherited dependencies. Part 10 is **Approved** by the user's explicit Part 11 invocation on 2026-10-29; that invocation authorizes Part 11 only.
