@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { ApiError } from '../Types/failures';
+import { useCallback, useEffect, useReducer, useState } from "react";
+import { ApiError } from "../Types/failures";
 
-export type CatalogueRead<T> = { status: 'loading' } | { status: 'idle' } | { status: 'success'; data: T } | { status: 'error'; failure: ApiError };
+export type CatalogueRead<T> = { status: "loading" } | { status: "idle" } | { status: "success"; data: T } | { status: "error"; failure: ApiError };
 
 /** One bounded read, with immediate stale-data hiding and cancellation/latest-response protection. */
 export function useCatalogueRead<T>(key: string, load: (signal: AbortSignal) => Promise<T>, enabled = true) {
@@ -12,12 +12,29 @@ export function useCatalogueRead<T>(key: string, load: (signal: AbortSignal) => 
     const controller = new AbortController();
     let active = true;
     // Also catches a synchronous loader exception without blocking React rendering.
-    void Promise.resolve().then(() => { if (controller.signal.aborted) throw new ApiError('canceled'); return load(controller.signal); }).then(
-      (data) => { if (active && !controller.signal.aborted) setStored({ key, revision, result: { status: 'success', data } }); },
-      (error: unknown) => { if (active && !controller.signal.aborted) setStored({ key, revision, result: { status: 'error', failure: error instanceof ApiError ? error : new ApiError('unknown') } }); },
-    );
-    return () => { active = false; controller.abort(); };
+    void Promise.resolve()
+      .then(() => {
+        if (controller.signal.aborted) throw new ApiError("canceled");
+        return load(controller.signal);
+      })
+      .then(
+        (data) => {
+          if (active && !controller.signal.aborted) setStored({ key, revision, result: { status: "success", data } });
+        },
+        (error: unknown) => {
+          if (active && !controller.signal.aborted)
+            setStored({ key, revision, result: { status: "error", failure: error instanceof ApiError ? error : new ApiError("unknown") } });
+        },
+      );
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [key, revision, load, enabled]);
-  const result: CatalogueRead<T> = !enabled ? { status: 'idle' } : stored?.key === key && stored.revision === revision ? stored.result : { status: 'loading' };
+  const result: CatalogueRead<T> = !enabled
+    ? { status: "idle" }
+    : stored?.key === key && stored.revision === revision
+      ? stored.result
+      : { status: "loading" };
   return { result, reload: useCallback(() => refresh(), []) };
 }

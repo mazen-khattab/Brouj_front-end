@@ -81,7 +81,7 @@ flowchart TD
     Root --> AnonymousGuard[Anonymous guard → lazy auth pages]
     Root --> StaffGuard[Staff guard]
     StaffGuard --> Admin[Lazy AdminLayout · sidebar and topbar]
-    Admin --> AdminPages[Lazy dashboard, catalogue and remaining phase placeholders]
+    Admin --> AdminPages[Lazy dashboard, catalogue, customer/order operations and remaining phase placeholders]
     Admin --> SuperGuard[SuperAdmin guard → staff pages]
 ```
 

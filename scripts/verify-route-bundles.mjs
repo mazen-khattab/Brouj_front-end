@@ -24,7 +24,7 @@ for (const key of ['src/Pages/Account/AccountPage.tsx', 'src/Pages/Account/TimeP
 staticImports('src/Layouts/AccountLayout.tsx', browsing);
 staticImports('src/Pages/Account/AccountPage.tsx', browsing);
 const publicAndAccountFiles = new Set([...browsing].map((key) => manifest[key].file));
-const adminKeys = ['src/Layouts/AdminLayout.tsx', 'src/Pages/Admin/AdminPlaceholder.tsx', 'src/Pages/Admin/DashboardPage.tsx', 'src/Pages/Admin/CataloguePage.tsx'];
+const adminKeys = ['src/Layouts/AdminLayout.tsx', 'src/Pages/Admin/AdminPlaceholder.tsx', 'src/Pages/Admin/DashboardPage.tsx', 'src/Pages/Admin/CataloguePage.tsx', 'src/Pages/Admin/OperationsPage.tsx'];
 for (const key of adminKeys) {
   assert(manifest[key]?.isDynamicEntry, `${key} must be lazy`);
   assert(!publicAndAccountFiles.has(manifest[key].file), `${key} entered the public/startup imports`);
