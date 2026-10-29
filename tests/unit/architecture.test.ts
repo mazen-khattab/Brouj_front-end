@@ -20,3 +20,8 @@ test.each([
   expect(boundaryErrors).toHaveLength(restricted ? 1 : 0);
   if (!restricted) expect(result[0]?.errorCount).toBe(0);
 });
+
+test('application console logging cannot expose form drafts or server records', async () => {
+  const result = await linter.lintText('console.log({ privateDraft: "synthetic" });', { filePath: 'src/Services/logging-probe.ts' });
+  expect(result[0]?.messages.some((message) => message.ruleId === 'no-console')).toBe(true);
+});

@@ -6,14 +6,14 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default defineConfig(
-  globalIgnores(['dist/**', 'coverage/**', 'test-results/**', 'playwright-report/**']),
+  globalIgnores(['dist/**', 'artifacts/**', 'coverage/**', 'test-results/**', 'playwright-report/**']),
   { files: ['**/*.{js,mjs}'], ...js.configs.recommended, languageOptions: { globals: globals.node } },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.recommended],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
-  { files: ['src/**/*.{ts,tsx}'], extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite] },
+  { files: ['src/**/*.{ts,tsx}'], extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite], rules: { 'no-console': 'error' } },
   // The required route module exports route objects and the router, rather than components.
   { files: ['src/Router/router.tsx'], rules: { 'react-refresh/only-export-components': 'off' } },
   {

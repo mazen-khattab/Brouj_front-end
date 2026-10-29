@@ -26,12 +26,10 @@ export default function CatalogueForm({
   readPending?: boolean;
   onCreated?: () => void;
 }) {
-  console.log(kind);
   const { t } = useTranslation("admin");
   const action = useAdminCatalogue();
   const navigate = useNavigate();
   const [draft, setDraft] = useState<Draft>(() => draftFrom(kind, data));
-  console.log(draft);
   const [invalid, setInvalid] = useState<string[]>([]);
   const [baseline, setBaseline] = useState(() => JSON.stringify(draftFrom(kind, data)));
   const formKey = `record:${kind}:${data?.id ?? "new"}`;
@@ -122,7 +120,6 @@ export default function CatalogueForm({
       <div className="grid min-w-0 gap-5 xl:grid-cols-2">
         {inputKeys[kind].map((key) => {
           if (key === "cityId" || key === "areaId") {
-            console.log(draft[key])
             return (
               <ParentSelector
                 key={key}

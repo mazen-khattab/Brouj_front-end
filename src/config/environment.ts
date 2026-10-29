@@ -35,4 +35,10 @@ export function readEnvironment(input: PublicEnvironment) {
   });
 }
 
-export const environment = readEnvironment(import.meta.env);
+// Static property access keeps unrelated VITE_* inputs out of the compiled environment object.
+export const environment = readEnvironment({
+  MODE: import.meta.env.MODE,
+  VITE_API_ORIGIN: import.meta.env.VITE_API_ORIGIN,
+  VITE_MEDIA_ORIGIN: import.meta.env.VITE_MEDIA_ORIGIN,
+  VITE_BUSINESS_CURRENCY: import.meta.env.VITE_BUSINESS_CURRENCY,
+});

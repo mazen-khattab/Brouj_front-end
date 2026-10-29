@@ -31,9 +31,6 @@ export const inputKeys = {
 /** Select approved input fields explicitly. Detail DTOs contain fields the API rejects on PATCH. */
 export function draftFrom(kind: Kind, data?: RecordData): Draft {
   const source = data as unknown as Record<string, unknown> | undefined;
-  console.log(kind);
-  console.log(data)
-  console.log(source);
   return Object.fromEntries(inputKeys[kind].map((key) => [key, source?.[key] == null ? (key === "projectType" ? "0" : "") : String(source[key])]));
 }
 

@@ -1,0 +1,1357 @@
+{
+  "businessOperationCount": 101,
+  "exclusions": [],
+  "operations": [
+    {
+      "action": "RegisterCustomer",
+      "method": "POST",
+      "route": "/api/v1/auth/customers/register",
+      "policy": "Anonymous",
+      "screen": "Customer authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/CustomerAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:16"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "LoginCustomer",
+      "method": "POST",
+      "route": "/api/v1/auth/customers/login",
+      "policy": "Anonymous",
+      "screen": "Customer authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/CustomerAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:15"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "RefreshCustomerSession",
+      "method": "POST",
+      "route": "/api/v1/auth/customers/refresh",
+      "policy": "Anonymous",
+      "screen": "Customer authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/CustomerAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:18"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "LogoutCustomer",
+      "method": "POST",
+      "route": "/api/v1/auth/customers/logout",
+      "policy": "Anonymous",
+      "screen": "Customer authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/CustomerAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:19"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "LoginUser",
+      "method": "POST",
+      "route": "/api/v1/auth/users/login",
+      "policy": "Anonymous",
+      "screen": "Staff authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/StaffAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:17"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "RefreshUserSession",
+      "method": "POST",
+      "route": "/api/v1/auth/users/refresh",
+      "policy": "Anonymous",
+      "screen": "Staff authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/StaffAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:18"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "LogoutUser",
+      "method": "POST",
+      "route": "/api/v1/auth/users/logout",
+      "policy": "Anonymous",
+      "screen": "Staff authentication and session lifecycle",
+      "phase": "04",
+      "service": "Services/StaffAuth.ts",
+      "consumers": [
+        "src/Services/session.ts:19"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCurrentCustomer",
+      "method": "GET",
+      "route": "/api/v1/customers/me",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / profile and password",
+      "phase": "07",
+      "service": "Services/CustomerProfile.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:37",
+        "src/Services/session.ts:13"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateCustomerProfile",
+      "method": "PATCH",
+      "route": "/api/v1/customers/me",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / profile and password",
+      "phase": "07",
+      "service": "Services/CustomerProfile.ts",
+      "consumers": [
+        "src/Context/CustomerActionProvider.tsx:49"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ChangeCustomerPassword",
+      "method": "POST",
+      "route": "/api/v1/customers/me/change-password",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / profile and password",
+      "phase": "07",
+      "service": "Services/CustomerProfile.ts",
+      "consumers": [
+        "src/Context/CustomerActionProvider.tsx:53"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCurrentUser",
+      "method": "GET",
+      "route": "/api/v1/users/me",
+      "policy": "StaffOnly",
+      "screen": "Admin / staff profile and password",
+      "phase": "11",
+      "service": "Services/StaffProfile.ts",
+      "consumers": [
+        "src/Context/StaffAccountProvider.tsx:11",
+        "src/Services/session.ts:14"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ChangeUserPassword",
+      "method": "POST",
+      "route": "/api/v1/users/me/change-password",
+      "policy": "StaffOnly",
+      "screen": "Admin / staff profile and password",
+      "phase": "11",
+      "service": "Services/StaffProfile.ts",
+      "consumers": [
+        "src/Context/StaffAccountProvider.tsx:23"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetUsers",
+      "method": "GET",
+      "route": "/api/v1/admin/users",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:34"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetUserById",
+      "method": "GET",
+      "route": "/api/v1/admin/users/{id}",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:41",
+        "src/Context/StaffAdminProvider.tsx:72"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateUser",
+      "method": "POST",
+      "route": "/api/v1/admin/users",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:62"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateUser",
+      "method": "PATCH",
+      "route": "/api/v1/admin/users/{id}",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:66"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "SoftDeleteUser",
+      "method": "DELETE",
+      "route": "/api/v1/admin/users/{id}",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:68"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "RestoreUser",
+      "method": "POST",
+      "route": "/api/v1/admin/users/{id}/restore",
+      "policy": "SuperAdminOnly",
+      "screen": "Admin / users",
+      "phase": "11",
+      "service": "Services/StaffAdmin.ts",
+      "consumers": [
+        "src/Context/StaffAdminProvider.tsx:68"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCustomers",
+      "method": "GET",
+      "route": "/api/v1/admin/customers",
+      "policy": "AdminOnly",
+      "screen": "Admin / customers",
+      "phase": "09",
+      "service": "Services/CustomersAdmin.ts",
+      "consumers": [
+        "src/Context/CustomerOperationsProvider.tsx:28"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCustomerById",
+      "method": "GET",
+      "route": "/api/v1/admin/customers/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / customers",
+      "phase": "09",
+      "service": "Services/CustomersAdmin.ts",
+      "consumers": [
+        "src/Context/CustomerOperationsProvider.tsx:24",
+        "src/Context/CustomerOperationsProvider.tsx:47"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "SoftDeleteCustomer",
+      "method": "DELETE",
+      "route": "/api/v1/admin/customers/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / customers",
+      "phase": "09",
+      "service": "Services/CustomersAdmin.ts",
+      "consumers": [
+        "src/Context/CustomerOperationsProvider.tsx:59"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "RestoreCustomer",
+      "method": "POST",
+      "route": "/api/v1/admin/customers/{id}/restore",
+      "policy": "AdminOnly",
+      "screen": "Admin / customers",
+      "phase": "09",
+      "service": "Services/CustomersAdmin.ts",
+      "consumers": [
+        "src/Context/CustomerOperationsProvider.tsx:60"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCities",
+      "method": "GET",
+      "route": "/api/v1/cities",
+      "policy": "Anonymous",
+      "screen": "Website / cities; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:229",
+        "src/Components/AdminCatalogue/ParentSelector.tsx:41",
+        "src/Components/Catalogue/CatalogueFilters.tsx:90",
+        "src/Context/CatalogueListProvider.tsx:26",
+        "src/Pages/Admin/CatalogueList.tsx:47"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetCityById",
+      "method": "GET",
+      "route": "/api/v1/cities/{id}",
+      "policy": "Anonymous",
+      "screen": "Website / cities; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:187",
+        "src/Components/AdminCatalogue/ParentSelector.tsx:47",
+        "src/Components/Catalogue/CatalogueFilters.tsx:71",
+        "src/Context/CatalogueDetailProvider.tsx:19"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetAreasByCity",
+      "method": "GET",
+      "route": "/api/v1/cities/{cityId}/areas",
+      "policy": "Anonymous",
+      "screen": "Website / areas; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/Components/Catalogue/CatalogueFilters.tsx:92",
+        "src/Context/CatalogueListProvider.tsx:27"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetAreas",
+      "method": "GET",
+      "route": "/api/v1/areas",
+      "policy": "Anonymous",
+      "screen": "Website / areas; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:231",
+        "src/Components/AdminCatalogue/ParentSelector.tsx:41",
+        "src/Components/Catalogue/CatalogueFilters.tsx:93",
+        "src/Pages/Admin/CatalogueList.tsx:51"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetAreaById",
+      "method": "GET",
+      "route": "/api/v1/areas/{id}",
+      "policy": "Anonymous",
+      "screen": "Website / areas; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:189",
+        "src/Components/AdminCatalogue/ParentSelector.tsx:47",
+        "src/Components/Catalogue/CatalogueFilters.tsx:72",
+        "src/Context/CatalogueDetailProvider.tsx:20"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateCity",
+      "method": "POST",
+      "route": "/api/v1/admin/cities",
+      "policy": "AdminOnly",
+      "screen": "Admin / cities and media",
+      "phase": "08",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:200"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateCity",
+      "method": "PATCH",
+      "route": "/api/v1/admin/cities/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / cities and media",
+      "phase": "08",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:200"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteCity",
+      "method": "DELETE",
+      "route": "/api/v1/admin/cities/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / cities and media",
+      "phase": "08",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:215"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateArea",
+      "method": "POST",
+      "route": "/api/v1/admin/areas",
+      "policy": "AdminOnly",
+      "screen": "Admin / areas and media",
+      "phase": "08",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:202"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateArea",
+      "method": "PATCH",
+      "route": "/api/v1/admin/areas/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / areas and media",
+      "phase": "08",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:202"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteArea",
+      "method": "DELETE",
+      "route": "/api/v1/admin/areas/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / areas and media",
+      "phase": "08",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:217"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReplaceAreaAmenities",
+      "method": "PUT",
+      "route": "/api/v1/admin/areas/{id}/amenities",
+      "policy": "AdminOnly",
+      "screen": "Admin / areas and media",
+      "phase": "08",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:240"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetProjects",
+      "method": "GET",
+      "route": "/api/v1/projects",
+      "policy": "Anonymous",
+      "screen": "Website / projects; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:233",
+        "src/Components/Planning/SourcePicker.tsx:52",
+        "src/Context/CatalogueListProvider.tsx:28",
+        "src/Pages/Admin/CatalogueList.tsx:55"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetProjectById",
+      "method": "GET",
+      "route": "/api/v1/projects/{id}",
+      "policy": "Anonymous",
+      "screen": "Website / projects; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:191",
+        "src/Context/CatalogueDetailProvider.tsx:21",
+        "src/Context/TimePlanProvider.tsx:27",
+        "src/Pages/Admin/CatalogueForm.tsx:36"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetUnitsByProject",
+      "method": "GET",
+      "route": "/api/v1/projects/{projectId}/units",
+      "policy": "Anonymous",
+      "screen": "Website / units; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:235",
+        "src/Context/CatalogueListProvider.tsx:29",
+        "src/Pages/Admin/CatalogueList.tsx:59"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetProjectTimePlan",
+      "method": "GET",
+      "route": "/api/v1/projects/{projectId}/time-plan",
+      "policy": "MemberOnly",
+      "screen": "Customer project schedule / Admin time plans",
+      "phase": "07, 10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:47",
+        "src/Context/TimePlanProvider.tsx:38"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateProject",
+      "method": "POST",
+      "route": "/api/v1/admin/projects",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:204"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateProject",
+      "method": "PATCH",
+      "route": "/api/v1/admin/projects/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:204"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteProject",
+      "method": "DELETE",
+      "route": "/api/v1/admin/projects/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:219"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReplaceProjectAmenities",
+      "method": "PUT",
+      "route": "/api/v1/admin/projects/{id}/amenities",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:240"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddProjectImage",
+      "method": "POST",
+      "route": "/api/v1/admin/projects/{id}/images",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:134"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateProjectImage",
+      "method": "PATCH",
+      "route": "/api/v1/admin/projects/{id}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:55"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteProjectImage",
+      "method": "DELETE",
+      "route": "/api/v1/admin/projects/{id}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / projects and media",
+      "phase": "08",
+      "service": "Services/Projects.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:65"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateUnit",
+      "method": "POST",
+      "route": "/api/v1/admin/projects/{projectId}/units",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:208"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateTimePlan",
+      "method": "POST",
+      "route": "/api/v1/admin/projects/{projectId}/time-plan",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:45"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetUnitById",
+      "method": "GET",
+      "route": "/api/v1/units/{id}",
+      "policy": "Anonymous",
+      "screen": "Website / units; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:193",
+        "src/Context/CatalogueDetailProvider.tsx:22"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateUnit",
+      "method": "PATCH",
+      "route": "/api/v1/admin/units/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:207"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteUnit",
+      "method": "DELETE",
+      "route": "/api/v1/admin/units/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:221"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReplaceUnitAmenities",
+      "method": "PUT",
+      "route": "/api/v1/admin/units/{id}/amenities",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/AdminCatalogue/model.ts:240"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddUnitImage",
+      "method": "POST",
+      "route": "/api/v1/admin/units/{id}/images",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:134"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateUnitImage",
+      "method": "PATCH",
+      "route": "/api/v1/admin/units/{id}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:55"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteUnitImage",
+      "method": "DELETE",
+      "route": "/api/v1/admin/units/{id}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/Pages/Admin/CatalogueImages.tsx:65"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateReservation",
+      "method": "POST",
+      "route": "/api/v1/reservations",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / reservations",
+      "phase": "07",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/CustomerActionProvider.tsx:54"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetMyReservations",
+      "method": "GET",
+      "route": "/api/v1/reservations/me",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / reservations",
+      "phase": "07",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:43"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetReservationById",
+      "method": "GET",
+      "route": "/api/v1/reservations/{id}",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / reservations",
+      "phase": "07",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:44"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CancelReservation",
+      "method": "POST",
+      "route": "/api/v1/reservations/{id}/cancel",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / reservations",
+      "phase": "07",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/CustomerActionProvider.tsx:55"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetReservations",
+      "method": "GET",
+      "route": "/api/v1/admin/reservations",
+      "policy": "AdminOnly",
+      "screen": "Admin / reservations",
+      "phase": "09",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/ReservationsAdminProvider.tsx:29"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetReservationDetails",
+      "method": "GET",
+      "route": "/api/v1/admin/reservations/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / reservations",
+      "phase": "09",
+      "service": "Services/Reservations.ts",
+      "consumers": [
+        "src/Context/ReservationsAdminProvider.tsx:27",
+        "src/Context/ReservationsAdminProvider.tsx:47"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateOrderFromReservation",
+      "method": "POST",
+      "route": "/api/v1/admin/reservations/{reservationId}/order",
+      "policy": "AdminOnly",
+      "screen": "Admin / orders",
+      "phase": "09",
+      "service": "Services/Orders.ts",
+      "consumers": [
+        "src/Context/ReservationsAdminProvider.tsx:78"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetMyOrders",
+      "method": "GET",
+      "route": "/api/v1/orders/me",
+      "policy": "CustomerOnly",
+      "screen": "Customer account / orders",
+      "phase": "07",
+      "service": "Services/Orders.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:45"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetOrders",
+      "method": "GET",
+      "route": "/api/v1/admin/orders",
+      "policy": "AdminOnly",
+      "screen": "Admin / orders",
+      "phase": "09",
+      "service": "Services/Orders.ts",
+      "consumers": [
+        "src/Context/OrdersAdminProvider.tsx:28"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetOrderById",
+      "method": "GET",
+      "route": "/api/v1/admin/orders/{id}",
+      "policy": "MemberOnly",
+      "screen": "Customer account / order detail; Admin / order detail",
+      "phase": "07, 09",
+      "service": "Services/Orders.ts",
+      "consumers": [
+        "src/Context/AccountDataProvider.tsx:46",
+        "src/Context/OrdersAdminProvider.tsx:26",
+        "src/Context/OrdersAdminProvider.tsx:41",
+        "src/Context/ReservationsAdminProvider.tsx:60"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CompleteInitiativeOrder",
+      "method": "POST",
+      "route": "/api/v1/admin/orders/{id}/complete",
+      "policy": "AdminOnly",
+      "screen": "Admin / orders",
+      "phase": "09",
+      "service": "Services/Orders.ts",
+      "consumers": [
+        "src/Context/OrdersAdminProvider.tsx:58"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateTimePlan",
+      "method": "PATCH",
+      "route": "/api/v1/admin/time-plans/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:63"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteTimePlan",
+      "method": "DELETE",
+      "route": "/api/v1/admin/time-plans/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:65"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddTimePlanStage",
+      "method": "POST",
+      "route": "/api/v1/admin/time-plans/{timePlanId}/stages",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:80"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddStageFromTemplate",
+      "method": "POST",
+      "route": "/api/v1/admin/time-plans/{timePlanId}/stages/from-template",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:79"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateTimePlanStage",
+      "method": "PATCH",
+      "route": "/api/v1/admin/time-plans/{timePlanId}/stages/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:83"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteTimePlanStage",
+      "method": "DELETE",
+      "route": "/api/v1/admin/time-plans/{timePlanId}/stages/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:85"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReorderTimePlanStages",
+      "method": "PUT",
+      "route": "/api/v1/admin/time-plans/{timePlanId}/stages/order",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:88"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddPlanStageItem",
+      "method": "POST",
+      "route": "/api/v1/admin/time-plan-stages/{stageId}/items",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:90"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdatePlanStageItem",
+      "method": "PATCH",
+      "route": "/api/v1/admin/time-plan-stages/{stageId}/items/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:92"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeletePlanStageItem",
+      "method": "DELETE",
+      "route": "/api/v1/admin/time-plan-stages/{stageId}/items/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:94"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ChangePlanStageItemStatus",
+      "method": "POST",
+      "route": "/api/v1/admin/time-plan-stages/{stageId}/items/{id}/status",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:96"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReorderPlanStageItems",
+      "method": "PUT",
+      "route": "/api/v1/admin/time-plan-stages/{stageId}/items/order",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:102"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "AddStageItemImage",
+      "method": "POST",
+      "route": "/api/v1/admin/time-plan-items/{itemId}/images",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:104"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateStageItemImage",
+      "method": "PATCH",
+      "route": "/api/v1/admin/time-plan-items/{itemId}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:106"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteStageItemImage",
+      "method": "DELETE",
+      "route": "/api/v1/admin/time-plan-items/{itemId}/images/{imageId}",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:108"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReorderStageItemImages",
+      "method": "PUT",
+      "route": "/api/v1/admin/time-plan-items/{itemId}/images/order",
+      "policy": "AdminOnly",
+      "screen": "Admin / time plans, stages, items and images",
+      "phase": "10",
+      "service": "Services/TimePlans.ts",
+      "consumers": [
+        "src/Planning/commands.ts:111"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetStageTemplates",
+      "method": "GET",
+      "route": "/api/v1/admin/stage-templates",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Components/Planning/SourcePicker.tsx:55",
+        "src/Context/TemplatesProvider.tsx:56"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetStageTemplateById",
+      "method": "GET",
+      "route": "/api/v1/admin/stage-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Components/Planning/StageComposer.tsx:146",
+        "src/Context/TemplatesProvider.tsx:70",
+        "src/Context/TemplatesProvider.tsx:106"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateStageTemplate",
+      "method": "POST",
+      "route": "/api/v1/admin/stage-templates",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:131"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateStageTemplate",
+      "method": "PATCH",
+      "route": "/api/v1/admin/stage-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:137"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "SetStageTemplateActive",
+      "method": "PUT",
+      "route": "/api/v1/admin/stage-templates/{id}/active",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:150"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteStageTemplate",
+      "method": "DELETE",
+      "route": "/api/v1/admin/stage-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:145"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "SetStageTemplateItems",
+      "method": "PUT",
+      "route": "/api/v1/admin/stage-templates/{id}/items",
+      "policy": "AdminOnly",
+      "screen": "Admin / stage templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:164"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetItemTemplates",
+      "method": "GET",
+      "route": "/api/v1/admin/item-templates",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Components/Planning/SourcePicker.tsx:55",
+        "src/Context/TemplatesProvider.tsx:57"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetItemTemplateById",
+      "method": "GET",
+      "route": "/api/v1/admin/item-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Context/TemplatesProvider.tsx:71",
+        "src/Context/TemplatesProvider.tsx:108"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateItemTemplate",
+      "method": "POST",
+      "route": "/api/v1/admin/item-templates",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:131"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "UpdateItemTemplate",
+      "method": "PATCH",
+      "route": "/api/v1/admin/item-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:138"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "SetItemTemplateActive",
+      "method": "PUT",
+      "route": "/api/v1/admin/item-templates/{id}/active",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:151"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "DeleteItemTemplate",
+      "method": "DELETE",
+      "route": "/api/v1/admin/item-templates/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / item templates",
+      "phase": "10",
+      "service": "Services/Templates.ts",
+      "consumers": [
+        "src/Planning/commands.ts:146"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetActiveTermsAndConditions",
+      "method": "GET",
+      "route": "/api/v1/terms-and-conditions/current",
+      "policy": "Anonymous",
+      "screen": "Website / current terms",
+      "phase": "06",
+      "service": "Services/Terms.ts",
+      "consumers": [
+        "src/Context/CatalogueDetailProvider.tsx:23"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetTermsAndConditionsVersions",
+      "method": "GET",
+      "route": "/api/v1/admin/terms-and-conditions",
+      "policy": "AdminOnly",
+      "screen": "Admin / terms versions and activation",
+      "phase": "11",
+      "service": "Services/Terms.ts",
+      "consumers": [
+        "src/Context/TermsAdminProvider.tsx:18"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetTermsAndConditionsById",
+      "method": "GET",
+      "route": "/api/v1/admin/terms-and-conditions/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / terms versions and activation",
+      "phase": "11",
+      "service": "Services/Terms.ts",
+      "consumers": [
+        "src/Context/TermsAdminProvider.tsx:22",
+        "src/Context/TermsAdminProvider.tsx:35"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "CreateTermsAndConditionsVersion",
+      "method": "POST",
+      "route": "/api/v1/admin/terms-and-conditions",
+      "policy": "AdminOnly",
+      "screen": "Admin / terms versions and activation",
+      "phase": "11",
+      "service": "Services/Terms.ts",
+      "consumers": [
+        "src/Context/TermsAdminProvider.tsx:33"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ActivateTermsAndConditions",
+      "method": "POST",
+      "route": "/api/v1/admin/terms-and-conditions/{id}/activate",
+      "policy": "AdminOnly",
+      "screen": "Admin / terms versions and activation",
+      "phase": "11",
+      "service": "Services/Terms.ts",
+      "consumers": [
+        "src/Context/TermsAdminProvider.tsx:48"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetActivityLogs",
+      "method": "GET",
+      "route": "/api/v1/admin/activity-logs",
+      "policy": "AdminOnly",
+      "screen": "Admin / staff activity log",
+      "phase": "11",
+      "service": "Services/ActivityLogs.ts",
+      "consumers": [
+        "src/Context/ActivityLogsProvider.tsx:19"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetActivityLogById",
+      "method": "GET",
+      "route": "/api/v1/admin/activity-logs/{id}",
+      "policy": "AdminOnly",
+      "screen": "Admin / staff activity log",
+      "phase": "11",
+      "service": "Services/ActivityLogs.ts",
+      "consumers": [
+        "src/Context/ActivityLogsProvider.tsx:27"
+      ],
+      "exclusion": null
+    }
+  ]
+}

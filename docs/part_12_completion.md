@@ -1,6 +1,6 @@
 # Part 12 — SignalR readiness
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 11 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_12`. Its report and the master ledger now record that approval. Part 12 approval has not been received. Part 13 remains Not started.
+Date: 2026-10-29. Status: **Approved**. Part 11 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_12`. Part 12 received the same explicit user approval on 2026-10-29 with `$implement-brouj-frontend-part part_13`. Part 13 evidence is recorded separately.
 
 ## Delivered behavior
 
@@ -82,4 +82,4 @@ Read-only evidence includes the Part 8 endpoint JSON/Markdown and API configurat
 
 Actual live API/database/cookie verification remains the existing [session dependency](session-verification.md). Real SignalR negotiation, authorization/groups, credential policy and reconnect/replay behavior cannot be verified until the backend agreement and separately approved activation exist. Inherited currency, media hosting, deployment and backend capacity dependencies remain documented; none is closed by this phase. No deployment, Microsoft client installation, activation flag or Part 13 release work was performed.
 
-Part 12 is **Awaiting approval**. Stop here for the user's phase approval before Part 13.
+Part 12 is **Approved** by the user on 2026-10-29 with the Part 13 invocation. Approval does not activate real time or authorize deployment.

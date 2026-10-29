@@ -20,7 +20,14 @@
     "contracts:update": "node scripts/verify-contract.mjs --write",
     "services:generate": "node scripts/generate-services.mjs",
     "services:check": "node scripts/generate-services.mjs --check",
-    "routes:check-build": "node scripts/verify-route-bundles.mjs"
+    "routes:check-build": "node scripts/verify-route-bundles.mjs",
+    "release:coverage": "node scripts/verify-release-coverage.mjs",
+    "release:test": "node --test tests/release/*.test.mjs",
+    "release:rehearse": "node scripts/build-release.mjs --rehearsal",
+    "release:build": "node scripts/build-release.mjs",
+    "release:verify": "node scripts/verify-release-artifact.mjs",
+    "release:serve": "node scripts/serve-release.mjs",
+    "release:browser": "playwright test --config playwright.release.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "5.3.0",

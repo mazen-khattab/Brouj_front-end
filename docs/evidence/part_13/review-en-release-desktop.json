@@ -1,0 +1,277 @@
+{
+  "environment": "Windows, headless Chromium, mobile emulation where configured, local trusted HTTPS artifact, synthetic API, no throttling",
+  "browserVersion": "156.0.8078.4",
+  "cache": "HTTP cache disabled by Playwright request routing",
+  "locale": "en",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "artifact": "artifacts/release/2026-10-29T20-20-07-239Z-a55d8c9a-rehearsal",
+  "review": [
+    {
+      "route": "/",
+      "title": "home",
+      "durationMs": 1131,
+      "passed": true
+    },
+    {
+      "route": "/cities",
+      "title": "cities",
+      "durationMs": 1004,
+      "passed": true
+    },
+    {
+      "route": "/cities/:cityId",
+      "title": "city",
+      "durationMs": 1049,
+      "passed": true
+    },
+    {
+      "route": "/areas/:areaId",
+      "title": "area",
+      "durationMs": 919,
+      "passed": true
+    },
+    {
+      "route": "/projects",
+      "title": "projects",
+      "durationMs": 916,
+      "passed": true
+    },
+    {
+      "route": "/projects/:projectId",
+      "title": "project",
+      "durationMs": 827,
+      "passed": true
+    },
+    {
+      "route": "/projects/:projectId/units/:unitId",
+      "title": "unit",
+      "durationMs": 922,
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "title": "terms",
+      "durationMs": 730,
+      "passed": true
+    },
+    {
+      "route": "/account",
+      "title": "profile",
+      "durationMs": 720,
+      "passed": true
+    },
+    {
+      "route": "/account/reservations",
+      "title": "reservations",
+      "durationMs": 724,
+      "passed": true
+    },
+    {
+      "route": "/account/reservations/:reservationId",
+      "title": "reservation",
+      "durationMs": 687,
+      "passed": true
+    },
+    {
+      "route": "/account/orders",
+      "title": "orders",
+      "durationMs": 709,
+      "passed": true
+    },
+    {
+      "route": "/account/orders/:orderId",
+      "title": "order",
+      "durationMs": 718,
+      "passed": true
+    },
+    {
+      "route": "/projects/:projectId/time-plan",
+      "title": "timePlan",
+      "durationMs": 629,
+      "passed": true
+    },
+    {
+      "route": "/admin",
+      "title": "dashboard",
+      "durationMs": 734,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue",
+      "title": "catalogue",
+      "durationMs": 576,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/cities",
+      "title": "cities",
+      "durationMs": 630,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/cities/:cityId",
+      "title": "city",
+      "durationMs": 627,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/areas",
+      "title": "areas",
+      "durationMs": 1478,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/areas/:areaId",
+      "title": "area",
+      "durationMs": 696,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/projects",
+      "title": "projects",
+      "durationMs": 623,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/projects/:projectId",
+      "title": "project",
+      "durationMs": 759,
+      "passed": true
+    },
+    {
+      "route": "/admin/catalogue/projects/:projectId/units/:unitId",
+      "title": "unit",
+      "durationMs": 693,
+      "passed": true
+    },
+    {
+      "route": "/admin/customers",
+      "title": "customers",
+      "durationMs": 665,
+      "passed": true
+    },
+    {
+      "route": "/admin/customers/:customerId",
+      "title": "customer",
+      "durationMs": 805,
+      "passed": true
+    },
+    {
+      "route": "/admin/reservations",
+      "title": "reservations",
+      "durationMs": 717,
+      "passed": true
+    },
+    {
+      "route": "/admin/reservations/:reservationId",
+      "title": "reservation",
+      "durationMs": 650,
+      "passed": true
+    },
+    {
+      "route": "/admin/orders",
+      "title": "orders",
+      "durationMs": 1203,
+      "passed": true
+    },
+    {
+      "route": "/admin/orders/:orderId",
+      "title": "order",
+      "durationMs": 648,
+      "passed": true
+    },
+    {
+      "route": "/admin/time-plans",
+      "title": "timePlans",
+      "durationMs": 694,
+      "passed": true
+    },
+    {
+      "route": "/admin/time-plans/:projectId",
+      "title": "timePlan",
+      "durationMs": 1250,
+      "passed": true
+    },
+    {
+      "route": "/admin/templates",
+      "title": "templates",
+      "durationMs": 726,
+      "passed": true
+    },
+    {
+      "route": "/admin/templates/stages",
+      "title": "stageTemplates",
+      "durationMs": 691,
+      "passed": true
+    },
+    {
+      "route": "/admin/templates/items",
+      "title": "itemTemplates",
+      "durationMs": 696,
+      "passed": true
+    },
+    {
+      "route": "/admin/terms",
+      "title": "terms",
+      "durationMs": 1011,
+      "passed": true
+    },
+    {
+      "route": "/admin/terms/:termsId",
+      "title": "term",
+      "durationMs": 676,
+      "passed": true
+    },
+    {
+      "route": "/admin/activity-logs",
+      "title": "activityLogs",
+      "durationMs": 732,
+      "passed": true
+    },
+    {
+      "route": "/admin/activity-logs/:logId",
+      "title": "activityLog",
+      "durationMs": 1242,
+      "passed": true
+    },
+    {
+      "route": "/admin/account",
+      "title": "settings",
+      "durationMs": 826,
+      "passed": true
+    },
+    {
+      "route": "/admin/users",
+      "title": "staff",
+      "durationMs": 766,
+      "passed": true
+    },
+    {
+      "route": "/admin/users/:userId",
+      "title": "staffUser",
+      "durationMs": 694,
+      "passed": true
+    },
+    {
+      "route": "/login",
+      "title": "login",
+      "durationMs": 910,
+      "passed": true
+    },
+    {
+      "route": "/register",
+      "title": "register",
+      "durationMs": 1399,
+      "passed": true
+    },
+    {
+      "route": "/admin/login",
+      "title": "staffLogin",
+      "durationMs": 842,
+      "passed": true
+    }
+  ]
+}

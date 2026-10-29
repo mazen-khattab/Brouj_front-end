@@ -1,0 +1,61 @@
+# Reference configuration only. Deployment owners must select actual TLS paths/root,
+# review this with the installed Nginx version, run nginx -t, and verify staging.
+# Include in http {}. Cache only successful hashed assets, never asset errors.
+map "$status:$uri" $brouj_cache_control {
+    default "no-store";
+    "~^(200|304):/assets/.+-[A-Za-z0-9_-]{8,}\.[^/]+$" "public, max-age=31536000, immutable";
+    "~^(200|304):" "no-cache";
+}
+
+# No raw path, query, referrer, cookie, IP or request body in frontend access logs.
+log_format brouj_safe 'status=$status duration=$request_time trace=$request_id bytes=$body_bytes_sent';
+
+server {
+    listen 80;
+    server_name brouj.com;
+    return 308 https://brouj.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name brouj.com;
+    root /srv/brouj/current/site;
+    index index.html;
+    include mime.types;
+    default_type application/octet-stream;
+    ssl_certificate /etc/brouj/tls/fullchain.pem;
+    ssl_certificate_key /etc/brouj/tls/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    access_log /var/log/nginx/brouj.access.log brouj_safe;
+    # Nginx error logs can include raw URLs. Disable request-level error logging
+    # unless the deployment's logging pipeline supplies approved redaction.
+    error_log /dev/null crit;
+
+    # Keep every add_header here: a location-level add_header can replace inheritance.
+    add_header Cache-Control $brouj_cache_control always;
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'none'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.brouj.com; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header Referrer-Policy no-referrer always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    if ($request_method !~ ^(GET|HEAD)$) { return 405; }
+    location ~ (^|/)\. { return 404; }
+    # Upload verified hashed assets additively to /srv/brouj/shared/assets/.
+    # Retain prior chunks there while switching the current HTML artifact.
+    location ~ ^/assets/ { root /srv/brouj/shared; try_files $uri =404; }
+    location = /api { return 404; }
+    location /api/ { return 404; }
+    location = /src { return 404; }
+    location /src/ { return 404; }
+    location = /node_modules { return 404; }
+    location /node_modules/ { return 404; }
+    location ~ \.[^/]+$ { try_files $uri =404; }
+    location = /index.html { try_files /index.html =404; }
+    location / { try_files $uri @brouj_spa; }
+    location @brouj_spa {
+        if ($http_accept !~* text/html) { return 404; }
+        rewrite ^ /index.html last;
+    }
+}
