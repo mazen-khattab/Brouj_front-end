@@ -12,6 +12,7 @@ import { ApiError } from "../Types/failures";
 import { isGuid } from "../Catalogue/query";
 import { useAuth } from "../Hooks/useAuth";
 import { sessionBoundary } from "../Security/sessionBoundary";
+import { useRealtimeReload } from "../Hooks/useRealtimeReload";
 
 export function TimePlanProvider({ projectId, scope, children }: { projectId: string; scope: string; children: ReactNode }) {
   const { generation } = useAuth();
@@ -49,6 +50,7 @@ export function TimePlanProvider({ projectId, scope, children }: { projectId: st
     [projectId, generation],
   );
   const read = useStaffRead(scope, load);
+  useRealtimeReload("timePlan", `${scope}:${projectId}`, read.result.status === "loading", read.reload, projectId);
   const gate = useRef({ locked: false, unresolved: new Set<string>() });
   const action = useStaffOperation("planning", gate);
 

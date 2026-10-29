@@ -33,6 +33,7 @@ for (const key of browsing) assert(!manifest[key].name?.match(/^(AdminLayout|Adm
 for (const file of readdirSync(resolve(root, 'dist/assets')).filter((file) => file.endsWith('.js'))) {
   const source = readFileSync(resolve(root, 'dist/assets', file), 'utf8');
   assert(!/__showcase|__auth|ComponentShowcase|AuthPreview/.test(source), `Development fixture in ${file}`);
+  assert(!/createFakeRealtimeAdapter|captureEvents|captureStatuses/.test(source), `Fake realtime adapter in ${file}`);
 }
 console.log('PASS: admin layout/pages are separate lazy chunks, absent from startup/public/account static imports; development fixtures are excluded.');
 for (const key of adminKeys) console.log(`${key}: ${manifest[key].file}`);

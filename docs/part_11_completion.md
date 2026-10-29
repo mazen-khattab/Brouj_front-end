@@ -1,6 +1,6 @@
 # Part 11 — Admin governance and staff
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 10 was approved by the user in this conversation with `$implement-brouj-frontend-part part_11`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 11 only. Part 11 approval has not been received.
+Date: 2026-10-29. Status: **Approved**. Part 10 was approved by the user in this conversation with `$implement-brouj-frontend-part part_11`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 11 only. Part 11 was approved by the user on 2026-10-29 with the same explicit approval and `$implement-brouj-frontend-part part_12` invocation.
 
 ## Delivered behavior
 
@@ -89,4 +89,4 @@ Read-only contract evidence includes current endpoint JSON/Markdown, API configu
 
 No API listener was present at local port 7249. Live API/database/cookie execution and dedicated-account configuration remain the existing [session verification dependency](session-verification.md). Prebuilt test-host authorization evidence does not close that dependency. Browser tests use synthetic responses. Firefox/WebKit, human screen-reader playback and deployment are not claimed. Inherited release currency, media delivery, hosting and capacity dependencies remain documented in prior reports.
 
-Required frontend acceptance has passing evidence with the permitted live-environment dependencies stated. Part 11 is **Awaiting approval**. Part 12 has not been implemented; the skill/master require explicit Part 11 approval before advancing.
+Required frontend acceptance has passing evidence with the permitted live-environment dependencies stated. Part 11 is **Approved** by the user on 2026-10-29 with the Part 12 invocation. Subsequent Part 12 work is recorded separately.

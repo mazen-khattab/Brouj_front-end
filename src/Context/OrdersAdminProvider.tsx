@@ -12,6 +12,7 @@ import { invalidateOperations, useOperationsInvalidation } from "../AdminOperati
 import { invalidateCatalogue } from "../Catalogue/invalidation";
 import type { OperationsData } from "../AdminOperations/types";
 import type { OrderDto } from "../Types/contracts";
+import { useRealtimeReload } from "../Hooks/useRealtimeReload";
 
 export function OrdersAdminProvider({ id, scope, children }: { id: string | undefined; scope: string; children: ReactNode }) {
   const filters = useOperationsQuery("orders", id === undefined);
@@ -29,6 +30,7 @@ export function OrdersAdminProvider({ id, scope, children }: { id: string | unde
     [id, pageNumber, pageSize, status],
   );
   const read = useStaffRead(`${scope}:${filters.key}`, load);
+  useRealtimeReload("orders", `${scope}:${filters.key}`, read.result.status === "loading", read.reload, id);
   useOperationsPageBounds(read, filters);
   useOperationsInvalidation("orders", scope, read.reload);
   const gate = useRef({ locked: false, unresolved: new Set<string>() });
