@@ -3,7 +3,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const manifest = JSON.parse(readFileSync(resolve(root, 'dist/.vite/manifest.json'), 'utf8'));
+const output = resolve(root, process.argv[2] ?? 'dist');
+const manifest = JSON.parse(readFileSync(resolve(output, '.vite/manifest.json'), 'utf8'));
 function staticImports(key, visited = new Set()) {
   if (visited.has(key)) return visited;
   assert(manifest[key], `Missing build entry: ${key}`);
@@ -30,8 +31,8 @@ for (const key of adminKeys) {
   assert(!publicAndAccountFiles.has(manifest[key].file), `${key} entered the public/startup imports`);
 }
 for (const key of browsing) assert(!manifest[key].name?.match(/^(AdminLayout|AdminPlaceholder|DashboardPage|navigation)$/), 'Admin code entered public static imports');
-for (const file of readdirSync(resolve(root, 'dist/assets')).filter((file) => file.endsWith('.js'))) {
-  const source = readFileSync(resolve(root, 'dist/assets', file), 'utf8');
+for (const file of readdirSync(resolve(output, 'assets')).filter((file) => file.endsWith('.js'))) {
+  const source = readFileSync(resolve(output, 'assets', file), 'utf8');
   assert(!/__showcase|__auth|ComponentShowcase|AuthPreview/.test(source), `Development fixture in ${file}`);
   assert(!/createFakeRealtimeAdapter|captureEvents|captureStatuses/.test(source), `Fake realtime adapter in ${file}`);
 }

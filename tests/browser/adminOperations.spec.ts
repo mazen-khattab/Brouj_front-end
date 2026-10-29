@@ -35,6 +35,8 @@ test("customer soft deletion and restoration preserve records and work from tabl
   await page.locator("#ops-deleted").selectOption("true");
   await page.getByRole("link", { name: "Synthetic Customer", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/admin/customers/${ids.customer}$`));
+  // The URL commits before the old list has left the DOM. Wait for the loaded detail view.
+  await expect(page.getByRole("link", { name: text.backCustomers, exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: text.restore, exact: true })).toBeEnabled();
   await confirm(page, text.restore);
   await expect(page.getByText(text.restorationSaved, { exact: true })).toBeVisible();
