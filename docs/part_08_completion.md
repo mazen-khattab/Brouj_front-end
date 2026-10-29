@@ -1,6 +1,6 @@
 # Part 08 — Admin catalogue and media
 
-Date: 2026-10-29. Status: **Awaiting approval**. Part 07 was explicitly approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_08`. No Part 09 implementation, backend edit or deployment is included.
+Date: 2026-10-29. Status: **Approved**. The user approved Part 08 on 2026-10-29 in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_09`. Part 07 had been approved with the Part 08 invocation. This report covers Part 08 only; no backend edit or deployment is included.
 
 ## Delivered behavior
 
@@ -84,4 +84,4 @@ Read-only evidence: the current Part8.EndpointContracts JSON/Markdown and Part8.
 
 The local API port 7249 had no listener during inspection. Intercepted browser testing does not prove actual SQL mutations, filesystem persistence/cleanup, real staff policy enforcement or cookie lifecycle. A configured backend and dedicated verification accounts/inventory remain required for the existing [live-session/environment verification](session-verification.md). Backend source was not modified or launched with fabricated secrets.
 
-Persisted media display still requires an approved host/identifier mapping or explicit release disposition. Server storage may enforce a more restrictive configured subset/limit; the UI safely reports its rejection. Release currency, provisioning, capacity budgets and hosting remain existing deployment inputs. Firefox/WebKit, human screen-reader playback and production deployment were not performed. Required frontend acceptance checks pass with these permitted dependencies stated. Part 09 remains Not started; its implementation requires explicit Part 08 approval.
+Persisted media display still requires an approved host/identifier mapping or explicit release disposition. Server storage may enforce a more restrictive configured subset/limit; the UI safely reports its rejection. Release currency, provisioning, capacity budgets and hosting remain existing deployment inputs. Firefox/WebKit, human screen-reader playback and production deployment were not performed. Required frontend acceptance checks pass with these permitted dependencies stated. The user's Part 08 approval was received with the Part 09 invocation; subsequent work is recorded separately.
