@@ -16,6 +16,7 @@ const PublicLayout = lazy(() => import("../Layouts/PublicLayout"));
 const AccountLayout = lazy(() => import("../Layouts/AccountLayout"));
 const AdminLayout = lazy(() => import("../Layouts/AdminLayout"));
 const WelcomePage = lazy(() => import("../Pages/WelcomePage"));
+const AboutPage = lazy(() => import("../Pages/AboutPage"));
 const CataloguePage = lazy(() => import("../Pages/Catalogue/CataloguePage"));
 const AccountPage = lazy(() => import("../Pages/Account/AccountPage"));
 const TimePlanPage = lazy(() => import("../Pages/Account/TimePlanPage"));
@@ -74,6 +75,8 @@ export const appRoutes: RouteObject[] = [
             element:
               page.path === "/" ? (
                 <WelcomePage />
+              ) : page.path === routePaths.about ? (
+                <AboutPage />
               ) : (
                 <CataloguePage kind={page.title} />
               ),

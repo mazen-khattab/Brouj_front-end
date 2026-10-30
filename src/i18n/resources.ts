@@ -16,9 +16,12 @@ import arTimePlans from './locales/ar/timePlans.json';
 import enTimePlans from './locales/en/timePlans.json';
 import arGovernance from './locales/ar/governance.json';
 import enGovernance from './locales/en/governance.json';
+import arHome from './locales/ar/home.json';
+import enHome from './locales/en/home.json';
 
 export const namespaces = [
   "common",
+  "home",
   "auth",
   "routing",
   "catalogue",
@@ -34,6 +37,7 @@ export type Namespace = (typeof namespaces)[number];
 export const resources = {
   ar: {
     common: ar,
+    home: arHome,
     auth: arAuth,
     routing: arRouting,
     catalogue: arCatalogue,
@@ -45,6 +49,7 @@ export const resources = {
   },
   en: {
     common: en,
+    home: enHome,
     auth: enAuth,
     routing: enRouting,
     catalogue: enCatalogue,

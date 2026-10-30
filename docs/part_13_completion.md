@@ -1,6 +1,6 @@
 # Part 13 — Final verification and release preparation
 
-Date: 2026-10-29. Status: **In progress — release checks remain open**. Part 12 was explicitly approved by the user with “Ok, Approved. Now, let's navigate to the next part.” and `$implement-brouj-frontend-part part_13`; its report and ledger record that approval. Part 13 is not marked Awaiting approval and no deployment/release authorization is claimed.
+Date: 2026-10-29. Status: **Frontend work approved by the owner; real-environment release checks remain open**. The user explicitly stated, "Now I have approved part 13," and authorized a homepage/navbar redesign. This records acceptance of the prepared frontend work with its documented dependencies. No staging verification or deployment is claimed. The original verification results and open release checks below remain recorded.
 
 ## Prepared result
 

@@ -1,5 +1,5 @@
 {
-  "home": "الرئيسية", "cities": "المدن", "city": "المدينة", "areas": "المناطق", "area": "المنطقة",
+  "home": "الرئيسية", "aboutUs": "من نحن", "initiativeProjects": "مشروعات المبادرة", "termsNav": "الشروط", "copyright": "© {{year}} بروج. جميع الحقوق محفوظة.", "cities": "المدن", "city": "المدينة", "areas": "المناطق", "area": "المنطقة",
   "projects": "المشروعات", "project": "المشروع", "unit": "الوحدة", "terms": "الشروط والأحكام",
   "login": "تسجيل الدخول", "register": "إنشاء حساب", "staffLogin": "دخول فريق العمل",
   "account": "حسابي", "profile": "الملف الشخصي", "reservations": "الحجوزات", "reservation": "تفاصيل الحجز",
@@ -22,5 +22,5 @@
   "sessionUnavailableDescription": "تحقق من اتصالك وحاول مرة أخرى. ستبقى هذه الصفحة أثناء التحقق من هويتك.",
   "publicFooter": "مساحات لما هو قادم.", "footerNote": "بروج · عقار ومكان",
   "browse": "استكشف المشروعات", "authAlternative": "اختر طريقة أخرى لتسجيل الدخول",
-  "sessionNotice": "إشعار الجلسة"
+  "sessionNotice": "إشعار الجلسة", "accountActions": "خيارات الحساب"
 }

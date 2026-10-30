@@ -24,7 +24,7 @@ export const catalogueUnit: UnitDto = {
 export const cataloguePattern = /https:\/\/localhost:7249\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(?:\/|\?|$)/;
 
 export async function catalogueServer(context: BrowserContext) {
-  const state = { failProjects: false, failTerms: false, missingProject: false, missingUnit: false, unitAvailable: true };
+  const state = { failProjects: false, failTerms: false, missingProject: false, missingUnit: false, unitAvailable: true, projectCount: 25, failCitiesLookup: false, failAreasLookup: false };
   const calls: URL[] = []; const completed: string[] = [];
   await context.route(cataloguePattern, async (route) => {
     const url = new URL(route.request().url()); calls.push(url);
@@ -40,6 +40,19 @@ export async function catalogueServer(context: BrowserContext) {
     const search = query.get('search')?.toLowerCase() ?? '';
     const cities = [{ id: catalogueIds.city, name: 'Cairo' }, { id: catalogueIds.city2, name: 'Alexandria' }];
     const area = { id: catalogueIds.area, name: 'East Quarter', cityId: catalogueIds.city, cityName: 'Cairo' };
+    if (path === '/cities/lookup') {
+      if (state.failCitiesLookup) return fail(503);
+      if (search === 'slow') {
+        await new Promise((resolve) => setTimeout(resolve, 900)); completed.push('lookup-slow');
+        try { return await ok([{ id: catalogueIds.city, name: 'Obsolete city' }]); } catch { return; }
+      }
+      if (search === 'latest') return ok([{ id: catalogueIds.city2, name: 'Latest city' }]);
+      return ok(cities.filter((item) => item.name.toLowerCase().includes(search)));
+    }
+    if (path === '/areas/lookup') {
+      if (state.failAreasLookup) return fail(503);
+      return ok([{ id: area.id, name: area.name }].filter((item) => item.name.toLowerCase().includes(search)));
+    }
     if (path === '/cities') return page(cities.filter((item) => item.name.toLowerCase().includes(search)));
     if (path.startsWith('/cities/') && path.endsWith('/areas')) return page(area.name.toLowerCase().includes(search) ? [area] : []);
     if (path.startsWith('/cities/')) return ok(cities.find((item) => item.id === path.split('/').at(-1)) ?? cities[0]);
@@ -52,7 +65,7 @@ export async function catalogueServer(context: BrowserContext) {
         try { return await page([{ ...catalogueProject, name: 'Obsolete project', areaName: area.name, cityId: catalogueIds.city }]); } catch { return; }
       }
       if (search === 'latest') return page([{ ...catalogueProject, name: 'Latest project', areaName: area.name, cityId: catalogueIds.city }]);
-      const rows: ProjectListDto[] = Array.from({ length: 25 }, (_, index) => ({
+      const rows: ProjectListDto[] = Array.from({ length: state.projectCount }, (_, index) => ({
         id: `30000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, name: `Garden Residence ${index + 1}`,
         areaId: area.id, areaName: area.name, cityId: catalogueIds.city, projectType: 1, price: 12500000, size: 1200,
       }));

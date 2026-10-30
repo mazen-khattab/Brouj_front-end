@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openPublicSessionActions } from './publicHeaderActions';
 import { accountIds as ids, accountServer } from './accountFixtures';
 import { catalogueIds } from './catalogueFixtures';
 import { seedRouting, signIn } from './routingFixtures';
@@ -136,7 +137,7 @@ test('expired sessions recover once and definitive expiry or logout removes priv
   await expect(page.locator('#auth-email')).toBeVisible(); await expect(page.getByText('R-FIXTURE-ONE', { exact: true })).toHaveCount(0);
   server.state.expired = false; server.state.rejectRefresh = false; server.state.actor = 'anonymous'; await signIn(page);
   await expect(page.getByText('R-FIXTURE-ONE', { exact: true }).first()).toBeVisible();
-  if (test.info().project.name.includes('mobile')) await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await openPublicSessionActions(page);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.locator('#auth-email')).toBeVisible(); await expect(page.getByText('R-FIXTURE-ONE', { exact: true })).toHaveCount(0);
   await page.goBack(); await expect(page.getByText('R-FIXTURE-ONE', { exact: true })).toHaveCount(0);

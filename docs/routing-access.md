@@ -21,7 +21,8 @@ All paths below have implemented screens. The home page retains the approved wel
 
 | Path | Access | Current content / feature phase |
 |---|---|---|
-| `/` | Public | Welcome, discovery/account entry links / 06 |
+| `/` | Public | Hero, initiative carousel, terms/about preview and contact / 06 and owner redesign |
+| `/about` | Public | Company introduction, principles and shared owner gallery / owner redesign |
 | `/cities` | Public | Paginated city search / 06 |
 | `/cities/:cityId` | Public | City and paginated areas / 06 |
 | `/areas/:areaId` | Public | Area, amenities and projects / 06 |

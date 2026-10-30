@@ -1,6 +1,6 @@
 # Public catalogue and media boundary
 
-Part 06 implements public cities, city/areas, area/projects, project list, project/units, unit detail and current terms. The welcome page retains the approved architectural composition and adds city and account/reservation entry links. All catalogue content comes from existing typed services. No featured inventory, testimonial, contact detail, sales guarantee or business mutation was invented.
+Part 06 implements public cities, city/areas, area/projects, project list, project/units, unit detail and current terms. Subsequent owner-requested designs add the initiative homepage and a project-filter sidebar. Catalogue content comes from typed services. See [the project filter redesign](project-filters-redesign.md) for the current layout and lookup contracts.
 
 ## Reads and state ownership
 
@@ -14,7 +14,7 @@ Part 06 implements public cities, city/areas, area/projects, project list, proje
 | Unit | `Units.getUnitById`: unit id **and query projectId** from the nested browser URL |
 | Current terms | `Terms.getActiveTermsAndConditions` |
 
-The lazy CataloguePage module mounts focused list/detail providers only on the matching browsing route. They own params, loading/error/data and reload. Components receive typed domain data, not Axios responses. Admin providers stay outside this branch; API.tsx remains the sole transport boundary. Welcome makes no catalogue request. `useCatalogueRead` aborts old reads on unmount/parameter changes; an active-request check also rejects late results when cancellation is ignored. Changed keys hide previous detail/list data immediately. No all-page cache, persistent DTO storage, dependency or automatic mutation was added.
+The lazy CataloguePage module mounts focused list/detail providers only on the matching browsing route. They own params, loading/error/data and reload. Components receive typed domain data, not Axios responses. Admin providers stay outside this branch; API.tsx remains the sole transport boundary. The homepage independently reads initiative projects and current terms. `useCatalogueRead` aborts old reads on unmount/parameter changes; an active-request check also rejects late results when cancellation is ignored. Changed keys hide previous detail/list data immediately. No all-page cache, persistent DTO storage, dependency or automatic mutation was added.
 
 ## URL and pagination
 
@@ -24,7 +24,9 @@ Text edits commit after 300 ms and replace the history entry. Clear filters also
 
 Results/pages use backend totalCount/totalPages/pageNumber. Past-last-page requests replace the URL with the server's last valid page and fetch it; empty results return to page 1. No unsupported sorting, availability filter, local property search or manufactured totals are offered.
 
-Location choices are bounded server reads requested when their disclosure opens. Choice pages contain at most 10 items and their text search is debounced. Selected names are retrieved separately for deep links. Area choices use the city-area endpoint if a city is selected, otherwise global areas. No cityId query parameter is invented for `GET /areas`, and no full location inventory is loaded into memory.
+Location choices now use the owner-requested `/api/v1/cities/lookup` and `/api/v1/areas/lookup` endpoints when their dropdown opens. Each returns a complete ID/name array, with optional debounced Search and a scrollable option list; no lookup pagination is sent. Selected names are retrieved separately for deep links. The area lookup accepts no CityId, so it remains global even when a city is selected. Changing city still clears the old area. See [the lookup contract addition](contracts/location-lookups.md).
+
+The project list uses a leading sidebar on desktop, with Search, Project type, City and Area in that order. On mobile/tablet, search stays visible and the remaining fields expand from a Filters button. Results-per-page sits with pagination after the cards, consistently across public catalogue lists.
 
 ## Content and entry points
 

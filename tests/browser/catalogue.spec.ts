@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { catalogueIds as ids, catalogueServer } from './catalogueFixtures';
 import { routingServer, seedRouting, signIn } from './routingFixtures';
+import { openProjectFilters } from './projectFilterActions';
 
 test('cities, areas, projects and units follow actual services with the required projectId', async ({ page, context }) => {
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
@@ -29,6 +30,7 @@ test('supported project URL filters, pagination, reset and browser history round
   await expect(page.getByLabel('Project type', { exact: true })).toHaveValue('1');
   await expect(page.getByText('Results: 25', { exact: true })).toBeVisible();
   await page.reload(); await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
+  await openProjectFilters(page);
   await page.getByLabel('Project type', { exact: true }).selectOption('0');
   await expect(page.getByText('No results found', { exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.has('pageNumber')).toBe(false);
@@ -42,20 +44,23 @@ test('supported project URL filters, pagination, reset and browser history round
   expect(server.calls.filter((url) => url.pathname === '/api/v1/projects').every((url) => [...url.searchParams.keys()].every((key) => ['search', 'cityId', 'areaId', 'projectType', 'pageNumber', 'pageSize'].includes(key)))).toBe(true);
 });
 
-test('location choices are bounded server reads and changing city clears the previous area', async ({ page, context }) => {
+test('location choices use the public lookups and changing city clears the previous area', async ({ page, context }) => {
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
   await page.goto('/projects?pageNumber=2');
-  await page.locator('summary').filter({ hasText: 'Choose a city' }).click();
+  await openProjectFilters(page);
+  await page.locator('#filter-city summary').click();
   await page.getByRole('button', { name: 'Choose Cairo', exact: true }).click();
   await expect(page).toHaveURL(new RegExp('cityId=' + ids.city));
   expect(new URL(page.url()).searchParams.has('pageNumber')).toBe(false);
-  await page.locator('summary').filter({ hasText: 'Choose an area' }).click();
+  await page.locator('#filter-area summary').click();
   await page.getByRole('button', { name: 'Choose East Quarter', exact: true }).click();
   await expect(page).toHaveURL(new RegExp('areaId=' + ids.area));
+  await page.locator('#filter-city summary').click();
   await page.getByRole('button', { name: 'Choose Alexandria', exact: true }).click();
   expect(new URL(page.url()).searchParams.has('areaId')).toBe(false);
-  expect(server.calls.some((url) => url.pathname === `/api/v1/cities/${ids.city}/areas` && url.searchParams.get('pageSize') === '10')).toBe(true);
-  expect(server.calls.filter((url) => url.pathname === '/api/v1/cities').every((url) => Number(url.searchParams.get('pageSize')) <= 100)).toBe(true);
+  expect(server.calls.some((url) => url.pathname === '/api/v1/cities/lookup')).toBe(true);
+  expect(server.calls.some((url) => url.pathname === '/api/v1/areas/lookup')).toBe(true);
+  expect(server.calls.filter((url) => url.pathname.endsWith('/lookup')).every((url) => [...url.searchParams.keys()].every((key) => key === 'search'))).toBe(true);
 });
 
 test('rapid search debounces, cancels obsolete reads and rejects late results', async ({ page, context }) => {

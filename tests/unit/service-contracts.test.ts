@@ -7,6 +7,7 @@ import { apiPaths } from '../../src/Router/routePaths';
 import type { RequestOptions } from '../../src/Types/transport';
 import { approvedQuery } from '../../src/Services/query';
 import { isRecord } from '../../src/Types/failures';
+import { getCitiesLookup, getAreasLookup } from '../../src/Services/LocationLookups';
 
 const modules = import.meta.glob('../../src/Services/*.ts');
 const guid = '00000000-0000-0000-0000-000000000001';
@@ -108,4 +109,19 @@ test('all operation identifiers and source properties have explicit mappings', (
   expect(matrix.operations).toHaveLength(101);
   expect(new Set(matrix.operations.map((operation) => operation.service + '.' + operation.action)).size).toBe(101);
   expect(isRecord(apiPaths)).toBe(true);
+});
+
+test.each([
+  ['cities', getCitiesLookup], ['areas', getAreasLookup],
+] as const)('the %s lookup unwraps an array and sends only the live Search parameter', async (family, run) => {
+  result = [{ id: guid, name: 'Supplied place' }];
+  const signal = new AbortController().signal;
+  const query = { search: 'Place', cityId: guid, pageNumber: 2, pageSize: 12 };
+  expect(await run(query, { signal })).toEqual(result);
+  expect(calls).toHaveLength(1);
+  expect(calls[0]?.url).toBe('/api/v1/' + family + '/lookup');
+  expect(calls[0]?.params).toEqual({ search: 'Place' });
+  const request = calls[0]! as InternalAxiosRequestConfig & { brouj: object };
+  expect(request.brouj).toMatchObject({ authenticated: false, operation: family === 'cities' ? 'GetCitiesLookup' : 'GetAreasLookup' });
+  expect(API.apiRequest).toHaveBeenCalledWith(expect.objectContaining({ signal }));
 });
