@@ -20,6 +20,7 @@ export interface RouteDefinition {
 // Shared by the actual router, breadcrumbs, and return-path authorization; no page imports here.
 export const publicPages: RouteDefinition[] = [
   { path: "/", title: "home", access: "public", phase: 6 },
+  { path: routePaths.about, title: "aboutUs", access: "public", phase: 6 },
   { path: "/cities", title: "cities", access: "public", phase: 6 },
   { path: "/cities/:cityId", title: "city", access: "public", phase: 6 },
   { path: "/areas/:areaId", title: "area", access: "public", phase: 6 },

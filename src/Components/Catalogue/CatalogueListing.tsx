@@ -11,6 +11,7 @@ import { Pagination } from "../Pagination";
 import { EmptyState } from "../Feedback";
 import type { CatalogueListData } from "../../Context/CatalogueListContext";
 import { BidiText } from "../BidiText";
+import { CataloguePageSize } from './CataloguePageSize';
 
 function Cards({ data }: { data: CatalogueListData }) {
   const { t } = useTranslation("catalogue");
@@ -54,7 +55,8 @@ function Cards({ data }: { data: CatalogueListData }) {
         <Link className="text-sm underline" to={routePaths.area(item.areaId)}>
           {item.areaName}
         </Link>
-        <ProjectFacts project={item} />
+        {/* Keep the full price on its own row when cards share space with the filters. */}
+        <div className="[&_dl>div:first-child]:col-span-full"><ProjectFacts project={item} /></div>
       </article>
     ));
   return data.page.items.map((item) => (
@@ -72,7 +74,7 @@ function Cards({ data }: { data: CatalogueListData }) {
     </article>
   ));
 }
-export function CatalogueListing() {
+export function CatalogueListing({ sidebar = false }: { sidebar?: boolean }) {
   const { t } = useTranslation("catalogue");
   const { locale } = useLocale();
   const { result, reload, update } = useCatalogueList();
@@ -86,7 +88,7 @@ export function CatalogueListing() {
             })}
           </p>
           {data.page.items.length ? (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className={`grid gap-5 md:grid-cols-2 ${sidebar ? 'lg:grid-cols-1 xl:grid-cols-2' : 'xl:grid-cols-3'}`}>
               <Cards data={data} />
             </div>
           ) : (
@@ -97,11 +99,15 @@ export function CatalogueListing() {
               />
             </div>
           )}
-          <Pagination
-            page={data.page.pageNumber}
-            totalPages={data.page.totalPages}
-            onPageChange={(pageNumber) => update({ pageNumber })}
-          />
+          <div role="group" aria-label={t('resultControls')} className="flex flex-wrap items-end justify-between gap-6 rounded-ui border border-accent/35 bg-primary-deep p-5">
+            <CataloguePageSize />
+            <Pagination
+              page={data.page.pageNumber}
+              totalPages={data.page.totalPages}
+              onPageChange={(pageNumber) => update({ pageNumber })}
+              className="grow pt-0! max-sm:grid max-sm:grid-cols-2 max-sm:[&>span]:col-span-2 max-sm:[&>span]:row-start-1 max-sm:[&>span]:text-center"
+            />
+          </div>
         </section>
       )}
     </CatalogueFeedback>

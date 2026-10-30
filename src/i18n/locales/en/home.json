@@ -1,0 +1,59 @@
+{
+  "seeAll": "See all",
+  "projects": {
+    "eyebrow": "A place to begin",
+    "title": "Initiative projects",
+    "description": "Explore the places where your next chapter can take shape.",
+    "category": "Brouj · Initiative",
+    "details": "View project",
+    "area": "{{value}} m²",
+    "carousel": "carousel",
+    "previous": "Previous projects",
+    "next": "Next projects",
+    "position": "Collection {{current}} / {{total}}",
+    "collection": "The initiative collection",
+    "empty": "New beginnings are on the way.",
+    "emptyDescription": "Our initiative projects will appear here when available."
+  },
+  "terms": {
+    "eyebrow": "Clarity at every step",
+    "title": "Terms & conditions",
+    "description": "Take a moment to get to know the details before your next step."
+  },
+  "about": {
+    "eyebrow": "About us",
+    "readMore": "Our story",
+    "brand": "Brouj",
+    "description": "A thoughtful approach to property. At Brouj, we bring people and places together, with care for the details that make a place feel like yours.",
+    "people": "Three people. One shared vision.",
+    "ownerRole": "Co-owner",
+    "owners": { "one": "Owner one", "two": "Owner two", "three": "Owner three" },
+    "placeholderDescription": "Owner portrait and biography coming soon."
+  },
+  "aboutPage": {
+    "eyebrow": "People · Place · Purpose",
+    "headline": "A place to belong. A beginning to believe in.",
+    "storyTitle": "Thoughtfully brought together.",
+    "story": "We see property as part of a larger story: the people who choose it, the lives that grow around it, and the everyday moments that make it home.",
+    "principlesTitle": "What guides us",
+    "principles": {
+      "people": { "title": "People at the heart", "description": "A place begins with the people who will call it theirs. Their hopes and everyday needs shape how we think about property." },
+      "care": { "title": "Care in the details", "description": "From the first impression to the smallest detail, we value a considered approach to space, comfort, and character." },
+      "clarity": { "title": "Clarity at every step", "description": "We believe in making room for questions and keeping the details clear, so each next step feels considered." }
+    },
+    "teamEyebrow": "The people behind Brouj",
+    "teamDescription": "A shared idea brings our three owners together: to connect people with places that feel right for them.",
+    "nextTitle": "Find the place for your next chapter."
+  },
+  "contact": {
+    "eyebrow": "Contact us",
+    "title": "Every beginning starts with a conversation.",
+    "description": "Have something in mind? There is room for your questions, ideas, and next steps.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "subject": "Subject",
+    "subjectPlaceholder": "What would you like to talk about?",
+    "send": "Send message",
+    "pending": "Message sending will be available soon."
+  }
+}

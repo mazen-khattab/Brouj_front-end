@@ -2,51 +2,22 @@ import { Suspense } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BrandWordmark } from "../Components/BrandWordmark";
-import { LanguageSwitcher } from "../Components/LanguageSwitcher";
+import { PublicHeader } from "../Components/PublicHeader";
 import { LuxuryBackdrop } from "../Components/LuxuryBackdrop";
 import {
   Breadcrumbs,
-  MobileNavigation,
-  NavigationLinks,
-  SessionControls,
   SessionNotice,
 } from "../Components/Navigation";
 import { routePaths } from "../Router/routePaths";
 import { PageLoading } from "../Router/RouteFeedback";
 
-const items = [
-  { path: routePaths.home, title: "home" },
-  { path: routePaths.cities, title: "cities" },
-  { path: routePaths.projects, title: "projects" },
-];
 export default function PublicLayout() {
   const { t } = useTranslation("routing");
-  const { pathname } = useLocation();
+  const { pathname, key } = useLocation();
   return (
-    <div className="relative isolate flex min-h-svh flex-col text-white">
+    <div className="relative isolate flex min-h-svh flex-col overflow-x-clip text-white">
       <LuxuryBackdrop />
-      <header className="relative border-b border-accent/30 [&_:focus-visible]:outline-accent-light">
-        <div className="mx-auto max-w-[1440px] px-5 py-5 sm:px-10">
-          <div className="flex flex-wrap items-center justify-between gap-5">
-            <Link to={routePaths.home} className="no-underline">
-              <BrandWordmark />
-            </Link>
-            <div className="hidden lg:block">
-              <NavigationLinks items={items} label={t("mainNav")} />
-            </div>
-            <LanguageSwitcher />
-            <div className="hidden lg:block">
-              <SessionControls />
-            </div>
-          </div>
-          <div className="mt-4 lg:hidden">
-            <MobileNavigation>
-              <NavigationLinks items={items} label={t("mainNav")} />
-              <SessionControls />
-            </MobileNavigation>
-          </div>
-        </div>
-      </header>
+      <PublicHeader key={key} />
       <main
         id="route-content"
         tabIndex={-1}
@@ -58,20 +29,19 @@ export default function PublicLayout() {
           <Outlet />
         </Suspense>
       </main>
-      <footer className="relative border-t border-accent bg-linear-to-br from-accent-light to-accent px-5 py-9 text-primary sm:px-10">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-7">
-          <div>
-            <p className="text-xl font-medium">{t("publicFooter")}</p>
-            <p className="mt-3 text-sm">{t("footerNote")}</p>
+      <footer className="relative mt-12 border-t border-accent bg-linear-to-br from-accent-light to-accent px-5 py-14 text-primary sm:px-10 lg:py-20">
+        <div className="mx-auto max-w-[1240px]">
+          <div className="flex flex-wrap items-start justify-between gap-10 pb-12">
+            <div className="max-w-md">
+              <Link to={routePaths.home} className="inline-block no-underline [&>span]:text-primary [&_i]:bg-primary [&_span[aria-hidden]]:border-primary/40 [&_span[aria-hidden]]:size-16 [&_span:last-child]:text-4xl"><BrandWordmark /></Link>
+              <p className="mt-7 text-2xl font-medium leading-relaxed">{t("publicFooter")}</p>
+              <p className="mt-3 text-sm">{t("footerNote")}</p>
+            </div>
+            <nav aria-label={t("terms")} className="pt-3">
+              <Link to={routePaths.terms} className="underline">{t("terms")}</Link>
+            </nav>
           </div>
-          <nav aria-label={t("terms")} className="flex flex-wrap gap-5">
-            <Link to={routePaths.terms} className="underline">
-              {t("terms")}
-            </Link>
-            <Link to={routePaths.staffLogin} className="underline">
-              {t("staffLogin")}
-            </Link>
-          </nav>
+          <p className="max-w-none border-t border-primary/25 pt-7 text-sm">{t('copyright', { year: new Date().getFullYear() })}</p>
         </div>
       </footer>
     </div>

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CatalogueDetailProvider } from "../../Context/CatalogueDetailProvider";
 import { CatalogueListProvider } from "../../Context/CatalogueListProvider";
@@ -22,6 +22,7 @@ import { BidiText } from "../../Components/BidiText";
 import { lazy, Suspense } from 'react';
 import { useAuth } from '../../Hooks/useAuth';
 import { PageLoading } from '../../Router/RouteFeedback';
+import { ProjectCatalogue } from '../../Components/Catalogue/ProjectCatalogue';
 
 const CustomerScope = lazy(() => import('../Account/CustomerScope'));
 
@@ -172,6 +173,7 @@ function DetailView({ terms = false }: { terms?: boolean }) {
   );
 }
 export default function CataloguePage({ kind }: { kind: string }) {
+  const [search] = useSearchParams();
   const auth = useAuth();
   const { cityId, areaId, projectId, unitId } = useParams();
   const { t } = useTranslation("routing");
@@ -187,18 +189,17 @@ export default function CataloguePage({ kind }: { kind: string }) {
   return (
     <div className="grid gap-8 motion-safe:animate-fade-in">
       <header className="grid gap-4">
-        <RouteHeading>{t(kind)}</RouteHeading>
+        <RouteHeading>{t(kind === 'projects' && search.get('projectType') === '1' ? 'initiativeProjects' : kind)}</RouteHeading>
         <p className="max-w-prose leading-8 text-white/80">
           {catalogue.t(intro)}
         </p>
       </header>
       {kind === "cities" || kind === "projects" ? (
         <CatalogueListProvider kind={kind}>
-          <CatalogueFilters
-            projects={kind === "projects"}
-            locations={kind === "projects"}
-          />
-          <CatalogueListing />
+          {kind === 'projects' ? <ProjectCatalogue /> : <>
+            <CatalogueFilters />
+            <CatalogueListing />
+          </>}
         </CatalogueListProvider>
       ) : (
         <CatalogueDetailProvider

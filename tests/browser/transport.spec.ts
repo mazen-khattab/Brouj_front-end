@@ -1,4 +1,5 @@
 import { expect, test } from './sessionFixtures';
+import { openPublicSessionActions } from './publicHeaderActions';
 
 const cors = {
   'access-control-allow-origin': 'https://localhost:5173',
@@ -24,6 +25,13 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
       bootstrapCalls += 1;
       return route.fulfill({ headers: cors, json: { success: true, data: { requestToken: 'browser-fixture-proof' }, message: null } });
     }
+    // The homepage also reads its public initiative/terms previews before this upload assertion.
+    if (new URL(request.url()).pathname === '/api/v1/projects') {
+      return route.fulfill({ headers: cors, json: { success: true, data: { items: [], pageNumber: 1, pageSize: 3, totalCount: 0, totalPages: 0 }, message: null } });
+    }
+    if (request.url().endsWith('/terms-and-conditions/current')) {
+      return route.fulfill({ status: 404, headers: cors, json: { status: 404 } });
+    }
     expect(request.method()).toBe('POST');
     expect(request.url()).toBe('https://localhost:7249/api/v1/admin/projects/' + mutationId + '/images');
     uploadHeaders = await request.allHeaders();
@@ -31,7 +39,7 @@ test('real browser transport sends cookies and CSRF with a browser-generated mul
     return route.fulfill({ headers: cors, json: { success: true, data: mutationId, message: null } });
   });
   await page.goto('/');
-  if (test.info().project.name.includes('mobile')) await page.getByRole('button', { name: 'القائمة', exact: true }).click();
+  await openPublicSessionActions(page);
   // Wait for the actual mounted session rather than importing a second HMR-versioned singleton.
   await expect(page.getByRole('button', { name: 'تسجيل الخروج', exact: true })).toBeVisible();
   const result = await page.evaluate(async (id) => {

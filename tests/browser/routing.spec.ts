@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test';
 import { routeDefinitions } from '../../src/Router/routeDefinitions';
 import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
 import { routingServer, seedRouting, signIn } from './routingFixtures';
+import { openPublicSessionActions } from './publicHeaderActions';
 
 const heading = (page: Page) => page.getByRole('heading', { level: 1 });
 const placeholderFile = /\/src\/Pages\/Catalogue\/CataloguePage\.tsx(?:\?.*)?$/;
@@ -71,7 +72,7 @@ test('a protected return URL survives login with query and hash, and logout remo
   await signIn(page);
   await expect(page).toHaveURL(/\/account\/reservations\/fixture\?tab=history#details$/);
   await expect(heading(page)).toHaveText('Reservation details');
-  if (test.info().project.name.includes('mobile')) await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await openPublicSessionActions(page);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.locator('#auth-email')).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Account navigation' })).toHaveCount(0);

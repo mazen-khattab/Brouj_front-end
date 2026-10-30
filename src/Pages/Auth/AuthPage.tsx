@@ -9,7 +9,6 @@ import { Alert, Loading, Skeleton, ValidationSummary } from '../../Components/Fe
 import { BrandWordmark } from '../../Components/BrandWordmark';
 import { LanguageSwitcher } from '../../Components/LanguageSwitcher';
 import { LuxuryBackdrop } from '../../Components/LuxuryBackdrop';
-import { ArchitecturalVisual } from '../../Components/ArchitecturalVisual';
 import { UserRole } from '../../Types/contracts';
 import { ApiError } from '../../Types/failures';
 import { SessionActionError } from '../../Types/auth';
@@ -84,20 +83,20 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
 
   return <main id="route-content" tabIndex={-1} className="relative isolate min-h-svh text-white">
     <LuxuryBackdrop />
-    <div className="mx-auto max-w-[1320px] px-5 sm:px-10 lg:px-14">
+    <div className="mx-auto max-w-[1440px] px-5 sm:px-10">
       <header className="flex items-center justify-between gap-5 border-b border-accent/25 py-6">
-        <Link to="/" className="no-underline focus-visible:outline-accent-light"><BrandWordmark /></Link><LanguageSwitcher />
+        <Link to={routePaths.home} className="no-underline focus-visible:outline-accent-light"><BrandWordmark /></Link><LanguageSwitcher compact />
       </header>
-      <div className="grid items-start gap-10 py-10 motion-safe:animate-fade-in lg:grid-cols-[0.9fr_1fr] lg:gap-20 lg:py-16">
-        <aside className="py-3 lg:sticky lg:top-10">
-          <p className="mb-6 flex items-center gap-4 text-xs tracking-widest text-accent-light rtl:tracking-normal"><span aria-hidden="true" className="h-px w-10 bg-accent" />{t('eyebrow')}</p>
-          <p className="max-w-[17ch] text-3xl font-medium leading-relaxed tracking-tight sm:text-4xl rtl:tracking-normal">{t('intro')}</p>
-          <ArchitecturalVisual className="mt-10 hidden h-[320px] lg:block" />
-        </aside>
-        <section className="min-w-0 rounded-ui border border-accent/35 bg-ivory p-6 text-primary shadow-panel sm:p-9" aria-labelledby="auth-title">
+      <div className="grid min-h-[calc(100svh-7rem)] place-items-center py-10 motion-safe:animate-fade-in sm:py-14">
+        <section className={`relative w-full min-w-0 overflow-hidden rounded-ui border border-accent/60 bg-ivory p-7 text-primary shadow-[0_30px_100px_#071c2c66] sm:p-10 ${mode === 'register' ? 'max-w-[40rem]' : 'max-w-[33rem]'}`} aria-labelledby="auth-title">
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-accent via-accent-light to-accent" />
+          <div aria-hidden="true" className="mb-7 grid size-12 place-items-center rounded-ui border border-primary/15 bg-accent-light/60 text-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-6"><rect x="5" y="10" width="14" height="11" rx="3" /><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" /></svg>
+          </div>
           {onModeChange && <nav aria-label={t('session')} className="mb-8 flex flex-wrap gap-2 border-b border-accent/40 pb-6">
             {(['customer', 'register', 'staff'] as const).map((option) => <Button key={option} variant={option === mode ? 'primary' : 'secondary'} disabled={auth.pending} aria-pressed={mode === option} onClick={() => onModeChange(option)}>{t(option + 'Tab')}</Button>)}
           </nav>}
+          <p className="mb-3 text-xs font-medium tracking-widest text-muted rtl:tracking-normal">{t('eyebrow')}</p>
           <div id="auth-title"><RouteHeading>{t(mode + 'Title')}</RouteHeading></div>
           <p className="mt-3 mb-7 text-sm leading-7 text-muted">{t(mode + 'Description')}</p>
           {message && <div className="mb-6"><Alert tone="error">{t(message.key, { ns: message.namespace, ...message.values })}</Alert></div>}
@@ -125,12 +124,12 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
               </div>
               <Button type="submit" pending={auth.pending} pendingLabel={t('working')}>{t(mode === 'register' ? 'register' : 'signIn')}</Button>
             </form>}
-          {!onModeChange && <nav aria-label={t('authAlternative', { ns: 'routing' })} className="mt-8 flex flex-wrap gap-5 text-sm">
+          {!onModeChange && <nav aria-label={t('authAlternative', { ns: 'routing' })} className="mt-8 flex flex-wrap gap-x-5 gap-y-4 border-t border-primary/15 pt-6 text-sm">
             {mode !== 'customer' && <Link className="underline" to={routePaths.login + location.search}>{t('customerTab')}</Link>}
             {mode !== 'register' && <Link className="underline" to={routePaths.register + location.search}>{t('registerTab')}</Link>}
             {mode !== 'staff' && <Link className="underline" to={routePaths.staffLogin + location.search}>{t('staffTab')}</Link>}
           </nav>}
-          <Link to={routePaths.home} className="mt-8 inline-block text-sm underline">{t('home')}</Link>
+          <Link to={routePaths.home} className="mt-7 inline-block text-sm text-muted underline">{t('home')}</Link>
         </section>
       </div>
     </div>

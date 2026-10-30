@@ -26,11 +26,13 @@ export function Pagination({
   totalPages,
   onPageChange,
   pending = false,
+  className = '',
 }: {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   pending?: boolean;
+  className?: string;
 }) {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -43,7 +45,7 @@ export function Pagination({
     throw new RangeError("Invalid pagination bounds.");
   const current = totalPages ? Math.min(page, totalPages) : 0;
   return (
-    <nav aria-label={t("pagination.label")} className={styles.pagination}>
+    <nav aria-label={t("pagination.label")} className={`${styles.pagination} ${className}`}>
       <Button
         variant="secondary"
         disabled={pending || current <= 1}

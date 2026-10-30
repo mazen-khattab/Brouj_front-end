@@ -22,7 +22,7 @@ Use statuses: Not started, In progress, Awaiting approval, Approved. Update this
 | 10 | [Admin time plans and templates](Part_10_Admin_Time_Plans_and_Templates.md) | Approved |
 | 11 | [Admin governance and staff](Part_11_Admin_Governance_and_Staff.md) | Approved |
 | 12 | [SignalR readiness](Part_12_SignalR_Readiness.md) | Approved |
-| 13 | [Final verification and release](Part_13_Final_Verification_and_Release.md) | In progress |
+| 13 | [Final verification and release](Part_13_Final_Verification_and_Release.md) | Approved |
 
 Phase 01 evidence (2026-10-28): [completion report](../docs/part_01_completion.md). Approved by the user in this conversation: "part 1 is approved"; the user also confirmed that HTTPS certificates are created and the project runs successfully. Automated Part 01 browser execution was not claimed at its original handoff.
 
@@ -53,6 +53,8 @@ Phase 13 progress (2026-10-29): [verification/preparation report](../docs/part_1
 Final Part 13 local evidence refresh: the four compiled-screen reviews pass again in 1.8 minutes with full-page masked captures and explicit browser/cache metadata. This does not close the real-environment or owner-decision release checks above.
 
 ## Architecture decision
+
+Part 13 owner approval (2026-10-29): the user stated, "Now I have approved part 13," and authorized a homepage/navbar redesign. This records acceptance of the frontend work and its documented dependencies. The open real-environment release checks above remain recorded; this approval does not claim that staging verification or deployment occurred.
 
 Use one Vite React/TypeScript SPA and one deployment, not Turborepo/Nx or separate apps. The approved frontend origin is https://brouj.com and the API is https://api.brouj.com. Separate lazy-loaded route trees and layouts provide clear public/account/admin boundaries. Share contracts, localization, theme, transport, and components. SEO is deferred because launch acquisition uses social media and advertising. Preserve route metadata and feature boundaries for later SEO work; SSR or prerendering will need a separate design.
 

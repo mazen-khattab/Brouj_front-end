@@ -7,6 +7,7 @@ function segment(value: string): string {
 
 export const routePaths = {
   home: "/",
+  about: "/about",
   cities: "/cities",
   city: (id: string) => `/cities/${segment(id)}`,
   area: (id: string) => `/areas/${segment(id)}`,

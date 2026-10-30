@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openPublicSessionActions } from './publicHeaderActions';
 import { accountServer } from './accountFixtures';
 import { adminOperationsServer } from './adminOperationsFixtures';
 import { routingServer, seedRouting } from './routingFixtures';
@@ -66,7 +67,9 @@ for (const language of ['ar', 'en'] as const) {
           fullPage: true, scale: 'css', animations: 'disabled',
           mask: [page.getByText(/Fixture Customer|Test Staff|staff@example\.test|customer@example\.test/)],
         });
-        if (info.project.name.includes('mobile')) {
+        if (actor === 'customer') {
+          await openPublicSessionActions(page);
+        } else if (info.project.name.includes('mobile')) {
           await page.getByRole('button', { name: copy.menu, exact: true }).click();
         }
         await page.getByRole('button', { name: language === 'ar' ? 'تسجيل الخروج' : 'Sign out', exact: true }).click();
