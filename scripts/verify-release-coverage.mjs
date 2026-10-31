@@ -63,24 +63,27 @@ for (const path of sourceFiles(resolve(root, 'src'))) {
   visit(file);
 }
 
+// The approved redesign reconciles this backend addition without adding a project-lookup UI.
+const exclusions = [{ action: 'GetProjectsLookup', reason: 'Generated and service-tested; project-lookup UI is outside the approved redesign scope (docs/project-details-redesign-plan.md).' }];
 const operations = matrix.operations.map((operation) => {
   const name = operation.action[0].toLowerCase() + operation.action.slice(1);
   const consumers = references.get(`${operation.service}.ts:${name}`) ?? [];
-  assert(consumers.length > 0, `No implemented consumer for ${operation.action}`);
+  const exclusion = exclusions.find((item) => item.action === operation.action)?.reason ?? null;
+  assert(consumers.length > 0 || exclusion, `No implemented consumer for ${operation.action}`);
   return {
     action: operation.action, method: operation.method, route: operation.route,
     policy: operation.policy, screen: operation.screen, phase: operation.uiPhase,
-    service: `${operation.service}.ts`, consumers, exclusion: null,
+    service: `${operation.service}.ts`, consumers, exclusion,
   };
 });
-assert.equal(operations.length, 101);
-const output = { businessOperationCount: operations.length, exclusions: [], operations };
+assert.equal(operations.length, 104);
+const output = { businessOperationCount: operations.length, exclusions, operations };
 const json = JSON.stringify(output, null, 2) + '\n';
 const markdown = [
   '# Final API/UI source coverage', '',
-  'All 101 approved business operations have executable service references in implemented frontend features. No business operation is excluded. CSRF is separately exercised through API.tsx. Source references and the Part 01 screen descriptions support review; they do not establish live backend verification. See the Part 13 report for automated/browser results and open environment gates.', '',
+  'The verified inventory contains 104 operations. 103 have implemented feature consumers; the project lookup has a generated, service-tested client and an explicit UI exclusion required by the approved project-details redesign. CSRF is separately exercised through API.tsx. These are source references, not live-backend verification.', '',
   '| Operation | Policy | Screen/action | Implemented source consumers |', '|---|---|---|---|',
-  ...operations.map((operation) => `| ${operation.method} ${operation.route} | ${operation.policy} | ${operation.screen} / ${operation.action} | ${operation.consumers.join('<br>')} |`), '',
+  ...operations.map((operation) => `| ${operation.method} ${operation.route} | ${operation.policy} | ${operation.screen} / ${operation.action} | ${operation.exclusion ?? operation.consumers.join('<br>')} |`), '',
 ].join('\n');
 const directory = resolve(root, 'docs/release');
 for (const [name, content] of [['api-coverage.json', json], ['api-coverage.md', markdown]]) {
@@ -92,4 +95,4 @@ for (const [name, content] of [['api-coverage.json', json], ['api-coverage.md', 
     assert.equal(readFileSync(path, 'utf8').replaceAll('\r\n', '\n'), content, `Stale ${name}; inspect source and rerun with --write.`);
   }
 }
-console.log(`PASS: ${operations.length} operations have implemented consumers; zero exclusions. Live-backend release checks remain separate.`);
+console.log(`PASS: ${operations.length} verified operations; ${exclusions.length} explicit UI exclusion. Live-backend release checks remain separate.`);

@@ -112,6 +112,10 @@ test('lookup failures, late search responses, keyboard dismissal and empty resul
   await expect(page.getByLabel('Project type', { exact: true })).toBeVisible();
   const area = page.locator('#filter-area summary');
   await area.click();
+  const region = page.locator('#filter-area [role="region"]');
+  const box = (await region.boundingBox())!;
+  await page.mouse.click(box.x + box.width - 10, box.y + 15);
+  await expect(region).toBeVisible();
   await page.locator('#filter-area-search').fill('unlisted place');
   await expect(page.getByText('No results found', { exact: true })).toBeVisible();
   await page.getByRole('heading', { level: 1 }).click();

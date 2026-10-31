@@ -1,8 +1,8 @@
 # API/UI contract matrix
 
-Verified against backend commit `df3d48b920fc9191ae86f997850c6888ff106453`.
+Verified against backend commit `84fab425c6c2cf48d4cecfe5025274284c8c4bdd`.
 
-101 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.
+104 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.
 
 | Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |
 |---|---|---|---|---|---|---|---|---|
@@ -43,7 +43,7 @@ Verified against backend commit `df3d48b920fc9191ae86f997850c6888ff106453`.
 | GET /api/v1/projects | body: none; query: GetProjectsParameters | ApiResponse<PaginationResult<ProjectListDto>> | Services/Projects | CatalogueContext / CatalogueAdminContext | Website / projects; shared Admin catalogue reads / GetProjects | Anonymous | 06 | 429 rate budget exhausted |
 | GET /api/v1/projects/{id} | body: none; query: none | ApiResponse<ProjectDto> | Services/Projects | CatalogueContext / CatalogueAdminContext | Website / projects; shared Admin catalogue reads / GetProjectById | Anonymous | 06 | ProjectErrors.NotFound |
 | GET /api/v1/projects/{projectId}/units | body: none; query: GetUnitsByProjectParameters | ApiResponse<PaginationResult<UnitListDto>> | Services/Units | CatalogueContext / CatalogueAdminContext | Website / units; shared Admin catalogue reads / GetUnitsByProject | Anonymous | 06 | 429 rate budget exhausted |
-| GET /api/v1/projects/{projectId}/time-plan | body: none; query: none | ApiResponse<TimePlanDto> | Services/TimePlans | CustomerTimePlanContext / TimePlansContext | Customer project schedule / Admin time plans / GetProjectTimePlan | MemberOnly | 07, 10 | TimePlanErrors.NotFound |
+| GET /api/v1/projects/{projectId}/time-plan | body: none; query: none | ApiResponse<TimePlanDto> | Services/TimePlans | Public project time plan / TimePlansContext | Website / project schedule; Admin time plans / GetProjectTimePlan | Anonymous | 07, 10 | TimePlanErrors.NotFound |
 | POST /api/v1/admin/projects | body: ProjectInput; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / CreateProject | AdminOnly | 08 | ProjectErrors.Conflict |
 | PATCH /api/v1/admin/projects/{id} | body: ProjectInput; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / UpdateProject | AdminOnly | 08 | ProjectErrors.NotFound |
 | DELETE /api/v1/admin/projects/{id} | body: none; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / DeleteProject | AdminOnly | 08 | ProjectErrors.NotFound |
@@ -107,8 +107,11 @@ Verified against backend commit `df3d48b920fc9191ae86f997850c6888ff106453`.
 | POST /api/v1/admin/terms-and-conditions/{id}/activate | body: none; query: none | ApiResponse<Guid> | Services/Terms | TermsContext | Admin / terms versions and activation / ActivateTermsAndConditions | AdminOnly | 11 | TermsErrors.NotFound |
 | GET /api/v1/admin/activity-logs | body: none; query: GetActivityLogsParameters | ApiResponse<PaginationResult<ActivityLogDto>> | Services/ActivityLogs | ActivityLogsContext | Admin / staff activity log / GetActivityLogs | AdminOnly | 11 | 401 unauthenticated / 403 actor policy |
 | GET /api/v1/admin/activity-logs/{id} | body: none; query: none | ApiResponse<ActivityLogDto> | Services/ActivityLogs | ActivityLogsContext | Admin / staff activity log / GetActivityLogById | AdminOnly | 11 | ActivityLogErrors.NotFound |
+| GET /api/v1/cities/lookup | body: none; query: GetCitiesLookupParameters | ApiResponse<IEnumerable<LookupDto>> | Services/Cities | CatalogueContext / CatalogueAdminContext | Website / cities; shared Admin catalogue reads / GetCitiesLookup | Anonymous | 06 | 429 rate budget exhausted |
+| GET /api/v1/areas/lookup | body: none; query: GetAreasLookupParameters | ApiResponse<IEnumerable<LookupDto>> | Services/Areas | CatalogueContext / CatalogueAdminContext | Website / areas; shared Admin catalogue reads / GetAreasLookup | Anonymous | 06 | 429 rate budget exhausted |
+| GET /api/v1/projects/lookup | body: none; query: GetProjectsLookupParameters | ApiResponse<IEnumerable<LookupDto>> | Services/Projects | CatalogueContext / CatalogueAdminContext | Website / projects; shared Admin catalogue reads / GetProjectsLookup | Anonymous | 06 | 429 rate budget exhausted |
 
-## Supporting transport (not counted in the 101)
+## Supporting transport (not counted in the 104)
 
 | Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |
 |---|---|---|---|---|---|---|---|---|
@@ -118,4 +121,4 @@ Health and development Swagger are operational, not product screens. Representat
 
 ## Documentation discrepancies
 
-None found between the 101 live controller contracts and the backend Part 8 JSON inventory.
+None found between the live controller contracts and the backend Part 8 JSON inventory.

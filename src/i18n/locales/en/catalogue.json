@@ -1,6 +1,7 @@
 {
   "intro": "Find a place that fits your next chapter.",
   "citiesIntro": "Start with a city, then explore its areas and projects.",
+  "areasIntro": "Explore areas to find the right neighborhood for your next home.",
   "projectsIntro": "Explore projects by location and project type.",
   "units": "Units",
   "search": "Search",
@@ -102,5 +103,24 @@
   "discoveryTitle": "Explore by place",
   "discoveryDescription": "Browse cities and areas, compare the details supplied for each project, and explore its units.",
   "browseAccount": "Open my account",
-  "noPhotos": "Photos are not available yet."
+  "noPhotos": "Photos are not available yet.",
+  "carousel": "Carousel",
+  "previousUnits": "Previous units",
+  "nextUnits": "Next units",
+  "unitPosition": "Units {{first}}–{{last}} of {{total}}",
+  "unitComingSoon": "Unit details are coming soon.",
+  "noUnits": "No units have been listed.",
+  "noUnitsDescription": "Please check this project again later.",
+  "loadingUnits": "Loading more units",
+  "unitsLoadFailed": "More units could not load",
+  "unitsLoadFailedDescription": "Your loaded units are still available. Try loading the next units again.",
+  "loadingPlan": "Loading the project time plan",
+  "planMissing": "The time plan is not available yet",
+  "planMissingDescription": "You can continue exploring the project and its units.",
+  "planFailed": "The time plan could not load",
+  "planFailedDescription": "Try loading the project time plan again.",
+  "progressPhotos": "Progress photographs: {{name}}",
+  "openProgressImage": "Open photograph {{number}} for {{name}}",
+  "allProgressImages": "Show all {{total}} photographs for {{name}}",
+  "backToPhotos": "Back to all photographs"
 }

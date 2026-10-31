@@ -1,6 +1,11 @@
 {
-  "businessOperationCount": 101,
-  "exclusions": [],
+  "businessOperationCount": 104,
+  "exclusions": [
+    {
+      "action": "GetProjectsLookup",
+      "reason": "Generated and service-tested; project-lookup UI is outside the approved redesign scope (docs/project-details-redesign-plan.md)."
+    }
+  ],
   "operations": [
     {
       "action": "RegisterCustomer",
@@ -303,8 +308,7 @@
       "consumers": [
         "src/AdminCatalogue/model.ts:229",
         "src/Components/AdminCatalogue/ParentSelector.tsx:41",
-        "src/Components/Catalogue/CatalogueFilters.tsx:90",
-        "src/Context/CatalogueListProvider.tsx:26",
+        "src/Context/CatalogueListProvider.tsx:36",
         "src/Pages/Admin/CatalogueList.tsx:47"
       ],
       "exclusion": null
@@ -320,8 +324,8 @@
       "consumers": [
         "src/AdminCatalogue/model.ts:187",
         "src/Components/AdminCatalogue/ParentSelector.tsx:47",
-        "src/Components/Catalogue/CatalogueFilters.tsx:71",
-        "src/Context/CatalogueDetailProvider.tsx:19"
+        "src/Context/CatalogueDetailProvider.tsx:19",
+        "src/Hooks/useLocationLookup.ts:15"
       ],
       "exclusion": null
     },
@@ -334,8 +338,7 @@
       "phase": "06",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Components/Catalogue/CatalogueFilters.tsx:92",
-        "src/Context/CatalogueListProvider.tsx:27"
+        "src/Context/CatalogueListProvider.tsx:43"
       ],
       "exclusion": null
     },
@@ -350,7 +353,7 @@
       "consumers": [
         "src/AdminCatalogue/model.ts:231",
         "src/Components/AdminCatalogue/ParentSelector.tsx:41",
-        "src/Components/Catalogue/CatalogueFilters.tsx:93",
+        "src/Context/CatalogueListProvider.tsx:44",
         "src/Pages/Admin/CatalogueList.tsx:51"
       ],
       "exclusion": null
@@ -366,8 +369,8 @@
       "consumers": [
         "src/AdminCatalogue/model.ts:189",
         "src/Components/AdminCatalogue/ParentSelector.tsx:47",
-        "src/Components/Catalogue/CatalogueFilters.tsx:72",
-        "src/Context/CatalogueDetailProvider.tsx:20"
+        "src/Context/CatalogueDetailProvider.tsx:20",
+        "src/Hooks/useLocationLookup.ts:16"
       ],
       "exclusion": null
     },
@@ -473,7 +476,8 @@
       "consumers": [
         "src/AdminCatalogue/model.ts:233",
         "src/Components/Planning/SourcePicker.tsx:52",
-        "src/Context/CatalogueListProvider.tsx:28",
+        "src/Context/CatalogueListProvider.tsx:48",
+        "src/Context/HomeProvider.tsx:13",
         "src/Pages/Admin/CatalogueList.tsx:55"
       ],
       "exclusion": null
@@ -504,7 +508,8 @@
       "service": "Services/Units.ts",
       "consumers": [
         "src/AdminCatalogue/model.ts:235",
-        "src/Context/CatalogueListProvider.tsx:29",
+        "src/Components/Catalogue/UnitCarousel.tsx:40",
+        "src/Context/CatalogueListProvider.tsx:50",
         "src/Pages/Admin/CatalogueList.tsx:59"
       ],
       "exclusion": null
@@ -513,11 +518,12 @@
       "action": "GetProjectTimePlan",
       "method": "GET",
       "route": "/api/v1/projects/{projectId}/time-plan",
-      "policy": "MemberOnly",
-      "screen": "Customer project schedule / Admin time plans",
+      "policy": "Anonymous",
+      "screen": "Website / project schedule; Admin time plans",
       "phase": "07, 10",
       "service": "Services/TimePlans.ts",
       "consumers": [
+        "src/Components/Catalogue/ProjectTimePlan.tsx:57",
         "src/Context/AccountDataProvider.tsx:47",
         "src/Context/TimePlanProvider.tsx:38"
       ],
@@ -1270,7 +1276,8 @@
       "phase": "06",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:23"
+        "src/Context/CatalogueDetailProvider.tsx:23",
+        "src/Context/HomeProvider.tsx:16"
       ],
       "exclusion": null
     },
@@ -1352,6 +1359,43 @@
         "src/Context/ActivityLogsProvider.tsx:27"
       ],
       "exclusion": null
+    },
+    {
+      "action": "GetCitiesLookup",
+      "method": "GET",
+      "route": "/api/v1/cities/lookup",
+      "policy": "Anonymous",
+      "screen": "Website / cities; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Cities.ts",
+      "consumers": [
+        "src/Services/LocationLookups.ts:8"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetAreasLookup",
+      "method": "GET",
+      "route": "/api/v1/areas/lookup",
+      "policy": "Anonymous",
+      "screen": "Website / areas; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Areas.ts",
+      "consumers": [
+        "src/Services/LocationLookups.ts:13"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "GetProjectsLookup",
+      "method": "GET",
+      "route": "/api/v1/projects/lookup",
+      "policy": "Anonymous",
+      "screen": "Website / projects; shared Admin catalogue reads",
+      "phase": "06",
+      "service": "Services/Projects.ts",
+      "consumers": [],
+      "exclusion": "Generated and service-tested; project-lookup UI is outside the approved redesign scope (docs/project-details-redesign-plan.md)."
     }
   ]
 }

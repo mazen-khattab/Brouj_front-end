@@ -1,6 +1,6 @@
 # Final API/UI source coverage
 
-All 101 approved business operations have executable service references in implemented frontend features. No business operation is excluded. CSRF is separately exercised through API.tsx. Source references and the Part 01 screen descriptions support review; they do not establish live backend verification. See the Part 13 report for automated/browser results and open environment gates.
+The verified inventory contains 104 operations. 103 have implemented feature consumers; the project lookup has a generated, service-tested client and an explicit UI exclusion required by the approved project-details redesign. CSRF is separately exercised through API.tsx. These are source references, not live-backend verification.
 
 | Operation | Policy | Screen/action | Implemented source consumers |
 |---|---|---|---|
@@ -26,11 +26,11 @@ All 101 approved business operations have executable service references in imple
 | GET /api/v1/admin/customers/{id} | AdminOnly | Admin / customers / GetCustomerById | src/Context/CustomerOperationsProvider.tsx:24<br>src/Context/CustomerOperationsProvider.tsx:47 |
 | DELETE /api/v1/admin/customers/{id} | AdminOnly | Admin / customers / SoftDeleteCustomer | src/Context/CustomerOperationsProvider.tsx:59 |
 | POST /api/v1/admin/customers/{id}/restore | AdminOnly | Admin / customers / RestoreCustomer | src/Context/CustomerOperationsProvider.tsx:60 |
-| GET /api/v1/cities | Anonymous | Website / cities; shared Admin catalogue reads / GetCities | src/AdminCatalogue/model.ts:229<br>src/Components/AdminCatalogue/ParentSelector.tsx:41<br>src/Components/Catalogue/CatalogueFilters.tsx:90<br>src/Context/CatalogueListProvider.tsx:26<br>src/Pages/Admin/CatalogueList.tsx:47 |
-| GET /api/v1/cities/{id} | Anonymous | Website / cities; shared Admin catalogue reads / GetCityById | src/AdminCatalogue/model.ts:187<br>src/Components/AdminCatalogue/ParentSelector.tsx:47<br>src/Components/Catalogue/CatalogueFilters.tsx:71<br>src/Context/CatalogueDetailProvider.tsx:19 |
-| GET /api/v1/cities/{cityId}/areas | Anonymous | Website / areas; shared Admin catalogue reads / GetAreasByCity | src/Components/Catalogue/CatalogueFilters.tsx:92<br>src/Context/CatalogueListProvider.tsx:27 |
-| GET /api/v1/areas | Anonymous | Website / areas; shared Admin catalogue reads / GetAreas | src/AdminCatalogue/model.ts:231<br>src/Components/AdminCatalogue/ParentSelector.tsx:41<br>src/Components/Catalogue/CatalogueFilters.tsx:93<br>src/Pages/Admin/CatalogueList.tsx:51 |
-| GET /api/v1/areas/{id} | Anonymous | Website / areas; shared Admin catalogue reads / GetAreaById | src/AdminCatalogue/model.ts:189<br>src/Components/AdminCatalogue/ParentSelector.tsx:47<br>src/Components/Catalogue/CatalogueFilters.tsx:72<br>src/Context/CatalogueDetailProvider.tsx:20 |
+| GET /api/v1/cities | Anonymous | Website / cities; shared Admin catalogue reads / GetCities | src/AdminCatalogue/model.ts:229<br>src/Components/AdminCatalogue/ParentSelector.tsx:41<br>src/Context/CatalogueListProvider.tsx:36<br>src/Pages/Admin/CatalogueList.tsx:47 |
+| GET /api/v1/cities/{id} | Anonymous | Website / cities; shared Admin catalogue reads / GetCityById | src/AdminCatalogue/model.ts:187<br>src/Components/AdminCatalogue/ParentSelector.tsx:47<br>src/Context/CatalogueDetailProvider.tsx:19<br>src/Hooks/useLocationLookup.ts:15 |
+| GET /api/v1/cities/{cityId}/areas | Anonymous | Website / areas; shared Admin catalogue reads / GetAreasByCity | src/Context/CatalogueListProvider.tsx:43 |
+| GET /api/v1/areas | Anonymous | Website / areas; shared Admin catalogue reads / GetAreas | src/AdminCatalogue/model.ts:231<br>src/Components/AdminCatalogue/ParentSelector.tsx:41<br>src/Context/CatalogueListProvider.tsx:44<br>src/Pages/Admin/CatalogueList.tsx:51 |
+| GET /api/v1/areas/{id} | Anonymous | Website / areas; shared Admin catalogue reads / GetAreaById | src/AdminCatalogue/model.ts:189<br>src/Components/AdminCatalogue/ParentSelector.tsx:47<br>src/Context/CatalogueDetailProvider.tsx:20<br>src/Hooks/useLocationLookup.ts:16 |
 | POST /api/v1/admin/cities | AdminOnly | Admin / cities and media / CreateCity | src/AdminCatalogue/model.ts:200 |
 | PATCH /api/v1/admin/cities/{id} | AdminOnly | Admin / cities and media / UpdateCity | src/AdminCatalogue/model.ts:200 |
 | DELETE /api/v1/admin/cities/{id} | AdminOnly | Admin / cities and media / DeleteCity | src/AdminCatalogue/model.ts:215 |
@@ -38,10 +38,10 @@ All 101 approved business operations have executable service references in imple
 | PATCH /api/v1/admin/areas/{id} | AdminOnly | Admin / areas and media / UpdateArea | src/AdminCatalogue/model.ts:202 |
 | DELETE /api/v1/admin/areas/{id} | AdminOnly | Admin / areas and media / DeleteArea | src/AdminCatalogue/model.ts:217 |
 | PUT /api/v1/admin/areas/{id}/amenities | AdminOnly | Admin / areas and media / ReplaceAreaAmenities | src/AdminCatalogue/model.ts:240 |
-| GET /api/v1/projects | Anonymous | Website / projects; shared Admin catalogue reads / GetProjects | src/AdminCatalogue/model.ts:233<br>src/Components/Planning/SourcePicker.tsx:52<br>src/Context/CatalogueListProvider.tsx:28<br>src/Pages/Admin/CatalogueList.tsx:55 |
+| GET /api/v1/projects | Anonymous | Website / projects; shared Admin catalogue reads / GetProjects | src/AdminCatalogue/model.ts:233<br>src/Components/Planning/SourcePicker.tsx:52<br>src/Context/CatalogueListProvider.tsx:48<br>src/Context/HomeProvider.tsx:13<br>src/Pages/Admin/CatalogueList.tsx:55 |
 | GET /api/v1/projects/{id} | Anonymous | Website / projects; shared Admin catalogue reads / GetProjectById | src/AdminCatalogue/model.ts:191<br>src/Context/CatalogueDetailProvider.tsx:21<br>src/Context/TimePlanProvider.tsx:27<br>src/Pages/Admin/CatalogueForm.tsx:36 |
-| GET /api/v1/projects/{projectId}/units | Anonymous | Website / units; shared Admin catalogue reads / GetUnitsByProject | src/AdminCatalogue/model.ts:235<br>src/Context/CatalogueListProvider.tsx:29<br>src/Pages/Admin/CatalogueList.tsx:59 |
-| GET /api/v1/projects/{projectId}/time-plan | MemberOnly | Customer project schedule / Admin time plans / GetProjectTimePlan | src/Context/AccountDataProvider.tsx:47<br>src/Context/TimePlanProvider.tsx:38 |
+| GET /api/v1/projects/{projectId}/units | Anonymous | Website / units; shared Admin catalogue reads / GetUnitsByProject | src/AdminCatalogue/model.ts:235<br>src/Components/Catalogue/UnitCarousel.tsx:40<br>src/Context/CatalogueListProvider.tsx:50<br>src/Pages/Admin/CatalogueList.tsx:59 |
+| GET /api/v1/projects/{projectId}/time-plan | Anonymous | Website / project schedule; Admin time plans / GetProjectTimePlan | src/Components/Catalogue/ProjectTimePlan.tsx:57<br>src/Context/AccountDataProvider.tsx:47<br>src/Context/TimePlanProvider.tsx:38 |
 | POST /api/v1/admin/projects | AdminOnly | Admin / projects and media / CreateProject | src/AdminCatalogue/model.ts:204 |
 | PATCH /api/v1/admin/projects/{id} | AdminOnly | Admin / projects and media / UpdateProject | src/AdminCatalogue/model.ts:204 |
 | DELETE /api/v1/admin/projects/{id} | AdminOnly | Admin / projects and media / DeleteProject | src/AdminCatalogue/model.ts:219 |
@@ -98,10 +98,13 @@ All 101 approved business operations have executable service references in imple
 | PATCH /api/v1/admin/item-templates/{id} | AdminOnly | Admin / item templates / UpdateItemTemplate | src/Planning/commands.ts:138 |
 | PUT /api/v1/admin/item-templates/{id}/active | AdminOnly | Admin / item templates / SetItemTemplateActive | src/Planning/commands.ts:151 |
 | DELETE /api/v1/admin/item-templates/{id} | AdminOnly | Admin / item templates / DeleteItemTemplate | src/Planning/commands.ts:146 |
-| GET /api/v1/terms-and-conditions/current | Anonymous | Website / current terms / GetActiveTermsAndConditions | src/Context/CatalogueDetailProvider.tsx:23 |
+| GET /api/v1/terms-and-conditions/current | Anonymous | Website / current terms / GetActiveTermsAndConditions | src/Context/CatalogueDetailProvider.tsx:23<br>src/Context/HomeProvider.tsx:16 |
 | GET /api/v1/admin/terms-and-conditions | AdminOnly | Admin / terms versions and activation / GetTermsAndConditionsVersions | src/Context/TermsAdminProvider.tsx:18 |
 | GET /api/v1/admin/terms-and-conditions/{id} | AdminOnly | Admin / terms versions and activation / GetTermsAndConditionsById | src/Context/TermsAdminProvider.tsx:22<br>src/Context/TermsAdminProvider.tsx:35 |
 | POST /api/v1/admin/terms-and-conditions | AdminOnly | Admin / terms versions and activation / CreateTermsAndConditionsVersion | src/Context/TermsAdminProvider.tsx:33 |
 | POST /api/v1/admin/terms-and-conditions/{id}/activate | AdminOnly | Admin / terms versions and activation / ActivateTermsAndConditions | src/Context/TermsAdminProvider.tsx:48 |
 | GET /api/v1/admin/activity-logs | AdminOnly | Admin / staff activity log / GetActivityLogs | src/Context/ActivityLogsProvider.tsx:19 |
 | GET /api/v1/admin/activity-logs/{id} | AdminOnly | Admin / staff activity log / GetActivityLogById | src/Context/ActivityLogsProvider.tsx:27 |
+| GET /api/v1/cities/lookup | Anonymous | Website / cities; shared Admin catalogue reads / GetCitiesLookup | src/Services/LocationLookups.ts:8 |
+| GET /api/v1/areas/lookup | Anonymous | Website / areas; shared Admin catalogue reads / GetAreasLookup | src/Services/LocationLookups.ts:13 |
+| GET /api/v1/projects/lookup | Anonymous | Website / projects; shared Admin catalogue reads / GetProjectsLookup | Generated and service-tested; project-lookup UI is outside the approved redesign scope (docs/project-details-redesign-plan.md). |

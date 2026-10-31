@@ -38,7 +38,7 @@ All paths below have implemented screens. The home page retains the approved wel
 | `/account/reservations/:reservationId` | Customer | Own detail and confirmed cancellation / 07 |
 | `/account/orders` | Customer | Own paginated orders / 07 |
 | `/account/orders/:orderId` | Customer | Own read-only order detail / 07 |
-| `/projects/:projectId/time-plan` | Member | Published time plan / 07, shared staff access |
+| `/projects/:projectId/time-plan` | Public | Published time plan; also embedded on project details |
 | `/admin` | Staff | Operational navigation and current profile / 05 |
 | `/admin/catalogue` | Staff | Catalogue navigation / 08 |
 | `/admin/catalogue/cities` | Staff | Bounded list and creation / 08 |
@@ -78,7 +78,7 @@ flowchart TD
     Public --> PublicPages[Lazy welcome and catalogue list/detail providers]
     Public --> CustomerGuard[Customer guard]
     CustomerGuard --> Account[Lazy AccountLayout and account pages]
-    Public --> MemberGuard[Member guard → project time plan]
+    Public --> PublicPlan[Public project time plan]
     Root --> AnonymousGuard[Anonymous guard → lazy auth pages]
     Root --> StaffGuard[Staff guard]
     StaffGuard --> Admin[Lazy AdminLayout · sidebar and topbar]
@@ -100,6 +100,6 @@ Identity publication can redirect and immediately unmount a login form. The coor
 
 ## Live backend evidence and deployment
 
-Read-only policy evidence: `Brouj/src/Brouj.API/Authorization/AuthorizationExtensions.cs`, `Controllers/ProjectsController.cs` and `Controllers/AdminUsersController.cs`, reconciled with the existing [API/UI matrix](contracts/api-ui-matrix.md). `MemberOnly` permits customers and both staff roles; `AdminOnly`/`StaffOnly` permit Admin/SuperAdmin; staff administration requires `SuperAdminOnly`. The numeric roles remain SuperAdmin=0, Admin=1. No contract discrepancy or backend change was introduced. Resource ownership/live account checks remain server responsibilities for the later feature phases.
+Policy evidence: `Brouj/src/Brouj.API/Authorization/AuthorizationExtensions.cs`, `Controllers/ProjectsController.cs` and `Controllers/AdminUsersController.cs`, reconciled with the [API/UI matrix](contracts/api-ui-matrix.md). The project-details redesign makes time-plan reads public in both controller and application policy. `MemberOnly` still permits customers and both staff roles for unrelated protected reads; `AdminOnly`/`StaffOnly` permit Admin/SuperAdmin; staff administration requires `SuperAdminOnly`. Numeric roles remain SuperAdmin=0, Admin=1. Resource ownership/live account checks remain server responsibilities.
 
 Production hosting must serve HTTPS and rewrite HTML browser navigation to `index.html`, while returning real 404s for missing assets. Part 13's [release runbook](release/runbook.md) and local compiled-artifact rehearsal cover these semantics; actual staging/host verification remains open. Run `npm run build` followed by `npm run routes:check-build` to inspect the production dependency graph, or pass a packaged site directory directly to `scripts/verify-route-bundles.mjs`. Real-server session verification, media/currency and deployment inputs remain in the [open release checks](release/open-checks.md).

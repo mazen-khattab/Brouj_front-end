@@ -5,10 +5,10 @@ import { apiPaths } from '../Router/routePaths';
 import type { RequestOptions } from '../Types/transport';
 import type { AddStageItemImageRequest, ChangePlanStageItemStatusRequest, CreateTimePlanRequest, Guid, PlanStageItemInput, ReorderPlanStageItemsRequest, ReorderStageItemImagesRequest, ReorderTimePlanStagesRequest, StageDraftInput, TimePlanDto, TimePlanInput, UpdateStageItemImageRequest } from '../Types/contracts';
 
-/** GET /api/v1/projects/{projectId}/time-plan — MemberOnly; returns unwrapped domain data. */
+/** GET /api/v1/projects/{projectId}/time-plan — Anonymous; returns unwrapped domain data. */
 export async function getProjectTimePlan(args: { projectId: Guid }, options: RequestOptions = {}): Promise<TimePlanDto> {
   return apiRequest<TimePlanDto>({ method: 'GET', path: apiPaths.TimePlans.getProjectTimePlan(args.projectId),
-    metadata: { operation: 'GetProjectTimePlan', authenticated: true, skipAuthenticationRecovery: options.skipAuthenticationRecovery === true, changesIdentity: false, sessionControl: options.sessionControl === true }, ...(options.signal ? { signal: options.signal } : {}) });
+    metadata: { operation: 'GetProjectTimePlan', authenticated: false, skipAuthenticationRecovery: options.skipAuthenticationRecovery === true, changesIdentity: false, sessionControl: options.sessionControl === true }, ...(options.signal ? { signal: options.signal } : {}) });
 }
 
 /** POST /api/v1/admin/projects/{projectId}/time-plan — AdminOnly; returns unwrapped domain data. */

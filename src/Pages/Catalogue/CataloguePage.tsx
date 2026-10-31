@@ -22,7 +22,10 @@ import { BidiText } from "../../Components/BidiText";
 import { lazy, Suspense } from 'react';
 import { useAuth } from '../../Hooks/useAuth';
 import { PageLoading } from '../../Router/RouteFeedback';
+import { AreaCatalogue } from '../../Components/Catalogue/AreaCatalogue';
 import { ProjectCatalogue } from '../../Components/Catalogue/ProjectCatalogue';
+import { UnitCarousel } from '../../Components/Catalogue/UnitCarousel';
+import { ProjectTimePlan } from '../../Components/Catalogue/ProjectTimePlan';
 
 const CustomerScope = lazy(() => import('../Account/CustomerScope'));
 
@@ -70,8 +73,7 @@ function DetailView({ terms = false }: { terms?: boolean }) {
                 <p>{t("citiesIntro")}</p>
               </div>
               <CatalogueListProvider kind="areas" scopeId={detail.value.id}>
-                <CatalogueFilters />
-                <CatalogueListing />
+                <AreaCatalogue />
               </CatalogueListProvider>
             </>
           );
@@ -86,11 +88,10 @@ function DetailView({ terms = false }: { terms?: boolean }) {
                 >
                   {detail.value.cityName}
                 </Link>
-                <Amenities items={detail.value.amenities} />
+                <Amenities items={detail.value.amenities} cards />
               </section>
               <CatalogueListProvider kind="projects" scopeId={detail.value.id}>
-                <CatalogueFilters projects />
-                <CatalogueListing />
+                <ProjectCatalogue />
               </CatalogueListProvider>
             </>
           );
@@ -122,23 +123,10 @@ function DetailView({ terms = false }: { terms?: boolean }) {
                     {detail.value.description || t("noDescription")}
                   </p>
                 </section>
-                <Amenities items={detail.value.amenities} />
-                <Link
-                  className="justify-self-start rounded-ui bg-primary px-6 py-4 text-white no-underline"
-                  to={routePaths.timePlan(detail.value.id)}
-                >
-                  {t("timePlan")}
-                </Link>
+                <Amenities items={detail.value.amenities} cards />
               </article>
-              <section className="grid gap-6" aria-labelledby="units-title">
-                <h2 id="units-title" className="text-3xl font-medium">
-                  {t("units")}
-                </h2>
-                <CatalogueListProvider kind="units" scopeId={detail.value.id}>
-                  <CatalogueFilters units />
-                  <CatalogueListing />
-                </CatalogueListProvider>
-              </section>
+              <UnitCarousel projectId={detail.value.id} />
+              <ProjectTimePlan projectId={detail.value.id} />
             </>
           );
         return (
@@ -181,11 +169,13 @@ export default function CataloguePage({ kind }: { kind: string }) {
   const intro =
     kind === "cities"
       ? "citiesIntro"
-      : kind === "projects"
-        ? "projectsIntro"
-        : kind === "terms"
-          ? "termsIntro"
-          : "intro";
+      : kind === "areas"
+        ? "areasIntro"
+        : kind === "projects"
+          ? "projectsIntro"
+          : kind === "terms"
+            ? "termsIntro"
+            : "intro";
   return (
     <div className="grid gap-8 motion-safe:animate-fade-in">
       <header className="grid gap-4">
@@ -194,9 +184,9 @@ export default function CataloguePage({ kind }: { kind: string }) {
           {catalogue.t(intro)}
         </p>
       </header>
-      {kind === "cities" || kind === "projects" ? (
+      {kind === "cities" || kind === "areas" || kind === "projects" ? (
         <CatalogueListProvider kind={kind}>
-          {kind === 'projects' ? <ProjectCatalogue /> : <>
+          {kind === 'projects' ? <ProjectCatalogue /> : kind === 'areas' ? <AreaCatalogue /> : <>
             <CatalogueFilters />
             <CatalogueListing />
           </>}

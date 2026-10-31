@@ -17,7 +17,7 @@ const primitive = { string: 'string', Guid: 'Guid', DateTimeOffset: 'OffsetDateT
 
 function typeOf(value) {
   if (value.endsWith('?')) return `${typeOf(value.slice(0, -1))} | null`;
-  const list = value.match(/^IReadOnly(?:List|Collection)<(.+)>$/);
+  const list = value.match(/^(?:IReadOnly(?:List|Collection)|IEnumerable)<(.+)>$/);
   if (list) return `ReadonlyArray<${typeOf(list[1])}>`;
   if (value.startsWith('PaginationResult<')) return `PaginationResult<${typeOf(value.slice(17, -1))}>`;
   if (primitive[value]) return primitive[value];

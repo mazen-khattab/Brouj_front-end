@@ -4,7 +4,7 @@ import { apiRequest } from '../API';
 import { apiPaths } from '../Router/routePaths';
 import type { RequestOptions } from '../Types/transport';
 import { approvedQuery } from './query';
-import type { AreaDto, AreaInput, AreaListDto, GetAreasByCityParameters, GetAreasParameters, Guid, PaginationResult, ReplaceAreaAmenitiesRequest } from '../Types/contracts';
+import type { AreaDto, AreaInput, AreaListDto, GetAreasByCityParameters, GetAreasLookupParameters, GetAreasParameters, Guid, LookupDto, PaginationResult, ReplaceAreaAmenitiesRequest } from '../Types/contracts';
 
 /** GET /api/v1/cities/{cityId}/areas — Anonymous; returns unwrapped domain data. */
 export async function getAreasByCity(args: { cityId: Guid; query?: GetAreasByCityParameters }, options: RequestOptions = {}): Promise<PaginationResult<AreaListDto>> {
@@ -51,4 +51,11 @@ export async function replaceAreaAmenities(args: { id: Guid; body: ReplaceAreaAm
   return apiRequest<Guid>({ method: 'PUT', path: apiPaths.Areas.replaceAreaAmenities(args.id),
     body: args.body,
     metadata: { operation: 'ReplaceAreaAmenities', authenticated: true, skipAuthenticationRecovery: options.skipAuthenticationRecovery === true, changesIdentity: false, sessionControl: options.sessionControl === true }, ...(options.signal ? { signal: options.signal } : {}) });
+}
+
+/** GET /api/v1/areas/lookup — Anonymous; returns unwrapped domain data. */
+export async function getAreasLookup(args: { query?: GetAreasLookupParameters } = {}, options: RequestOptions = {}): Promise<ReadonlyArray<LookupDto>> {
+  return apiRequest<ReadonlyArray<LookupDto>>({ method: 'GET', path: apiPaths.Areas.getAreasLookup,
+    query: approvedQuery(args.query, ["search"]),
+    metadata: { operation: 'GetAreasLookup', authenticated: false, skipAuthenticationRecovery: options.skipAuthenticationRecovery === true, changesIdentity: false, sessionControl: options.sessionControl === true }, ...(options.signal ? { signal: options.signal } : {}) });
 }

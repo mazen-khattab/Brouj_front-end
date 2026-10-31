@@ -28,7 +28,7 @@ afterEach(() => { transport.dispose(); });
 
 function sample(type: string): unknown {
   if (type.endsWith('?')) return sample(type.slice(0, -1));
-  const list = type.match(/^IReadOnly(?:List|Collection)<(.+)>$/);
+  const list = type.match(/^(?:IReadOnly(?:List|Collection)|IEnumerable)<(.+)>$/);
   if (list) return [sample(list[1]!)];
   if (type.startsWith('PaginationResult<')) return { items: [], pageNumber: 1, pageSize: 20, totalCount: 0, totalPages: 0 };
   if (type === 'Guid') return guid;
@@ -106,8 +106,8 @@ test('metadata uploads omit nullable text and never send unapproved fields', asy
 });
 
 test('all operation identifiers and source properties have explicit mappings', () => {
-  expect(matrix.operations).toHaveLength(101);
-  expect(new Set(matrix.operations.map((operation) => operation.service + '.' + operation.action)).size).toBe(101);
+  expect(matrix.operations).toHaveLength(104);
+  expect(new Set(matrix.operations.map((operation) => operation.service + '.' + operation.action)).size).toBe(104);
   expect(isRecord(apiPaths)).toBe(true);
 });
 

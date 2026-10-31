@@ -1,6 +1,7 @@
 {
   "intro": "اعثر على مكان يناسب خطوتك القادمة.",
   "citiesIntro": "ابدأ بالمدينة ثم استكشف مناطقها ومشروعاتها.",
+  "areasIntro": "استكشف المناطق للعثور على الحي المناسب لمنزلك القادم.",
   "projectsIntro": "استكشف المشروعات حسب الموقع ونوع المشروع.",
   "units": "الوحدات",
   "search": "بحث",
@@ -102,5 +103,24 @@
   "discoveryTitle": "استكشف حسب المكان",
   "discoveryDescription": "تصفّح المدن والمناطق، وقارن التفاصيل المتاحة لكل مشروع، واستكشف وحداته.",
   "browseAccount": "فتح حسابي",
-  "noPhotos": "الصور غير متاحة بعد."
+  "noPhotos": "الصور غير متاحة بعد.",
+  "carousel": "عرض شرائح",
+  "previousUnits": "الوحدات السابقة",
+  "nextUnits": "الوحدات التالية",
+  "unitPosition": "الوحدات {{first}}–{{last}} من {{total}}",
+  "unitComingSoon": "تفاصيل الوحدات قريبًا.",
+  "noUnits": "لم تُدرج وحدات بعد.",
+  "noUnitsDescription": "يرجى زيارة هذا المشروع مرة أخرى لاحقًا.",
+  "loadingUnits": "جارٍ تحميل المزيد من الوحدات",
+  "unitsLoadFailed": "تعذر تحميل المزيد من الوحدات",
+  "unitsLoadFailedDescription": "يمكنك استعراض الوحدات المحمّلة والمحاولة مجددًا لتحميل الوحدات التالية.",
+  "loadingPlan": "جارٍ تحميل الخطة الزمنية للمشروع",
+  "planMissing": "الخطة الزمنية غير متاحة بعد",
+  "planMissingDescription": "يمكنك متابعة استعراض المشروع ووحداته.",
+  "planFailed": "تعذر تحميل الخطة الزمنية",
+  "planFailedDescription": "حاول تحميل الخطة الزمنية للمشروع مرة أخرى.",
+  "progressPhotos": "صور تقدم الأعمال: {{name}}",
+  "openProgressImage": "فتح الصورة {{number}} لـ {{name}}",
+  "allProgressImages": "عرض جميع الصور ({{total}}) لـ {{name}}",
+  "backToPhotos": "العودة إلى جميع الصور"
 }

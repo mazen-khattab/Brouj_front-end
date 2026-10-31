@@ -13,7 +13,10 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(page.getByText('Shared outdoor space')).toBeVisible();
   await expect(page.getByText('Second paragraph. <b>Plain text</b>', { exact: false })).toBeVisible();
   expect(await page.locator('main b').count()).toBe(0);
-  await page.getByRole('link', { name: 'Unit A-204', exact: true }).click();
+  await page.getByRole('button', { name: 'Unit A-204', exact: true }).click();
+  await expect(page.getByText('Unit details are coming soon.', { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(new RegExp('/projects/' + ids.project + '$'));
+  await page.goto(`/projects/${ids.project}/units/${ids.unit}`);
   await expect(page.getByRole('heading', { name: 'Unit A-204', exact: true })).toBeVisible();
   await expect(page.getByText('1,234,567.89', { exact: false })).toBeVisible();
   expect(server.calls.find((url) => url.pathname === '/api/v1/units/' + ids.unit)?.searchParams.get('projectId')).toBe(ids.project);
@@ -119,7 +122,10 @@ test('reservation CTA returns a customer to the selected unit and never submits 
   await signIn(page); await expect(page).toHaveURL(new RegExp(ids.unit + '#reservation$'));
   await expect(page.getByRole('button', { name: 'Request reservation', exact: true })).toBeVisible();
   expect(session.calls.some((path) => path === '/api/v1/reservations')).toBe(false);
-  await page.goto('/projects/' + ids.project); await page.getByRole('link', { name: 'Project time plan', exact: true }).click();
+  await page.goto('/projects/' + ids.project);
+  await expect(page.locator('#project-time-plan').getByRole('heading', { name: 'Published schedule', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Project time plan', exact: true })).toHaveCount(0);
+  await page.goto(`/projects/${ids.project}/time-plan`);
   await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/time-plan$`));
 });
 

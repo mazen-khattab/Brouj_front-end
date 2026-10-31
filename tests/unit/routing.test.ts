@@ -25,8 +25,10 @@ test('return authorization follows actor policy and preserves a safe query/hash'
   expect(allowedReturnPath('/admin/users', staff)).toBe('/admin');
   expect(allowedReturnPath('/admin/users/fixture', superAdmin)).toBe('/admin/users/fixture');
   expect(allowedReturnPath('/projects', customer)).toBe('/projects');
+  expect(allowedReturnPath('/areas', customer)).toBe('/areas');
 });
 test('browser path builders encode identifiers independently of API routes', () => {
+  expect(routePaths.areas).toBe('/areas');
   expect(routePaths.unit('a/b', '#value')).toBe('/projects/a%2Fb/units/%23value');
   expect(routePaths.admin.staffUser('a?b')).toBe('/admin/users/a%3Fb');
   expect(() => routePaths.city('..')).toThrow();

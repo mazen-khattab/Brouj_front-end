@@ -265,10 +265,20 @@ export interface GetAreasByCityParameters {
   search?: string | null;
 }
 
+/** src/Brouj.API/Requests/GetAreasLookupParameters.cs */
+export interface GetAreasLookupParameters {
+  search?: string | null;
+}
+
 /** src/Brouj.API/Requests/GetAreasParameters.cs */
 export interface GetAreasParameters {
   pageNumber?: number;
   pageSize?: number;
+  search?: string | null;
+}
+
+/** src/Brouj.API/Requests/GetCitiesLookupParameters.cs */
+export interface GetCitiesLookupParameters {
   search?: string | null;
 }
 
@@ -314,6 +324,12 @@ export interface GetOrdersParameters {
   pageNumber?: number;
   pageSize?: number;
   status?: OrderStatus | null;
+}
+
+/** src/Brouj.API/Requests/GetProjectsLookupParameters.cs */
+export interface GetProjectsLookupParameters {
+  search?: string | null;
+  type?: ProjectType | null;
 }
 
 /** src/Brouj.API/Requests/GetProjectsParameters.cs */
@@ -401,6 +417,12 @@ export interface ItemTemplateListDto {
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+/** src/Brouj.Application/Common/DTOs/LookupDto.cs */
+export interface LookupDto {
+  id: Guid;
+  name: string;
 }
 
 /** src/Brouj.Application/Features/Orders/DTOs/OrderDto.cs */

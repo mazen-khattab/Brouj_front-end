@@ -8,7 +8,7 @@ import {
   accountPages,
   adminPages,
   publicPages,
-  memberPage,
+  timePlanPage,
 } from "./routeDefinitions";
 import { routePaths } from "./routePaths";
 
@@ -82,15 +82,10 @@ export const appRoutes: RouteObject[] = [
               ),
           })),
           {
-            element: <AccessGuard access="member" />,
-            children: [
-              {
-                path: memberPage.path,
-                handle: memberPage,
-                element: <TimePlanPage />,
-                errorElement: <RouteErrorView />,
-              },
-            ],
+            path: timePlanPage.path,
+            handle: timePlanPage,
+            element: <TimePlanPage />,
+            errorElement: <RouteErrorView />,
           },
           {
             path: routePaths.account,

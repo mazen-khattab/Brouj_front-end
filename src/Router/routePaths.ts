@@ -51,6 +51,7 @@ export const apiPaths = {
     createCity: '/api/v1/admin/cities',
     updateCity: (id: string) => `/api/v1/admin/cities/${segment(id)}`,
     deleteCity: (id: string) => `/api/v1/admin/cities/${segment(id)}`,
+    getCitiesLookup: '/api/v1/cities/lookup',
   },
   Areas: {
     getAreasByCity: (cityId: string) => `/api/v1/cities/${segment(cityId)}/areas`,
@@ -60,6 +61,7 @@ export const apiPaths = {
     updateArea: (id: string) => `/api/v1/admin/areas/${segment(id)}`,
     deleteArea: (id: string) => `/api/v1/admin/areas/${segment(id)}`,
     replaceAreaAmenities: (id: string) => `/api/v1/admin/areas/${segment(id)}/amenities`,
+    getAreasLookup: '/api/v1/areas/lookup',
   },
   Projects: {
     getProjects: '/api/v1/projects',
@@ -71,6 +73,7 @@ export const apiPaths = {
     addProjectImage: (id: string) => `/api/v1/admin/projects/${segment(id)}/images`,
     updateProjectImage: (id: string, imageId: string) => `/api/v1/admin/projects/${segment(id)}/images/${segment(imageId)}`,
     deleteProjectImage: (id: string, imageId: string) => `/api/v1/admin/projects/${segment(id)}/images/${segment(imageId)}`,
+    getProjectsLookup: '/api/v1/projects/lookup',
   },
   Units: {
     getUnitsByProject: (projectId: string) => `/api/v1/projects/${segment(projectId)}/units`,

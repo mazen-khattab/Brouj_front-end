@@ -23,6 +23,7 @@ export const publicPages: RouteDefinition[] = [
   { path: routePaths.about, title: "aboutUs", access: "public", phase: 6 },
   { path: "/cities", title: "cities", access: "public", phase: 6 },
   { path: "/cities/:cityId", title: "city", access: "public", phase: 6 },
+  { path: "/areas", title: "areas", access: "public", phase: 6 },
   { path: "/areas/:areaId", title: "area", access: "public", phase: 6 },
   { path: "/projects", title: "projects", access: "public", phase: 6 },
   {
@@ -61,10 +62,10 @@ export const accountPages: RouteDefinition[] = [
     phase: 7,
   },
 ];
-export const memberPage: RouteDefinition = {
+export const timePlanPage: RouteDefinition = {
   path: "/projects/:projectId/time-plan",
   title: "timePlan",
-  access: "member",
+  access: "public",
   phase: 7,
 };
 export const adminPages: RouteDefinition[] = [
@@ -137,7 +138,7 @@ export const authPages: RouteDefinition[] = [
 export const routeDefinitions = [
   ...publicPages,
   ...accountPages,
-  memberPage,
+  timePlanPage,
   ...adminPages,
   ...authPages,
 ];

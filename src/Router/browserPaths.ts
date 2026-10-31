@@ -10,6 +10,7 @@ export const routePaths = {
   about: "/about",
   cities: "/cities",
   city: (id: string) => `/cities/${segment(id)}`,
+  areas: "/areas",
   area: (id: string) => `/areas/${segment(id)}`,
   projects: "/projects",
   project: (id: string) => `/projects/${segment(id)}`,

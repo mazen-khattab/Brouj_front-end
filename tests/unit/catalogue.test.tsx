@@ -5,6 +5,9 @@ import { readCatalogueQuery, writeCatalogueQuery } from '../../src/Catalogue/que
 import { createMediaResolver, resolveMedia } from '../../src/Catalogue/media';
 import { useCatalogueRead } from '../../src/Hooks/useCatalogueRead';
 import { MediaGallery } from '../../src/Components/Catalogue/MediaGallery';
+import { Amenities } from '../../src/Components/Catalogue/PropertyFacts';
+import { AreaCatalogue } from '../../src/Components/Catalogue/AreaCatalogue';
+import { CatalogueListContext } from '../../src/Context/CatalogueListContext';
 import { renderUi } from '../renderUi';
 
 const city = '00000000-0000-0000-0000-000000000001';
@@ -86,4 +89,38 @@ test('failure/retry discards old content and a disabled read never dispatches', 
   act(() => hook.result.current.reload());
   expect(hook.result.current.result.status).toBe('loading');
   await waitFor(() => expect(hook.result.current.result).toEqual({ status: 'success', data: 'retried' }));
+});
+
+test('area URL filters round-trip only search and cityId, ignoring projectType and areaId', () => {
+  const query = readCatalogueQuery(new URLSearchParams(`search=downtown&cityId=${city}&areaId=${city}&projectType=1&pageNumber=2&pageSize=24`), 'areas');
+  expect(query).toEqual({ search: 'downtown', cityId: city, pageNumber: 2, pageSize: 24 });
+  const written = writeCatalogueQuery(query, 'areas');
+  expect(written.has('projectType')).toBe(false);
+  expect(written.has('areaId')).toBe(false);
+  expect(written.get('cityId')).toBe(city);
+  expect(written.get('search')).toBe('downtown');
+  expect(written.get('pageNumber')).toBe('2');
+  expect(written.get('pageSize')).toBe('24');
+  expect(readCatalogueQuery(written, 'areas')).toEqual(query);
+});
+
+test('AreaCatalogue renders sidebar layout with search and city location picker', () => {
+  const { container } = renderUi(
+    <CatalogueListContext value={{ params: { pageNumber: 1, pageSize: 12 }, result: { status: 'idle' }, reload: vi.fn(), update: vi.fn() }}>
+      <AreaCatalogue />
+    </CatalogueListContext>,
+  );
+  expect(container.querySelector('section[aria-label="Search and filters"]')).toBeInTheDocument();
+  expect(screen.getByRole('searchbox', { name: 'Search' })).toBeInTheDocument();
+  expect(screen.getByText('City')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Project type')).not.toBeInTheDocument();
+});
+
+test('Amenities renders card badges when cards=true', () => {
+  const { container } = renderUi(
+    <Amenities items={[{ name: 'Gym', value: 'Private access' }]} cards />,
+  );
+  expect(container.querySelector('dl.flex.flex-wrap')).toBeInTheDocument();
+  expect(screen.getByText('Gym')).toBeInTheDocument();
+  expect(screen.getByText('Private access')).toBeInTheDocument();
 });
