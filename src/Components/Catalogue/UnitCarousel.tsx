@@ -90,7 +90,7 @@ function Carousel({ projectId }: { projectId: string }) {
         onClickCapture={(event) => { if (swiped.current) { event.preventDefault(); event.stopPropagation(); swiped.current = false; } }}>
         {batch.items.slice(start, start + count).map((unit) => <article key={unit.id} className="relative grid min-w-0 content-start gap-6 rounded-ui border border-accent/50 bg-ivory p-5 text-primary shadow-panel sm:p-6">
           <div className="h-44"><MediaPlaceholder /></div>
-          <h3 className="text-xl font-medium"><button type="button" className="cursor-pointer text-start underline decoration-accent underline-offset-8 after:absolute after:inset-0 after:rounded-ui" onClick={() => notify({ message: { namespace: 'catalogue', key: 'unitComingSoon' } })}>
+          <h3 className="text-xl font-medium"><button type="button" className="cursor-pointer text-start text-primary underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary-light hover:decoration-accent hover:underline-offset-6 after:absolute after:inset-0 after:rounded-ui" onClick={() => notify({ message: { namespace: 'catalogue', key: 'unitComingSoon' } })}>
             {t('unitLabel', { number: '' })}<BidiText>{unit.number}</BidiText>
           </button></h3>
           <UnitFacts unit={unit} />
