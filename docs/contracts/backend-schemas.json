@@ -222,6 +222,19 @@
       ]
     },
     {
+      "name": "GetAreasLookupParameters",
+      "source": "src/Brouj.API/Requests/GetAreasLookupParameters.cs",
+      "properties": [
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
       "name": "GetAreasParameters",
       "source": "src/Brouj.API/Requests/GetAreasParameters.cs",
       "properties": [
@@ -239,6 +252,19 @@
           "requiredMember": false,
           "defaultExpression": "20"
         },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetCitiesLookupParameters",
+      "source": "src/Brouj.API/Requests/GetCitiesLookupParameters.cs",
+      "properties": [
         {
           "name": "search",
           "csharpType": "string?",
@@ -418,6 +444,26 @@
         {
           "name": "status",
           "csharpType": "OrderStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "GetProjectsLookupParameters",
+      "source": "src/Brouj.API/Requests/GetProjectsLookupParameters.cs",
+      "properties": [
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "type",
+          "csharpType": "ProjectType?",
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
@@ -631,6 +677,53 @@
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "PagedSearchParameters",
+      "source": "src/Brouj.API/Requests/PagedSearchParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
+        },
+        {
+          "name": "search",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "PaginationParameters",
+      "source": "src/Brouj.API/Requests/PaginationParameters.cs",
+      "properties": [
+        {
+          "name": "pageNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "1"
+        },
+        {
+          "name": "pageSize",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "20"
         }
       ]
     },
@@ -883,6 +976,26 @@
         },
         {
           "name": "password",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
+      "name": "LookupDto",
+      "source": "src/Brouj.Application/Common/DTOs/LookupDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
           "csharpType": "string",
           "nullable": false,
           "requiredMember": false,
@@ -3281,6 +3394,10 @@
       "rules": "public sealed class GetAreaByIdQueryValidator : AbstractValidator<GetAreaByIdQuery>\n{\n    public GetAreaByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
     },
     {
+      "source": "src/Brouj.Application/Features/Areas/Queries/GetLookup/GetAreasLookupQueryValidator.cs",
+      "rules": "public sealed class GetAreasLookupQueryValidator : AbstractValidator<GetAreasLookupQuery>\n{\n    public GetAreasLookupQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Search)\n            .MaximumLength(100);\n    }\n}"
+    },
+    {
       "source": "src/Brouj.Application/Features/Cities/Commands/Create/CreateCityCommandValidator.cs",
       "rules": "public sealed class CreateCityCommandValidator : AbstractValidator<CreateCityCommand>\n{\n    public CreateCityCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().SetValidator(new CityInputValidator());\n    }\n}"
     },
@@ -3299,6 +3416,10 @@
     {
       "source": "src/Brouj.Application/Features/Cities/Queries/GetById/GetCityByIdQueryValidator.cs",
       "rules": "public sealed class GetCityByIdQueryValidator : AbstractValidator<GetCityByIdQuery>\n{\n    public GetCityByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Cities/Queries/GetLookup/GetCitiesLookupQueryValidator.cs",
+      "rules": "public sealed class GetCitiesLookupQueryValidator : AbstractValidator<GetCitiesLookupQuery>\n{\n    public GetCitiesLookupQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Search)\n            .MaximumLength(100);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Customers/Commands/ChangePassword/ChangeCustomerPasswordCommandValidator.cs",
@@ -3423,6 +3544,10 @@
     {
       "source": "src/Brouj.Application/Features/Projects/Queries/GetById/GetProjectByIdQueryValidator.cs",
       "rules": "public sealed class GetProjectByIdQueryValidator : AbstractValidator<GetProjectByIdQuery>\n{\n    public GetProjectByIdQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Id).NotEmpty();\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Projects/Queries/GetLookup/GetProjectsLookupQueryValidator.cs",
+      "rules": "public sealed class GetProjectsLookupQueryValidator : AbstractValidator<GetProjectsLookupQuery>\n{\n    public GetProjectsLookupQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Search)\n            .MaximumLength(100);\n\n        RuleFor(request => request.Type)\n            .IsInEnum()\n            .When(request => request.Type is not null);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Reservations/Commands/Cancel/CancelReservationCommandValidator.cs",

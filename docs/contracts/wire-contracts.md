@@ -41,7 +41,7 @@ The schema inventory includes the full validators, including names/lengths, cond
 
 ## Authentication and actor boundaries
 
-One browser has one active actor because customer/staff sessions share the API-host cookie names. Admin and SuperAdmin are staff roles. `AdminOnly` permits both staff roles; `SuperAdminOnly` narrows staff administration. `MemberOnly` permits customers or staff, with live account/ownership checks in Application. Customer order detail deliberately uses `GET /api/v1/admin/orders/{id}`; customer schedule uses `GET /api/v1/projects/{projectId}/time-plan`. Neither URL naming nor a UI guard establishes server access rights.
+One browser has one active actor because customer/staff sessions share the API-host cookie names. Admin and SuperAdmin are staff roles. `AdminOnly` permits both staff roles; `SuperAdminOnly` narrows staff administration. `MemberOnly` permits customers or staff, with live account/ownership checks in Application. Customer order detail deliberately uses `GET /api/v1/admin/orders/{id}`. Project schedules use anonymous `GET /api/v1/projects/{projectId}/time-plan`; all time-plan writes remain staff protected. Neither URL naming nor a UI guard establishes server access rights.
 
 Browser calls must use credentials over approved HTTPS origins: development `https://localhost:5173` to `https://localhost:7249`; production `https://brouj.com` to `https://api.brouj.com`. Cookies are HttpOnly, Secure, host-only, path `/`, SameSite Strict. Never read cookies or store authentication tokens/private DTOs in localStorage. `expiresAt` describes refresh-session expiry, not a reliable access-token timer.
 

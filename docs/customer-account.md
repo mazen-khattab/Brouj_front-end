@@ -1,6 +1,6 @@
-# Customer account and member schedules
+# Customer account and public schedules
 
-Part 07 connects the existing customer routes to real typed services. Account providers mount inside the customer guard; member time plans mount inside the member guard. The unit confirmation module is lazy and mounts only for a confirmed customer. API.tsx remains the sole transport boundary. No private DTO, password or form draft is persisted or logged.
+Part 07 connects the customer routes to typed services behind the customer guard. The project-details redesign makes embedded and standalone time plans public using their own independent read component. The unit confirmation module is lazy and mounts only for a confirmed customer. API.tsx remains the sole transport boundary. No private DTO, password or form draft is persisted or logged.
 
 | Screen/action | Contract and boundary |
 |---|---|
@@ -11,7 +11,7 @@ Part 07 connects the existing customer routes to real typed services. Account pr
 | Own reservation | GET `/api/v1/reservations/{id}`; POST its `/cancel` only after confirmation |
 | Own orders | GET `/api/v1/orders/me`; numeric status 0–3, bounded pagination |
 | Own order | GET `/api/v1/admin/orders/{id}` is intentionally MemberOnly; frontend remains `/account/orders/:orderId` |
-| Member schedule | GET `/api/v1/projects/{projectId}/time-plan`; customer or staff, without reservation prerequisite |
+| Public schedule | GET `/api/v1/projects/{projectId}/time-plan`; anonymous/customer/staff reads, without reservation prerequisite; all edits remain staff protected |
 
 All prices, references, availability, totals, dates and statuses come from backend DTOs. Reservation cancellation is offered only for Processing (0) with no order; the handler remains authoritative. No order creation/completion action appears. Reservation/order DTOs lack projectId, so the UI does not manufacture a nested unit URL from projectName or probe for one. A foreign-owner 404 is displayed as unavailable with no existence lookup.
 

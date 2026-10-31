@@ -10,7 +10,7 @@ Part 06 implements public cities, city/areas, area/projects, project list, proje
 | City and areas | `Cities.getCityById`; `Areas.getAreasByCity`: route cityId plus pageNumber, pageSize, search |
 | Area and projects | `Areas.getAreaById`; `Projects.getProjects`: fixed route areaId, pageNumber, pageSize, search, optional projectType |
 | Projects | `Projects.getProjects`: pageNumber, pageSize, search, cityId, areaId, numeric projectType |
-| Project and units | `Projects.getProjectById`; `Units.getUnitsByProject`: route projectId plus pageNumber, pageSize, search (unit number) |
+| Project and units | `Projects.getProjectById`; `Units.getUnitsByProject`: route projectId, internally paged batches of 12 with no search; independent public `TimePlans.getProjectTimePlan` |
 | Unit | `Units.getUnitById`: unit id **and query projectId** from the nested browser URL |
 | Current terms | `Terms.getActiveTermsAndConditions` |
 
@@ -34,7 +34,7 @@ Project prices/sizes/type, description, floor/planned-unit counts, optional neig
 
 Live project/unit handlers currently leave garage fields at DTO defaults (false/zero). The UI displays returned fields and adds no garage selection/pricing logic. Unit codes are isolated LTR. Dates remain Gregorian with offset-aware formatting. Supplied names/descriptions/amenities/legal content are shown unchanged without translation or HTML interpretation. Descriptions and legal content use automatic reading direction, so an English value remains readable inside Arabic chrome and vice versa. Preserved whitespace keeps paragraphs readable. Current terms show their actual version/effective date and have error/retry handling.
 
-An available unit sends anonymous visitors through customer login with a safe return to the unit's `#reservation` section. Hydrated-actor return policy remains authoritative. Part 07 adds lazy customer confirmation and POST /reservations, followed by authoritative detail navigation. Staff see that reservations use customer accounts. Unavailable units disable confirmation; no client availability update is invented. Time plans now read actual member data through the existing Member guard. See the [customer account guide](customer-account.md).
+Project details now embed a responsive unit carousel and public time plan. Carousel card clicks display a localized coming-soon notice. Direct unit URLs remain available: an available unit sends anonymous visitors through customer login with a safe return to its `#reservation` section. Lazy customer confirmation uses POST /reservations followed by authoritative detail navigation. Staff see that reservations use customer accounts; unavailable units disable confirmation. The embedded and standalone time plans are public; all plan writes remain staff protected. See [the redesign completion note](project-details-redesign.md) and [customer account guide](customer-account.md).
 
 New landing/browsing microcopy in `catalogue.json` is neutral draft copy for owner review, especially `citiesIntro`, `projectsIntro`, `intro`, `reservationIntro` and `reservationSoon`. Existing approved welcome/design copy is retained. Names/prices/counts in test screenshots are fixtures, not actual inventory claims.
 

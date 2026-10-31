@@ -56,7 +56,7 @@ export async function catalogueServer(context: BrowserContext) {
     if (path === '/cities') return page(cities.filter((item) => item.name.toLowerCase().includes(search)));
     if (path.startsWith('/cities/') && path.endsWith('/areas')) return page(area.name.toLowerCase().includes(search) ? [area] : []);
     if (path.startsWith('/cities/')) return ok(cities.find((item) => item.id === path.split('/').at(-1)) ?? cities[0]);
-    if (path === '/areas') return page(area.name.toLowerCase().includes(search) ? [area] : []);
+    if (path === '/areas') return page([area].filter((item) => item.name.toLowerCase().includes(search) && (!query.has('cityId') || query.get('cityId') === item.cityId)));
     if (path.startsWith('/areas/')) return ok({ ...area, amenities: [{ name: 'Transport', value: 'Local connections' }] });
     if (path === '/projects') {
       if (state.failProjects) return fail(503);

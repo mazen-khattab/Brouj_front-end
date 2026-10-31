@@ -17,7 +17,7 @@ const backend = resolve(
 );
 const writing = process.argv.includes("--write");
 const read = (path) =>
-  readFileSync(join(backend, path), "utf8").replaceAll("\r\n", "\n");
+  readFileSync(join(backend, path), "utf8").replace(/^\uFEFF/, "").replaceAll("\r\n", "\n");
 const slash = (path) => path.replaceAll("\\", "/");
 const sources = new Map();
 
@@ -85,18 +85,18 @@ source("docs/Brouj.Docs/Part8.ApiConfiguration.md");
 source("docs/Brouj.Docs/Part12.FinalVerification.md");
 assert.equal(
   inventory.length,
-  101,
+  104,
   "Reconcile a changed approved business-operation count before updating.",
 );
 assert.equal(
   controllerEndpoints.length,
-  101,
-  "Controller extraction must account for all 101 operations.",
+  104,
+  "Controller extraction must account for all 104 approved operations, including the three lookups.",
 );
 assert.equal(
   new Set(controllerEndpoints.map((item) => `${item.method} ${item.route}`))
     .size,
-  101,
+  104,
 );
 
 const applicationFiles = files("src/Brouj.Application").filter((path) =>
@@ -135,9 +135,9 @@ function ownership(endpoint) {
     screen = `Admin / ${family.toLowerCase()}`;
   } else if (route.endsWith("/time-plan") && method === "GET") {
     service = "TimePlans";
-    context = "CustomerTimePlanContext / TimePlansContext";
+    context = "Public project time plan / TimePlansContext";
     phase = "07, 10";
-    screen = "Customer project schedule / Admin time plans";
+    screen = "Website / project schedule; Admin time plans";
   } else if (family === "TimePlans") {
     phase = "10";
     screen = "Admin / time plans, stages, items and images";
@@ -260,7 +260,8 @@ for (const path of schemaFiles) {
     });
     continue;
   }
-  const name = content.match(/public sealed class ([\w<>]+)/)?.[1];
+  const declaration = content.match(/public (?:sealed )?class ([\w<>]+)(?:\s*:\s*(\w+))?/);
+  const name = declaration?.[1];
   assert(name, `Unrecognized public schema: ${path}`);
   const properties = [
     ...content.matchAll(
@@ -285,9 +286,22 @@ for (const path of schemaFiles) {
       constant: computed[3] === "true",
     });
   }
-  assert(properties.length > 0, `No properties extracted: ${path}`);
-  schemas.push({ name, source: path, properties });
+  assert(properties.length > 0 || declaration[2], `No properties extracted: ${path}`);
+  schemas.push({ name, source: path, properties, ...(declaration[2] ? { base: declaration[2] } : {}) });
 }
+
+// HTTP paging parameters now share base classes. Flatten their actual inherited fields
+// before generating query allowlists; silently dropping these would break every list.
+function inheritedProperties(schema, ancestors = new Set()) {
+  assert(!ancestors.has(schema.name), `Cyclic schema inheritance: ${schema.name}`);
+  if (!schema.base) return schema.properties;
+  const parent = schemas.find((candidate) => candidate.name === schema.base);
+  assert(parent, `Unknown schema base: ${schema.base}`);
+  const fields = inheritedProperties(parent, new Set([...ancestors, schema.name]));
+  assert(schema.properties.every((field) => !fields.some((inherited) => inherited.name === field.name)), `Review shadowed properties: ${schema.name}`);
+  return [...fields, ...schema.properties];
+}
+const flattened = schemas.map((schema) => ({ name: schema.name, source: schema.source, properties: inheritedProperties(schema) }));
 
 const enums = [
   ...files("src/Brouj.Domain/Enums"),
@@ -386,7 +400,7 @@ const matrix = {
   supportingTransport: [csrf],
   discrepancies,
 };
-const shapes = { schemas, enums, validators };
+const shapes = { schemas: flattened, enums, validators };
 const manifest = Object.fromEntries(
   [...sources].sort(([a], [b]) => a.localeCompare(b, "en")),
 );
@@ -414,7 +428,7 @@ const rows = (items) =>
           .join(" | ")} |`,
     )
     .join("\n");
-const markdown = `# API/UI contract matrix\n\nVerified against backend commit \`${backendCommit}\`.\n\n101 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.\n\n| Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |\n|---|---|---|---|---|---|---|---|---|\n${rows(operations)}\n\n## Supporting transport (not counted in the 101)\n\n| Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |\n|---|---|---|---|---|---|---|---|---|\n${rows([csrf])}\n\nHealth and development Swagger are operational, not product screens. Representative application failures identify real handler error symbols; transport, validation, authorization and rate failures may occur before handlers. Exact validation and error sources are fingerprinted in [source-manifest.json](source-manifest.json).\n\n## Documentation discrepancies\n\n${discrepancies.length ? JSON.stringify(discrepancies, null, 2) : "None found between the 101 live controller contracts and the backend Part 8 JSON inventory."}\n`;
+const markdown = `# API/UI contract matrix\n\nVerified against backend commit \`${backendCommit}\`.\n\n${operations.length} business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.\n\n| Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |\n|---|---|---|---|---|---|---|---|---|\n${rows(operations)}\n\n## Supporting transport (not counted in the ${operations.length})\n\n| Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |\n|---|---|---|---|---|---|---|---|---|\n${rows([csrf])}\n\nHealth and development Swagger are operational, not product screens. Representative application failures identify real handler error symbols; transport, validation, authorization and rate failures may occur before handlers. Exact validation and error sources are fingerprinted in [source-manifest.json](source-manifest.json).\n\n## Documentation discrepancies\n\n${discrepancies.length ? JSON.stringify(discrepancies, null, 2) : "None found between the live controller contracts and the backend Part 8 JSON inventory."}\n`;
 
 function output(path, value) {
   const target = join(frontend, "docs/contracts", path);
@@ -436,5 +450,5 @@ output("backend-schemas.json", shapes);
 output("source-manifest.json", manifest);
 output("api-ui-matrix.md", markdown);
 console.log(
-  `${writing ? "Wrote" : "Verified"} 101 business operations, 1 CSRF endpoint, ${schemas.length} public schemas, ${enums.length} numeric enums; ${discrepancies.length} documented discrepancies.`,
+  `${writing ? "Wrote" : "Verified"} ${operations.length} business operations, 1 CSRF endpoint, ${schemas.length} public schemas, ${enums.length} numeric enums; ${discrepancies.length} documented discrepancies.`,
 );
