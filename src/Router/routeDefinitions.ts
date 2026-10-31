@@ -3,13 +3,7 @@ import { routePaths } from "./routePaths";
 import { UserRole } from "../Types/contracts";
 import type { AuthState } from "../Types/auth";
 
-export type Access =
-  | "public"
-  | "anonymous"
-  | "customer"
-  | "staff"
-  | "superAdmin"
-  | "member";
+export type Access = "public" | "anonymous" | "customer" | "staff" | "superAdmin" | "member";
 export interface RouteDefinition {
   path: string;
   title: string;
@@ -40,6 +34,7 @@ export const publicPages: RouteDefinition[] = [
   },
   { path: "/terms", title: "terms", access: "public", phase: 6 },
 ];
+
 export const accountPages: RouteDefinition[] = [
   { path: "/account", title: "profile", access: "customer", phase: 7 },
   {
@@ -62,12 +57,14 @@ export const accountPages: RouteDefinition[] = [
     phase: 7,
   },
 ];
+
 export const timePlanPage: RouteDefinition = {
   path: "/projects/:projectId/time-plan",
   title: "timePlan",
   access: "public",
   phase: 7,
 };
+
 export const adminPages: RouteDefinition[] = [
   { path: "/admin", title: "dashboard", access: "staff", phase: 5 },
   ...[
@@ -130,71 +127,42 @@ export const adminPages: RouteDefinition[] = [
     phase: 11,
   },
 ];
+
 export const authPages: RouteDefinition[] = [
   { path: "/login", title: "login", access: "anonymous", phase: 4 },
   { path: "/register", title: "register", access: "anonymous", phase: 4 },
   { path: "/admin/login", title: "staffLogin", access: "anonymous", phase: 4 },
 ];
-export const routeDefinitions = [
-  ...publicPages,
-  ...accountPages,
-  timePlanPage,
-  ...adminPages,
-  ...authPages,
-];
+export const routeDefinitions = [...publicPages, ...accountPages, timePlanPage, ...adminPages, ...authPages];
 
 export function permits(access: Access, auth: AuthState): boolean {
   if (access === "public") return true;
-  if (access === "anonymous")
-    return auth.status === "anonymous" && !auth.logoutRequired;
+  if (access === "anonymous") return auth.status === "anonymous" && !auth.logoutRequired;
   if (access === "member") return auth.actor !== null;
-  if (access === "superAdmin")
-    return auth.actor === "staff" && auth.role === UserRole.SuperAdmin;
+  if (access === "superAdmin") return auth.actor === "staff" && auth.role === UserRole.SuperAdmin;
   return auth.actor === access;
 }
+
 export function actorHome(auth: AuthState): string {
-  return auth.actor === "staff"
-    ? routePaths.admin.home
-    : auth.actor === "customer"
-      ? routePaths.account
-      : routePaths.home;
+  return auth.actor === "staff" ? routePaths.admin.home : auth.actor === "customer" ? routePaths.account : routePaths.home;
 }
 
 /** Only known, actor-permitted relative SPA paths may survive authentication. */
-export function allowedReturnPath(
-  value: string | null,
-  auth: AuthState,
-): string {
+export function allowedReturnPath(value: string | null, auth: AuthState): string {
   const fallback = actorHome(auth);
-  if (
-    !value ||
-    value.length > 2048 ||
-    !value.startsWith("/") ||
-    value.startsWith("//")
-  )
-    return fallback;
+  if (!value || value.length > 2048 || !value.startsWith("/") || value.startsWith("//")) return fallback;
   try {
     const decoded = decodeURIComponent(value);
     if (
       decoded.startsWith("//") ||
       decoded.includes("\\") ||
-      [...decoded].some(
-        (character) =>
-          character.charCodeAt(0) <= 32 || character.charCodeAt(0) === 127,
-      )
+      [...decoded].some((character) => character.charCodeAt(0) <= 32 || character.charCodeAt(0) === 127)
     )
       return fallback;
     const url = new URL(value, "https://return.invalid");
     if (url.origin !== "https://return.invalid") return fallback;
-    const definition = routeDefinitions.find((item) =>
-      matchPath({ path: item.path, end: true }, url.pathname),
-    );
-    if (
-      !definition ||
-      definition.access === "anonymous" ||
-      !permits(definition.access, auth)
-    )
-      return fallback;
+    const definition = routeDefinitions.find((item) => matchPath({ path: item.path, end: true }, url.pathname));
+    if (!definition || definition.access === "anonymous" || !permits(definition.access, auth)) return fallback;
     return url.pathname + url.search + url.hash;
   } catch {
     return fallback;

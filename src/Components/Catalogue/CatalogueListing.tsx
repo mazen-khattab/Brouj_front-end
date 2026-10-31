@@ -18,7 +18,7 @@ function Cards({ data }: { data: CatalogueListData }) {
   const card =
     "grid min-w-0 content-start gap-6 rounded-ui border border-accent/50 bg-ivory p-5 text-primary shadow-panel sm:p-6";
   const link =
-    "text-xl font-medium underline decoration-accent underline-offset-8";
+    "text-xl font-medium text-primary underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary-light hover:decoration-accent hover:underline-offset-6";
   if (data.kind === "cities" || data.kind === "areas")
     return data.page.items.map((item) => (
       <article key={item.id} className={card}>
@@ -52,8 +52,14 @@ function Cards({ data }: { data: CatalogueListData }) {
             {item.name}
           </Link>
         </h2>
-        <Link className="text-sm underline" to={routePaths.area(item.areaId)}>
-          {item.areaName}
+        <Link
+          className="inline-flex items-center gap-1.5 text-sm text-muted underline decoration-accent/40 underline-offset-4 transition-all hover:text-primary hover:decoration-accent"
+          to={routePaths.area(item.areaId)}
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="size-3.5 text-accent shrink-0">
+            <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.36 7.587a15.82 15.82 0 002.273 1.765 11.253 11.253 0 001.04.573l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
+          </svg>
+          <span>{item.areaName}</span>
         </Link>
         {/* Keep the full price on its own row when cards share space with the filters. */}
         <div className="[&_dl>div:first-child]:col-span-full"><ProjectFacts project={item} /></div>

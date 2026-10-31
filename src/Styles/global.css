@@ -22,7 +22,18 @@
   button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
   button:disabled { cursor: not-allowed; }
-  a { text-underline-offset: 0.25em; }
+  a {
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1.5px;
+    transition: color 160ms ease, text-decoration-color 160ms ease, opacity 160ms ease;
+  }
+  a[class*="underline"] {
+    text-decoration-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+    text-underline-offset: 0.35em;
+  }
+  a[class*="underline"]:hover {
+    text-decoration-color: var(--color-accent);
+  }
   h1, h2, h3 { line-height: 1.5; }
   p { max-inline-size: var(--reading-width); }
   :focus-visible { outline: var(--focus-ring); outline-offset: 4px; }
