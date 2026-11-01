@@ -20,10 +20,7 @@ export function CatalogueFeedback<T>({
   if (result.status === "idle") return null;
   if (result.status === "loading")
     return (
-      <div
-        aria-busy="true"
-        className="grid gap-5 rounded-ui bg-ivory p-7 text-primary"
-      >
+      <div aria-busy="true" className="grid gap-5 rounded-ui bg-ivory p-7 text-primary">
         <Loading label={t("loading")} />
         <Skeleton height="12rem" />
       </div>
@@ -34,11 +31,7 @@ export function CatalogueFeedback<T>({
     <div className="rounded-ui bg-ivory p-5 text-primary">
       <ErrorPanel
         title={t(missing ? "missingTitle" : "errorTitle")}
-        description={
-          missing
-            ? t(terms ? "termsMissing" : "missingDescription")
-            : t(message.key, { ns: "errors" })
-        }
+        description={missing ? t(terms ? "termsMissing" : "missingDescription") : t(message.key, { ns: "errors" })}
         onRetry={reload}
       />
     </div>

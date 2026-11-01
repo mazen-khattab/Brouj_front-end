@@ -2379,7 +2379,7 @@
     },
     {
       "method": "GET",
-      "route": "/api/v1/admin/terms-and-conditions",
+      "route": "/api/v1/terms-and-conditions",
       "request": "GetTermsAndConditionsVersionsQuery",
       "requestNamespace": "Brouj.Application.Features.Terms.Queries.GetVersions",
       "body": null,
@@ -2404,7 +2404,7 @@
     },
     {
       "method": "GET",
-      "route": "/api/v1/admin/terms-and-conditions/{id}",
+      "route": "/api/v1/terms-and-conditions/{id}",
       "request": "GetTermsAndConditionsByIdQuery",
       "requestNamespace": "Brouj.Application.Features.Terms.Queries.GetById",
       "body": null,

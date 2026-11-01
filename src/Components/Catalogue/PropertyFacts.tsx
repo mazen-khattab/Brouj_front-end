@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BidiText } from "../BidiText";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "../../Hooks/useLocale";
 import {
@@ -99,13 +100,15 @@ export function ProjectFacts({
 export function UnitFacts({
   unit,
   full = false,
+  showMeterPrices = true,
 }: {
   unit: UnitDto | UnitListDto;
   full?: boolean;
+  showMeterPrices?: boolean;
 }) {
   const { t } = useTranslation("catalogue");
   const { locale } = useLocale();
-  const items = [
+  const items: { label: string; value: ReactNode }[] = [
     { label: t("unitPrice"), value: formatCurrency(unit.totalPrice, locale) },
     {
       label: t("size"),
@@ -120,18 +123,21 @@ export function UnitFacts({
     },
   ];
   if (full) {
+    items.unshift({ label: t("unitNumber"), value: <BidiText>{unit.number}</BidiText> });
     items.push(
-      {
-        label: t("meterPrice"),
-        value: formatCurrency(unit.meterPrice, locale),
-      },
       { label: t("garage"), value: t(unit.isGarage ? "yes" : "no") },
       {
         label: t("garagePrice"),
         value: formatCurrency(unit.garagePrice, locale),
       },
     );
-    if (unit.neighborMeterPrice !== null)
+    if (showMeterPrices) {
+      items.push({
+        label: t("meterPrice"),
+        value: formatCurrency(unit.meterPrice, locale),
+      });
+    }
+    if (showMeterPrices && unit.neighborMeterPrice !== null)
       items.push({
         label: t("neighborMeterPrice"),
         value: formatCurrency(unit.neighborMeterPrice, locale),

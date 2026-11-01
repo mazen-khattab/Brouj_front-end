@@ -7,6 +7,7 @@ import { useCatalogueRead } from '../../src/Hooks/useCatalogueRead';
 import { MediaGallery } from '../../src/Components/Catalogue/MediaGallery';
 import { Amenities } from '../../src/Components/Catalogue/PropertyFacts';
 import { AreaCatalogue } from '../../src/Components/Catalogue/AreaCatalogue';
+import { CityCatalogue } from '../../src/Components/Catalogue/CityCatalogue';
 import { CatalogueListContext } from '../../src/Context/CatalogueListContext';
 import { renderUi } from '../renderUi';
 
@@ -113,6 +114,18 @@ test('AreaCatalogue renders sidebar layout with search and city location picker'
   expect(container.querySelector('section[aria-label="Search and filters"]')).toBeInTheDocument();
   expect(screen.getByRole('searchbox', { name: 'Search' })).toBeInTheDocument();
   expect(screen.getByText('City')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Project type')).not.toBeInTheDocument();
+});
+
+test('CityCatalogue renders sidebar layout with search', () => {
+  const { container } = renderUi(
+    <CatalogueListContext value={{ params: { pageNumber: 1, pageSize: 12 }, result: { status: 'idle' }, reload: vi.fn(), update: vi.fn() }}>
+      <CityCatalogue />
+    </CatalogueListContext>,
+  );
+  expect(container.querySelector('section[aria-label="Search and filters"]')).toBeInTheDocument();
+  expect(screen.getByRole('searchbox', { name: 'Search' })).toBeInTheDocument();
+  expect(screen.queryByText('City')).not.toBeInTheDocument();
   expect(screen.queryByLabelText('Project type')).not.toBeInTheDocument();
 });
 

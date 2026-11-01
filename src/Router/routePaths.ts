@@ -5,8 +5,14 @@ import { ApiError } from '../Types/failures';
 export { routePaths } from './browserPaths';
 
 function segment(value: string): string {
-  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');
-  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }
+  if (typeof value !== 'string' || !value || value === '.' || value === '..') {
+    throw new ApiError('unknown');
+  }
+  try {
+    return encodeURIComponent(value); 
+  } catch { 
+    throw new ApiError('unknown');
+  }
 }
 
 export const apiPaths = {
@@ -138,8 +144,8 @@ export const apiPaths = {
   },
   Terms: {
     getActiveTermsAndConditions: '/api/v1/terms-and-conditions/current',
-    getTermsAndConditionsVersions: '/api/v1/admin/terms-and-conditions',
-    getTermsAndConditionsById: (id: string) => `/api/v1/admin/terms-and-conditions/${segment(id)}`,
+    getTermsAndConditionsVersions: '/api/v1/terms-and-conditions',
+    getTermsAndConditionsById: (id: string) => `/api/v1/terms-and-conditions/${segment(id)}`,
     createTermsAndConditionsVersion: '/api/v1/admin/terms-and-conditions',
     activateTermsAndConditions: (id: string) => `/api/v1/admin/terms-and-conditions/${segment(id)}/activate`,
   },

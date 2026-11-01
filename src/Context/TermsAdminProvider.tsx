@@ -11,20 +11,25 @@ import { ApiError } from "../Types/failures";
 
 export function TermsAdminProvider({ scope, id, children }: { scope: string; id?: string | undefined; children: ReactNode }) {
   const [page, setPage] = useState(1);
-  const load = useCallback(async (signal: AbortSignal) => {
-    if (id && !isGuid(id)) {
-      throw new ApiError("transport", { status: 404 });
-    }
-    const result = await terms.getTermsAndConditionsVersions({ query: { pageNumber: page, pageSize: 20 } }, { signal });
-    if (!signal.aborted && page > Math.max(1, result.totalPages)) {
-      setPage(Math.max(1, result.totalPages));
-    }
-    const detail = id ? await terms.getTermsAndConditionsById({ id }, { signal }) : null;
-    if (detail && detail.id !== id) {
-      throw new ApiError("transport", { status: 200 });
-    }
-    return { page: result, detail };
-  }, [page, id]);
+
+  const load = useCallback(
+    async (signal: AbortSignal) => {
+      if (id && !isGuid(id)) {
+        throw new ApiError("transport", { status: 404 });
+      }
+      const result = await terms.getTermsAndConditionsVersions({ query: { pageNumber: page, pageSize: 20 } }, { signal });
+      if (!signal.aborted && page > Math.max(1, result.totalPages)) {
+        setPage(Math.max(1, result.totalPages));
+      }
+      const detail = id ? await terms.getTermsAndConditionsById({ id }, { signal }) : null;
+      if (detail && detail.id !== id) {
+        throw new ApiError("transport", { status: 200 });
+      }
+      return { page: result, detail };
+    },
+    [page, id],
+  );
+  
   const resource = useGovernanceResource(`${scope}:${page}`, load);
 
   async function create(values: GovernanceFields) {
