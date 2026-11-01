@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { ProgressGallery } from '../../src/Components/Catalogue/ProgressGallery';
 import { ProjectTimePlan } from '../../src/Components/Catalogue/ProjectTimePlan';
 import { UnitCarousel } from '../../src/Components/Catalogue/UnitCarousel';
@@ -62,22 +63,21 @@ test('enlarged approved images fall back safely on delivery failure', () => {
   expect(container.outerHTML).not.toContain('PRIVATE-STORAGE');
 });
 
-test('carousel retains three batches, retries only a failed batch, and never navigates on card click', async () => {
+test('carousel retains three batches, retries only a failed batch, and links to unit details', async () => {
   let failSecond = true;
   const read = vi.spyOn(Units, 'getUnitsByProject').mockImplementation(async ({ query }) => {
     const number = query?.pageNumber ?? 1;
     if (number === 2 && failSecond) throw new ApiError('transport', { status: 503 });
     return page(number);
   });
-  renderUi(<UnitCarousel projectId={id} />);
-  await screen.findByRole('button', { name: 'Unit A-1' });
+  renderUi(<MemoryRouter><UnitCarousel projectId={id} /></MemoryRouter>);
+  await screen.findByRole('link', { name: 'Unit A-1' });
   expect(screen.getAllByRole('article')).toHaveLength(3);
-  fireEvent.click(screen.getByRole('button', { name: 'Unit A-1' }));
-  expect(screen.getByText('Unit details are coming soon.')).toBeVisible();
+  expect(screen.getByRole('link', { name: 'Unit A-1' })).toHaveAttribute('href', `/projects/${id}/units/${id}-0`);
   const next = screen.getByRole('button', { name: 'Next units' });
   fireEvent.click(next); fireEvent.click(next);
   await screen.findByText('More units could not load');
-  expect(screen.getByRole('button', { name: 'Unit A-7' })).toBeVisible();
+  expect(screen.getByRole('link', { name: 'Unit A-7' })).toBeVisible();
   failSecond = false;
   fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
   await waitFor(() => expect(read).toHaveBeenCalledTimes(3));
@@ -86,10 +86,10 @@ test('carousel retains three batches, retries only a failed batch, and never nav
   await waitFor(() => expect(read).toHaveBeenCalledTimes(4));
   await waitFor(() => expect(screen.queryByText('Loading more units')).toBeNull());
   fireEvent.click(next);
-  expect(screen.getByRole('button', { name: 'Unit A-27' })).toBeVisible();
+  expect(screen.getByRole('link', { name: 'Unit A-27' })).toBeVisible();
   expect(next).toBeDisabled();
   fireEvent.keyDown(screen.getAllByRole('region').find((node) => node.hasAttribute('aria-roledescription'))!, { key: 'Home' });
-  expect(screen.getByRole('button', { name: 'Unit A-1' })).toBeVisible();
+  expect(screen.getByRole('link', { name: 'Unit A-1' })).toBeVisible();
   expect(read.mock.calls.map(([args]) => args.query)).toEqual([1, 2, 2, 3].map((pageNumber) => ({ pageNumber, pageSize: 12 })));
 });
 
@@ -97,13 +97,13 @@ test('project change aborts a carousel read and rejects its late response', asyn
   let resolve!: (value: PaginationResult<UnitListDto>) => void;
   const pending = new Promise<PaginationResult<UnitListDto>>((yes) => { resolve = yes; });
   const read = vi.spyOn(Units, 'getUnitsByProject').mockReturnValueOnce(pending).mockResolvedValueOnce({ ...page(1, 1), items: [{ ...page(1, 1).items[0]!, number: 'NEW' }] });
-  const view = renderUi(<UnitCarousel projectId={id} />);
+  const view = renderUi(<MemoryRouter><UnitCarousel projectId={id} /></MemoryRouter>);
   await waitFor(() => expect(read).toHaveBeenCalledTimes(1));
-  view.rerender(<LocaleProvider instance={view.instance}><ToastProvider><UnitCarousel projectId={`${id}-new`} /></ToastProvider></LocaleProvider>);
-  await screen.findByRole('button', { name: 'Unit NEW' });
+  view.rerender(<LocaleProvider instance={view.instance}><ToastProvider><MemoryRouter><UnitCarousel projectId={`${id}-new`} /></MemoryRouter></ToastProvider></LocaleProvider>);
+  await screen.findByRole('link', { name: 'Unit NEW' });
   expect(read.mock.calls[0]![1]?.signal?.aborted).toBe(true);
   await act(async () => { resolve(page(1)); });
-  expect(screen.queryByRole('button', { name: 'Unit A-1' })).toBeNull();
+  expect(screen.queryByRole('link', { name: 'Unit A-1' })).toBeNull();
 });
 
 test('public plan keeps server ordering, unknown status and missing-plan retry behavior', async () => {

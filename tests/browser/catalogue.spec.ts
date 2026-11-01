@@ -13,11 +13,19 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(page.getByText('Shared outdoor space')).toBeVisible();
   await expect(page.getByText('Second paragraph. <b>Plain text</b>', { exact: false })).toBeVisible();
   expect(await page.locator('main b').count()).toBe(0);
-  await page.getByRole('button', { name: 'Unit A-204', exact: true }).click();
-  await expect(page.getByText('Unit details are coming soon.', { exact: true })).toBeVisible();
-  await expect(page).toHaveURL(new RegExp('/projects/' + ids.project + '$'));
-  await page.goto(`/projects/${ids.project}/units/${ids.unit}`);
+  await page.getByRole('link', { name: 'Unit A-204', exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/units/${ids.unit}$`));
   await expect(page.getByRole('heading', { name: 'Unit A-204', exact: true })).toBeVisible();
+  const pricing = page.getByRole('region', { name: 'Unit pricing', exact: true });
+  await expect(pricing.getByText('999', { exact: false })).toBeVisible();
+  await expect(pricing.getByText('1,250', { exact: false })).toBeVisible();
+  const prices = pricing.locator('dl > div');
+  const firstPrice = await prices.nth(0).boundingBox();
+  const secondPrice = await prices.nth(1).boundingBox();
+  expect(Math.abs(firstPrice!.y - secondPrice!.y)).toBeLessThan(2);
+  const details = page.getByRole('region', { name: 'Unit details', exact: true });
+  await expect(details.getByText('A-204', { exact: true })).toBeVisible();
+  await expect(details.getByText('Garden view', { exact: true })).toBeVisible();
   await expect(page.getByText('1,234,567.89', { exact: false })).toBeVisible();
   expect(server.calls.find((url) => url.pathname === '/api/v1/units/' + ids.unit)?.searchParams.get('projectId')).toBe(ids.project);
   expect(server.calls.find((url) => url.pathname === '/api/v1/projects')?.searchParams.get('areaId')).toBe(ids.area);
@@ -117,10 +125,11 @@ test('missing project/unit, malformed identifiers and terms retrieval failure ar
 test('reservation CTA returns a customer to the selected unit and never submits a mutation', async ({ page, context }) => {
   const session = await routingServer(context); await catalogueServer(context); await seedRouting(page);
   const path = `/projects/${ids.project}/units/${ids.unit}`;
-  await page.goto(path); await page.getByRole('link', { name: 'Sign in to request a reservation' }).click();
+  await page.goto(path); await page.getByRole('button', { name: 'Reserve now', exact: true }).click();
+  await page.getByRole('dialog').getByRole('link', { name: 'Already have an account? Sign in' }).click();
   expect(new URL(page.url()).searchParams.get('returnTo')).toBe(path + '#reservation');
   await signIn(page); await expect(page).toHaveURL(new RegExp(ids.unit + '#reservation$'));
-  await expect(page.getByRole('button', { name: 'Request reservation', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reserve now', exact: true })).toBeVisible();
   expect(session.calls.some((path) => path === '/api/v1/reservations')).toBe(false);
   await page.goto('/projects/' + ids.project);
   await expect(page.locator('#project-time-plan').getByRole('heading', { name: 'Published schedule', exact: true })).toBeVisible();
@@ -150,6 +159,14 @@ for (const language of ['ar', 'en'] as const) {
         await expect(page.getByRole('img', { name: language === 'en' ? 'Photo unavailable' : 'الصورة غير متاحة' }).first()).toBeVisible();
         await page.getByRole('button', { name: language === 'en' ? 'Next photo' : 'الصورة التالية' }).click();
         await expect(page.getByRole('button', { name: language === 'en' ? 'Next photo' : 'الصورة التالية' })).toBeDisabled();
+      }
+      if (view === 'unit') {
+        const pricing = page.getByRole('region', { name: language === 'en' ? 'Unit pricing' : 'أسعار الوحدة', exact: true });
+        const prices = pricing.locator('dl > div');
+        const first = await prices.nth(0).boundingBox();
+        const second = await prices.nth(1).boundingBox();
+        expect(Math.abs(first!.y - second!.y)).toBeLessThan(2);
+        await expect(page.getByRole('region', { name: language === 'en' ? 'Unit details' : 'تفاصيل الوحدة', exact: true }).getByText('Garden view', { exact: true })).toBeVisible();
       }
       // Capture from the top after gallery interaction so fixed, offscreen skip links
       // are not painted at an old scroll offset by a full-page screenshot.

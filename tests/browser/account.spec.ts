@@ -3,6 +3,7 @@ import { openPublicSessionActions } from './publicHeaderActions';
 import { accountIds as ids, accountServer } from './accountFixtures';
 import { catalogueIds } from './catalogueFixtures';
 import { seedRouting, signIn } from './routingFixtures';
+import { bookingDetails, fillBooking } from './bookingActions';
 
 const unitPath = `/projects/${catalogueIds.project}/units/${catalogueIds.unit}`;
 test('register, browse unit, confirm once, fetch detail/list and cancel using authoritative state', async ({ page, context }) => {
@@ -12,14 +13,15 @@ test('register, browse unit, confirm once, fetch detail/list and cancel using au
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(catalogueIds.unit + '$'));
   server.state.createMode = 'slow';
-  await page.getByRole('button', { name: 'Request reservation', exact: true }).click();
+  await page.getByRole('button', { name: 'Reserve now', exact: true }).click();
   const dialog = page.getByRole('dialog'); await expect(dialog).toBeVisible();
+  await fillBooking(page);
   await dialog.getByRole('button', { name: 'Confirm reservation', exact: true }).click();
   await page.keyboard.press('Escape'); await expect(dialog).toBeVisible();
   await expect(page).toHaveURL(new RegExp('/account/reservations/' + ids.created + '$'));
   await expect(page.getByText('R-FIXTURE-CREATED', { exact: true })).toBeVisible();
   const writes = server.calls.filter((call) => call.method === 'POST' && call.path === '/api/v1/reservations');
-  expect(writes).toHaveLength(1); expect(writes[0]!.body).toEqual({ unitId: catalogueIds.unit });
+  expect(writes).toHaveLength(1); expect(writes[0]!.body).toEqual({ unitId: catalogueIds.unit, ...bookingDetails });
   await page.getByRole('button', { name: 'Cancel reservation', exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Confirm cancellation', exact: true }).click();
   await expect(page.getByText('Cancelled', { exact: true })).toBeVisible();
@@ -32,7 +34,8 @@ test('duplicate and unavailable conflicts refresh unit status without replaying 
   const server = await accountServer(context); await seedRouting(page, 'customer');
   for (const mode of ['duplicate', 'unavailable'] as const) {
     server.state.createMode = mode; await page.goto(unitPath);
-    await page.getByRole('button', { name: 'Request reservation', exact: true }).click();
+    await page.getByRole('button', { name: 'Reserve now', exact: true }).click();
+    await fillBooking(page);
     await page.getByRole('dialog').getByRole('button', { name: 'Confirm reservation', exact: true }).click();
     await expect(page.getByText('The current information has changed', { exact: false }).first()).toBeVisible();
     await expect.poll(() => server.calls.filter((call) => call.method === 'POST' && call.path === '/api/v1/reservations').length).toBe(mode === 'duplicate' ? 1 : 2);
@@ -42,7 +45,8 @@ test('duplicate and unavailable conflicts refresh unit status without replaying 
 });
 test('uncertain create/cancel outcomes stay blocked and offer a current reservation check', async ({ page, context }) => {
   const server = await accountServer(context); await seedRouting(page, 'customer'); server.state.createMode = 'network';
-  await page.goto(unitPath); await page.getByRole('button', { name: 'Request reservation', exact: true }).click();
+  await page.goto(unitPath); await page.getByRole('button', { name: 'Reserve now', exact: true }).click();
+  await fillBooking(page);
   await page.getByRole('dialog').getByRole('button', { name: 'Confirm reservation', exact: true }).click();
   await expect(page.getByRole('dialog').getByText('We could not confirm the outcome.', { exact: false })).toBeVisible();
   await expect(page.getByRole('dialog').getByRole('button', { name: 'Confirm reservation', exact: true })).toBeDisabled();
@@ -152,7 +156,7 @@ for (const language of ['ar', 'en'] as const) {
       await page.goto(path); await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       await expect(page.getByText(language === 'en' ? 'Loading your account' : 'جارٍ تحميل حسابك', { exact: true })).toHaveCount(0);
       if (view === 'profile') await expect(page.locator('#profile-fName')).toBeVisible();
-      if (view === 'confirmation') await page.getByRole('button', { name: language === 'en' ? 'Request reservation' : 'طلب حجز', exact: true }).click();
+      if (view === 'confirmation') await page.getByRole('button', { name: language === 'en' ? 'Reserve now' : 'احجز الآن', exact: true }).click();
       await page.evaluate(() => document.fonts.ready); await page.evaluate(() => scrollTo(0, 0));
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.locator('html')).toHaveAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');

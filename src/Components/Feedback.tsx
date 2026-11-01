@@ -1,15 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./Button";
-import { ui as styles } from './ui';
+import { ui as styles } from "./ui";
 
-export function Alert({
-  tone = "info",
-  children,
-}: {
-  tone?: "info" | "success" | "error";
-  children: ReactNode;
-}) {
+export function Alert({ tone = "info", children }: { tone?: "info" | "success" | "error"; children: ReactNode }) {
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
@@ -22,18 +16,11 @@ export function Alert({
   );
 }
 
-export function ValidationSummary({
-  items,
-}: {
-  items: { fieldId: string; message: string }[];
-}) {
+export function ValidationSummary({ items }: { items: { fieldId: string; message: string }[] }) {
   const { t } = useTranslation();
   if (!items.length) return null;
   return (
-    <div
-      role="alert"
-      className={`${styles.alert} ${styles.error} ${styles.summary}`}
-    >
+    <div role="alert" className={`${styles.alert} ${styles.error} ${styles.summary}`}>
       <strong>{t("validationTitle")}</strong>
       <ul>
         {items.map(({ fieldId, message }) => (
@@ -64,29 +51,11 @@ export function Loading({ label }: { label?: string }) {
   );
 }
 
-export function Skeleton({
-  width = "100%",
-  height = "1rem",
-}: {
-  width?: CSSProperties["inlineSize"];
-  height?: CSSProperties["blockSize"];
-}) {
-  return (
-    <div
-      aria-hidden="true"
-      className={styles.skeleton}
-      style={{ inlineSize: width, blockSize: height }}
-    />
-  );
+export function Skeleton({ width = "100%", height = "1rem" }: { width?: CSSProperties["inlineSize"]; height?: CSSProperties["blockSize"] }) {
+  return <div aria-hidden="true" className={styles.skeleton} style={{ inlineSize: width, blockSize: height }} />;
 }
 
-export function EmptyState({
-  title,
-  description,
-}: {
-  title?: string;
-  description?: string;
-}) {
+export function EmptyState({ title, description }: { title?: string; description?: string }) {
   const { t } = useTranslation();
   return (
     <div className={styles.state}>
@@ -96,15 +65,7 @@ export function EmptyState({
   );
 }
 
-export function ErrorPanel({
-  title,
-  description,
-  onRetry,
-}: {
-  title?: string;
-  description?: string;
-  onRetry?: () => void;
-}) {
+export function ErrorPanel({ title, description, onRetry }: { title?: string; description?: string; onRetry?: () => void }) {
   const { t } = useTranslation();
   return (
     <div className={styles.state} role="alert">

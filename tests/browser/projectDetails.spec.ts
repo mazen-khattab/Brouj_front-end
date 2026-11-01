@@ -126,7 +126,7 @@ test('unit and time-plan errors retry independently, including missing and empty
   await expect(page.getByText('The time plan is not available yet', { exact: true })).toBeVisible();
   server.state.failUnits = false;
   await page.locator('#project-units').getByRole('button', { name: 'Try again' }).click();
-  await expect(page.getByRole('button', { name: 'Unit A-1', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Unit A-1', exact: true })).toBeVisible();
   server.state.planFailure = 503;
   await page.locator('#project-time-plan').getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByText('The time plan could not load', { exact: true })).toBeVisible();
@@ -137,13 +137,13 @@ test('unit and time-plan errors retry independently, including missing and empty
   await expect(page.getByText('No units have been listed.', { exact: true })).toBeVisible();
 });
 
-test('touch swiping advances without opening the unit notice', async ({ page, context }) => {
+test('touch swiping advances without navigating to unit details', async ({ page, context }) => {
   await detailsServer(context); await seedRouting(page);
   await page.goto(`/projects/${ids.project}`);
   const carousel = page.locator('#project-units [aria-roledescription]');
-  await expect(carousel.getByRole('button').first()).toContainText('A-1');
+  await expect(carousel.getByRole('link').first()).toContainText('A-1');
   await carousel.dispatchEvent('pointerdown', { pointerType: 'touch', clientX: 250, clientY: 120 });
   await carousel.dispatchEvent('pointerup', { pointerType: 'touch', clientX: 60, clientY: 125 });
-  await expect(carousel.getByRole('button').first()).not.toContainText('A-1');
-  await expect(page.getByText('Unit details are coming soon.', { exact: true })).toHaveCount(0);
+  await expect(carousel.getByRole('link').first()).not.toContainText('A-1');
+  await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}$`));
 });

@@ -21,7 +21,7 @@ export function HomeProvider({ children }: { children: ReactNode }) {
     reloadProjects();
     reloadTerms();
   }, [reloadProjects, reloadTerms]);
-  
+
   useCatalogueInvalidation(reload);
 
   return (
