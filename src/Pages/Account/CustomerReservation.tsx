@@ -23,7 +23,7 @@ export default function CustomerReservation({ unit }: { unit: UnitDto }) {
     {!unit.isAvailable && <p>{t('unavailable', { ns: 'catalogue' })}</p>}
     <Button disabled={!unit.isAvailable || !!action.uncertain} pending={action.pending} pendingLabel={t('working')} onClick={() => setOpen(true)}>{t('requestReservation')}</Button>
     <Dialog open={open} pending={action.pending} title={t('createTitle')} description={t('createDescription')} onClose={() => setOpen(false)}>
-      <div className="grid gap-5"><p>{t('unit')}: <BidiText>{unit.number}</BidiText></p><ActionFeedback /><Link className="underline" to={routePaths.terms} aria-disabled={action.pending} tabIndex={action.pending ? -1 : 0} onClick={(event) => { if (action.pending) event.preventDefault(); }}>{t('terms')}</Link>
+      <div className="grid gap-5"><p>{t('unit')}: <BidiText>{unit.number}</BidiText></p><ActionFeedback /><Link className="inline-flex items-center text-sm font-medium text-primary/80 underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary hover:decoration-accent" to={routePaths.terms} aria-disabled={action.pending} tabIndex={action.pending ? -1 : 0} onClick={(event) => { if (action.pending) event.preventDefault(); }}>{t('terms')}</Link>
         <Button disabled={!unit.isAvailable || !!action.uncertain} pending={action.pending} pendingLabel={t('working')} onClick={() => void confirm()}>{t('confirmReservation')}</Button>
       </div>
     </Dialog>

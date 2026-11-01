@@ -238,23 +238,23 @@ export function AuthPage({ mode, onModeChange }: AuthPageProps & { mode: AuthMod
                 className="mt-8 flex flex-wrap gap-x-5 gap-y-4 border-t border-primary/15 pt-6 text-sm"
               >
                 {mode !== "customer" && (
-                  <Link className="underline" to={routePaths.login + location.search}>
+                  <Link className="font-medium text-primary/80 underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary hover:decoration-accent hover:underline-offset-6" to={routePaths.login + location.search}>
                     {t("customerTab")}
                   </Link>
                 )}
                 {mode !== "register" && (
-                  <Link className="underline" to={routePaths.register + location.search}>
+                  <Link className="font-medium text-primary/80 underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary hover:decoration-accent hover:underline-offset-6" to={routePaths.register + location.search}>
                     {t("registerTab")}
                   </Link>
                 )}
                 {mode !== "staff" && (
-                  <Link className="underline" to={routePaths.staffLogin + location.search}>
+                  <Link className="font-medium text-primary/80 underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary hover:decoration-accent hover:underline-offset-6" to={routePaths.staffLogin + location.search}>
                     {t("staffTab")}
                   </Link>
                 )}
               </nav>
             )}
-            <Link to={routePaths.home} className="mt-7 inline-block text-sm text-muted underline">
+            <Link to={routePaths.home} className="mt-7 inline-block text-sm text-muted underline decoration-muted/40 underline-offset-4 transition-all hover:text-primary hover:decoration-primary">
               {t("home")}
             </Link>
           </section>

@@ -44,7 +44,10 @@ export function ReservationEntry({ unit }: { unit: UnitDto }) {
           {t("retry", { ns: "auth" })}
         </Button>
       )}
-      <Link className="text-sm underline" to={routePaths.terms}>
+      <Link
+        className="inline-flex items-center text-sm font-medium text-primary/80 underline decoration-accent/50 underline-offset-4 transition-all hover:text-primary hover:decoration-accent"
+        to={routePaths.terms}
+      >
         {t("terms")}
       </Link>
     </section>

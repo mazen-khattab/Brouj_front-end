@@ -70,14 +70,17 @@ function LocationPicker({
     if (!open) {
       return;
     }
+
     const dismiss = (event: PointerEvent) => {
       if (event.target instanceof Node && !details.current?.contains(event.target) && details.current) {
         details.current.open = false;
       }
     };
+
     const onPointerUp = () => {
       pointerDownInside.current = false;
     };
+
     document.addEventListener("pointerdown", dismiss);
     document.addEventListener("pointerup", onPointerUp);
     return () => {
