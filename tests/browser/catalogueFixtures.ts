@@ -75,7 +75,7 @@ export async function catalogueServer(context: BrowserContext) {
     if (path.endsWith('/time-plan')) return ok({ id: '70000000-0000-4000-8000-000000000001', projectId: catalogueIds.project, name: 'Published schedule', deliveryDate: '2027-12-01T12:00:00Z', stages: [] });
     if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(catalogueProject);
     if (path.startsWith('/units/')) return state.missingUnit || query.get('projectId') !== catalogueIds.project ? fail(404) : ok({ ...catalogueUnit, isAvailable: state.unitAvailable });
-    if (path === '/terms-and-conditions/current') return state.failTerms ? fail(503) : ok({ id: 'terms', title: 'Published terms', content: 'Supplied legal text.\n<b>This stays plain text.</b>', versionNumber: 3, effectiveDate: '2026-10-01T00:00:00Z', isActive: true });
+    if (path === '/terms-and-conditions/current') return state.failTerms ? fail(503) : ok({ id: 'terms', title: 'Published terms', content: 'Supplied legal text.\n<b>This stays plain text.</b>', versionNumber: '3', effectiveDate: '2026-10-01T00:00:00Z', isActive: true });
     return fail(404);
   });
   return { state, calls, completed };

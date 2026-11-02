@@ -4,7 +4,7 @@ Part 11 implements the seven existing governance/account routes inside the lazy 
 
 ## Terms
 
-`/admin/terms` reads twenty versions per page. `?create=1` adds the plain-text version form. Creation sends only title, content, positive Int32 versionNumber and an explicit offset effectiveDate. Title is limited to 300 characters and content to 100,000, matching the live validators. Legal content remains in its supplied language and renders as React text, including literal HTML-looking strings.
+`/admin/terms` reads twenty versions per page. `?create=1` adds the plain-text version form. Creation sends only title, content, non-empty string versionNumber (up to 32 characters) and an explicit offset effectiveDate. Title is limited to 300 characters and content to 100,000, matching the live validators. Legal content remains in its supplied language and renders as React text, including literal HTML-looking strings.
 
 `/admin/terms/:termsId` shows immutable legal wording, version, effective date and active state. Activation requires confirmation and sends a bodyless POST. The server checks future dates and switches active versions. Success reloads the admin page/detail and invalidates mounted public catalogue/terms readers through the established in-memory event boundary. There is no legal edit or delete endpoint.
 

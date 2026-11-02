@@ -42,9 +42,9 @@ afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
 test("legal version validators preserve source prose and constrain integer/date/length boundaries", () => {
   const values = { title: " Original ", content: " <img src=x>\n Original legal text ", versionNumber: "3", effectiveDate: date };
   expect(invalidGovernanceFields("terms", values)).toEqual([]);
-  expect(termsInput(values)).toEqual({ ...values, versionNumber: 3 });
-  expect(invalidGovernanceFields("terms", { ...values, title: " ", content: "", versionNumber: "2147483648", effectiveDate: "2026-02-31T00:00:00Z" })).toEqual(["title", "content", "versionNumber", "effectiveDate"]);
-  expect(invalidGovernanceFields("terms", { ...values, title: "x".repeat(301), content: "x".repeat(100001), versionNumber: "1.1" })).toEqual(["title", "content", "versionNumber"]);
+  expect(termsInput(values)).toEqual({ ...values, versionNumber: "3" });
+  expect(invalidGovernanceFields("terms", { ...values, title: " ", content: "", versionNumber: "", effectiveDate: "2026-02-31T00:00:00Z" })).toEqual(["title", "content", "versionNumber", "effectiveDate"]);
+  expect(invalidGovernanceFields("terms", { ...values, title: "x".repeat(301), content: "x".repeat(100001), versionNumber: "x".repeat(33) })).toEqual(["title", "content", "versionNumber"]);
 });
 
 test("staff adapters allow both numeric roles and exclude privileged or credential fields from PATCH", () => {
@@ -81,7 +81,7 @@ test("activation refreshes the mounted public terms provider and the authoritati
   const list = vi.spyOn(termsService, "getTermsAndConditionsVersions").mockImplementation(async () => page([active]));
   vi.spyOn(termsService, "getTermsAndConditionsById").mockImplementation(async () => ({ ...active, id: ids.inactive }));
   const activate = vi.spyOn(termsService, "activateTermsAndConditions").mockImplementation(async () => {
-    active = { ...terms, id: ids.inactive, versionNumber: 2, content: "New original wording" };
+    active = { ...terms, id: ids.inactive, versionNumber: "2", content: "New original wording" };
     return ids.inactive;
   });
   const wrapper = ({ children }: { children: ReactNode }) => staff({ children: <CatalogueDetailProvider kind="terms"><TermsAdminProvider scope="terms" id={ids.inactive}>{children}</TermsAdminProvider></CatalogueDetailProvider> });
@@ -92,7 +92,7 @@ test("activation refreshes the mounted public terms provider and the authoritati
   await act(async () => { await hook.result.current.admin.activate(ids.inactive); });
   expect(activate).toHaveBeenCalledTimes(1);
   await waitFor(() => expect(publicRead.mock.calls.length).toBeGreaterThan(before));
-  expect(hook.result.current.public.result).toMatchObject({ status: "success", data: { value: { versionNumber: 2 } } });
+  expect(hook.result.current.public.result).toMatchObject({ status: "success", data: { value: { versionNumber: "2" } } });
   expect(list.mock.calls.length).toBeGreaterThan(1);
 });
 
