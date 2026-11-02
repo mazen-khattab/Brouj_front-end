@@ -34,7 +34,7 @@ test("terms create, immutable detail and activation refresh the admin list and p
   await save(page, en.createTerms);
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
   const write = server.calls.find((call) => call.method === "POST")!;
-  expect(write.body).toEqual({ title: "New legal wording", versionNumber: 3, effectiveDate: date, content: "Original legal prose\n<script>window.injected=true</script>" });
+  expect(write.body).toEqual({ title: "New legal wording", versionNumber: "3", effectiveDate: date, content: "Original legal prose\n<script>window.injected=true</script>" });
   await page.getByRole("link", { name: en.viewCreated }).click();
   await expect(page.getByText(en.immutableTerms, { exact: true })).toBeVisible();
   expect(await page.locator("main script").count()).toBe(0);
@@ -69,7 +69,7 @@ test("terms pagination and empty lists use bounded server queries", async ({ pag
   const server = await governanceServer(context);
   for (let index = 3; index <= 25; index += 1) {
     const id = `85000000-0000-4000-8000-${String(index).padStart(12, "0")}`;
-    server.terms.set(id, { ...governanceTerms, id, title: `Version ${index}`, versionNumber: index, isActive: false });
+    server.terms.set(id, { ...governanceTerms, id, title: `Version ${index}`, versionNumber: String(index), isActive: false });
   }
   await seedRouting(page, "superAdmin");
   await page.goto("/admin/terms");

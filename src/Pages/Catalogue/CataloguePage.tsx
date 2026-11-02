@@ -11,7 +11,7 @@ import { UnitDetails } from "../../Components/Catalogue/UnitDetails";
 import { ReservationEntry } from "../../Components/Catalogue/ReservationEntry";
 import { RouteHeading } from "../../Router/RouteFeedback";
 import { routePaths } from "../../Router/routePaths";
-import { formatDateTime, formatNumber } from "../../i18n/format";
+import { formatDateTime } from "../../i18n/format";
 import { BidiText } from "../../Components/BidiText";
 import { lazy, Suspense } from "react";
 import { PageLoading } from "../../Router/RouteFeedback";
@@ -39,7 +39,7 @@ function DetailView({ terms = false }: { terms?: boolean }) {
                 <h2 className="text-2xl font-medium">{detail.value.title}</h2>
                 <p className="mt-3 text-sm text-muted">
                   {t("version", {
-                    value: formatNumber(detail.value.versionNumber, locale),
+                    value: detail.value.versionNumber,
                   })}
                 </p>
               </header>

@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useTermsAdmin } from "../../Context/TermsAdminContext";
 import { useLocale } from "../../Hooks/useLocale";
-import { formatDateTime, formatNumber } from "../../i18n/format";
+import { formatDateTime } from "../../i18n/format";
 import { routePaths } from "../../Router/routePaths";
 import { GovernanceRead, GovernanceFeedback, GovernanceForm, GovernanceConfirm, governancePanel } from "../../Components/Governance/Shared";
 import { DataTable } from "../../Components/DataTable";
@@ -65,7 +65,7 @@ export default function TermsWorkspace() {
               </h2>
               <Facts
                 items={[
-                  { label: t("fields.versionNumber"), value: formatNumber(data.detail.versionNumber, locale) },
+                  { label: t("fields.versionNumber"), value: data.detail.versionNumber },
                   { label: t("fields.effectiveDate"), value: formatDateTime(data.detail.effectiveDate, locale) },
                   { label: t("state"), value: t(data.detail.isActive ? "active" : "inactive") },
                 ]}
@@ -104,7 +104,7 @@ export default function TermsWorkspace() {
                       </Link>
                     ),
                   },
-                  { id: "version", header: t("fields.versionNumber"), render: (row) => formatNumber(row.versionNumber, locale) },
+                  { id: "version", header: t("fields.versionNumber"), render: (row) => row.versionNumber },
                   { id: "date", header: t("fields.effectiveDate"), render: (row) => formatDateTime(row.effectiveDate, locale) },
                   { id: "active", header: t("state"), render: (row) => t(row.isActive ? "active" : "inactive") },
                 ]}

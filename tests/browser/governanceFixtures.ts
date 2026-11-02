@@ -13,7 +13,7 @@ export const governanceIds = {
   created: "84000000-0000-4000-8000-000000000001",
 };
 export const governanceDate = "2026-01-01T09:00:00+02:00";
-export const governanceTerms: TermsDto = { id: governanceIds.terms, title: "Current legal terms", content: 'Original legal wording.\n<img src="x" onerror="window.injected=true">', versionNumber: 1, effectiveDate: governanceDate, isActive: true };
+export const governanceTerms: TermsDto = { id: governanceIds.terms, title: "Current legal terms", content: 'Original legal wording.\n<img src="x" onerror="window.injected=true">', versionNumber: "1", effectiveDate: governanceDate, isActive: true };
 export const governanceStaff: UserDto = { id: governanceIds.staff, name: "Synthetic colleague", email: "colleague@example.test", phone: "01000000001", role: 1, deletedAt: null };
 export const governanceLog: ActivityLogDto = { id: governanceIds.log, entityType: "Project", entityId: governanceIds.terms, userId: governanceIds.self, action: 1, createdAt: governanceDate };
 
@@ -22,7 +22,7 @@ export async function governanceServer(context: BrowserContext, actor: TestActor
   const session = await routingServer(context, actor);
   const terms = new Map<string, TermsDto>([
     [governanceIds.terms, structuredClone(governanceTerms)],
-    [governanceIds.inactive, { ...governanceTerms, id: governanceIds.inactive, title: "Next legal terms", versionNumber: 2, content: "Second original wording", isActive: false }],
+    [governanceIds.inactive, { ...governanceTerms, id: governanceIds.inactive, title: "Next legal terms", versionNumber: "2", content: "Second original wording", isActive: false }],
   ]);
   const users = new Map<string, UserDto>([
     [governanceIds.staff, structuredClone(governanceStaff)],
@@ -77,7 +77,11 @@ export async function governanceServer(context: BrowserContext, actor: TestActor
       }
       const id = path.split("/").at(-1)!;
       if (path.includes("terms-and-conditions")) {
-        return path.endsWith("terms-and-conditions") ? ok(page([...terms.values()].sort((a, b) => b.versionNumber - a.versionNumber))) : terms.has(id) ? ok(terms.get(id)) : fail(404);
+        return path.endsWith("terms-and-conditions")
+          ? ok(page([...terms.values()].sort((a, b) => b.versionNumber.localeCompare(a.versionNumber, undefined, { numeric: true }))))
+          : terms.has(id)
+            ? ok(terms.get(id))
+            : fail(404);
       }
       if (path.includes("activity-logs")) {
         let rows = [...logs.values()];

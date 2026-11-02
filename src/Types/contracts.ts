@@ -189,7 +189,7 @@ export interface CreateReservationRequest {
 export interface CreateTermsVersionInput {
   title: string;
   content: string;
-  versionNumber: number;
+  versionNumber: string;
   effectiveDate: OffsetDateTime;
 }
 
@@ -652,7 +652,7 @@ export interface TermsDto {
   id: Guid;
   title: string;
   content: string;
-  versionNumber: number;
+  versionNumber: string;
   effectiveDate: OffsetDateTime;
   isActive: boolean;
 }
@@ -661,7 +661,7 @@ export interface TermsDto {
 export interface TermsListDto {
   id: Guid;
   title: string;
-  versionNumber: number;
+  versionNumber: string;
   effectiveDate: OffsetDateTime;
   isActive: boolean;
 }

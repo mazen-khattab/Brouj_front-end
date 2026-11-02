@@ -11,22 +11,50 @@ export function invalidGovernanceFields(kind: FormKind, values: GovernanceFields
   return Object.entries(values).flatMap(([key, value]) => {
     let valid = true;
     switch (key) {
-      case "title": valid = !!value.trim() && value.length <= 300; break;
-      case "content": valid = !!value.trim() && value.length <= 100000; break;
-      case "versionNumber": valid = /^\d+$/.test(value) && Number(value) > 0 && Number(value) <= 2147483647; break;
-      case "effectiveDate": valid = validPlanningDate(value); break;
-      case "name": valid = !!value.trim() && value.length <= 100; break;
-      case "email": valid = validEmail(value); break;
-      case "phone": valid = /^01[0125][0-9]{8}$/.test(value); break;
-      case "role": valid = /^[01]$/.test(value); break;
+      case "title":
+        valid = !!value.trim() && value.length <= 300;
+        break;
+      case "content":
+        valid = !!value.trim() && value.length <= 100000;
+        break;
+      case "versionNumber":
+        valid = !!value.trim() && value.trim().length <= 32;
+        break;
+      case "effectiveDate":
+        valid = validPlanningDate(value);
+        break;
+      case "name":
+        valid = !!value.trim() && value.length <= 100;
+        break;
+      case "email":
+        valid = validEmail(value);
+        break;
+      case "phone":
+        valid = /^01[0125][0-9]{8}$/.test(value);
+        break;
+      case "role":
+        valid = /^[01]$/.test(value);
+        break;
       case "password":
-      case "newPassword": valid = value.length >= 8; break;
-      case "currentPassword": valid = value.length >= 1; break;
-      case "userId": valid = !value || isGuid(value); break;
-      case "entityType": valid = value.length <= 128; break;
-      case "action": valid = !value || /^[012]$/.test(value); break;
+      case "newPassword":
+        valid = value.length >= 8;
+        break;
+      case "currentPassword":
+        valid = value.length >= 1;
+        break;
+      case "userId":
+        valid = !value || isGuid(value);
+        break;
+      case "entityType":
+        valid = value.length <= 128;
+        break;
+      case "action":
+        valid = !value || /^[012]$/.test(value);
+        break;
       case "dateFrom":
-      case "dateTo": valid = !value || validPlanningDate(value); break;
+      case "dateTo":
+        valid = !value || validPlanningDate(value);
+        break;
     }
     if (kind === "auditFilters" && key === "dateTo" && value && values.dateFrom && Date.parse(value) < Date.parse(values.dateFrom)) {
       valid = false;
@@ -36,7 +64,7 @@ export function invalidGovernanceFields(kind: FormKind, values: GovernanceFields
 }
 
 export function termsInput(values: GovernanceFields): CreateTermsVersionInput {
-  return { title: values.title!, content: values.content!, versionNumber: Number(values.versionNumber), effectiveDate: values.effectiveDate! };
+  return { title: values.title!, content: values.content!, versionNumber: values.versionNumber!, effectiveDate: values.effectiveDate! };
 }
 
 export function staffInput(values: GovernanceFields): UpdateUserInput {
