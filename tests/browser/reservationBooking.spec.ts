@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { accountIds, accountServer } from './accountFixtures';
 import { catalogueIds, catalogueProject, catalogueUnit } from './catalogueFixtures';
 import { seedRouting } from './routingFixtures';

@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { resources, translationGaps } from '../../src/i18n/resources';
 import { createLocaleInstance } from '../../src/i18n/instance';
 import { LanguageSwitcher } from '../../src/Components/LanguageSwitcher';
-import ComponentShowcase from '../../src/Pages/ComponentShowcase';
+import ComponentShowcase from '../../src/Features/Development/ComponentShowcase';
 import { renderUi } from '../renderUi';
 
 test('launch keys have complete nonempty parity across every registered namespace', () => {

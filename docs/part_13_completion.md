@@ -1,5 +1,7 @@
 # Part 13 — Final verification and release preparation
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Frontend work approved by the owner; real-environment release checks remain open**. The user explicitly stated, "Now I have approved part 13," and authorized a homepage/navbar redesign. This records acceptance of the prepared frontend work with its documented dependencies. No staging verification or deployment is claimed. The original verification results and open release checks below remain recorded.
 
 ## Prepared result

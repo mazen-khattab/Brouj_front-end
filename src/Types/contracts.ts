@@ -198,6 +198,13 @@ export interface CityInput {
 /** src/Brouj.API/Requests/CreateReservationRequest.cs */
 export interface CreateReservationRequest {
   unitId: Guid;
+  fullName: string;
+  ageGroup: string;
+  identityNumber: string;
+  phone: string;
+  placeOfResidence: string;
+  preferredFinancialBracket: number;
+  preferredRepaymentPeriod: number;
 }
 
 /** src/Brouj.Application/Features/Terms/DTOs/CreateTermsVersionInput.cs */
@@ -604,8 +611,8 @@ export interface SetStageTemplateItemsRequest {
 export interface StageDraftInput {
   stageTemplateId: Guid | null;
   name: string;
-  deliveryDate: OffsetDateTime | null;
   percentage: number;
+  deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
 }
 
@@ -697,19 +704,13 @@ export interface TimePlanInput {
   deliveryDate: OffsetDateTime | null;
 }
 
-export interface TimePlanStageInput {
-  name: string;
-  deliveryDate: OffsetDateTime | null;
-  percentage: number;
-}
-
 /** src/Brouj.Application/Features/TimePlans/DTOs/TimePlanStageDto.cs */
 export interface TimePlanStageDto {
   id: Guid;
   name: string;
   sortOrder: number;
-  percentage: number;
   deliveryDate: OffsetDateTime;
+  percentage: number;
   items: ReadonlyArray<PlanStageItemDto>;
 }
 

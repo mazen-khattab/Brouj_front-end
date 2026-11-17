@@ -1,5 +1,7 @@
 # Part 10 — Admin time plans and templates
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. Part 09 was approved by the user in this conversation with `$implement-brouj-frontend-part part_10`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 10 only. Part 10 was approved on 2026-10-29 in this conversation with the Part 11 invocation: “Ok, Approved. Now, let's navigate to the next part.”
 
 ## Delivered behavior
@@ -20,7 +22,7 @@ Ordering sends complete one-based sibling sets, has native keyboard controls and
 - `src/Router/router.tsx`, `scripts/verify-route-bundles.mjs`: Phase 10 lazy route integration and bundle isolation check.
 - `src/i18n/resources.ts`, both `timePlans.json` locales: complete Arabic/English UI and accessible labels.
 - `tests/unit/planning.test.tsx`, `tests/browser/planningFixtures.ts`, `tests/browser/planning.spec.ts`: validation, binding, source, lifecycle, complete workflows, failures and bilingual capture coverage. `tests/browser/routing.spec.ts` adds the approved staff template endpoints to its route audit allow-list.
-- This report, `docs/admin-planning.md`, Part 09 approval evidence and the master ledger. Concurrent user edits to `docs/useCatalogueRead-explained.md` and whitespace in `useCatalogueRead.ts` are preserved and are outside the Part 10 implementation.
+- This report, `docs/admin-planning.md`, Part 09 approval evidence and the master ledger. Concurrent user edits to `docs/useResourceRead-explained.md` and whitespace in `useCatalogueRead.ts` are preserved and are outside the Part 10 implementation.
 
 ## Verification
 

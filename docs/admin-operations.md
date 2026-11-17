@@ -18,4 +18,4 @@ Definitive 403/404/409 responses reconcile current state without replaying the m
 
 Only locale/session coordination hints use existing persistence. Operational DTOs, selected customer data, filter search text and outcomes are not persisted or logged. Browser evidence uses synthetic inventory and masks customer names, email, phone and search controls before saving screenshots. Real API/SQL/account-policy/cookie verification still needs the configured backend and dedicated verification accounts recorded in the inherited [session dependency](session-verification.md).
 
-See [Part 09 acceptance and verification evidence](part_09_completion.md), the [API/UI contract matrix](contracts/api-ui-matrix.md) and [routing/access guide](routing-access.md). Part 10 requires separate phase approval.
+See [Part 09 acceptance and verification evidence](part_09_completion.md), the [API/UI contract matrix](contracts/api-ui-matrix.md) and [routing/access guide](routing-access.md). Current ownership is documented in [feature architecture](feature-architecture.md); Customers, Reservations, and Orders each own their routes, filters, policies, and state.

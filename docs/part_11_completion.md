@@ -1,5 +1,7 @@
 # Part 11 — Admin governance and staff
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. Part 10 was approved by the user in this conversation with `$implement-brouj-frontend-part part_11`: “Ok, Approved. Now, let's navigate to the next part.” This report covers Part 11 only. Part 11 was approved by the user on 2026-10-29 with the same explicit approval and `$implement-brouj-frontend-part part_12` invocation.
 
 ## Delivered behavior

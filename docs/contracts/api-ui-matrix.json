@@ -1,5 +1,5 @@
 {
-  "backendCommit": "84fab425c6c2cf48d4cecfe5025274284c8c4bdd",
+  "backendCommit": "760db374f169316dcfe1b48432bb11abf785241c",
   "businessOperationCount": 104,
   "operations": [
     {
@@ -2367,7 +2367,7 @@
       "rateLimit": "PublicReads",
       "cache": "no-store",
       "contentType": null,
-      "controller": "src/Brouj.API/Controllers/TermsController.cs",
+      "controller": "src/Brouj.API/Controllers/TemrsAndConditionsController.cs",
       "service": "Services/Terms",
       "context": "TermsContext",
       "screen": "Website / current terms",

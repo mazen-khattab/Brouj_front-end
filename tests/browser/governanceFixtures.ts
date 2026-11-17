@@ -38,6 +38,7 @@ export async function governanceServer(context: BrowserContext, actor: TestActor
     const path = url.pathname;
     const method = request.method();
     const managed = /^\/api\/v1\/admin\/(terms-and-conditions|users|activity-logs)(\/|$)/.test(path)
+      || ((method === "GET" || method === "OPTIONS") && /^\/api\/v1\/terms-and-conditions(\/|$)/.test(path))
       || path === "/api/v1/terms-and-conditions/current" || path === "/api/v1/users/me/change-password"
       || (path === "/api/v1/users/me" && !session.state.unavailable && ["admin", "superAdmin"].includes(session.state.actor));
     if (!managed) {

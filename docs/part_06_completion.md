@@ -1,5 +1,7 @@
 # Part 06 completion report
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved** by the user on 2026-10-29 with the Part 07 invocation: "Ok, Approved. Now, let's navigate to the next part.". Part 05 was explicitly approved by the user in this conversation: "Ok, Approved. Now, let's navigate to the next part." with the Part 06 invocation. Its report and master ledger record that approval. This report describes the Part 06 handoff; subsequent work is recorded in Part 07.
 
 ## Delivered

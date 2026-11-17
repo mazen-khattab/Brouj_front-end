@@ -31,6 +31,7 @@ export async function routingServer(context: BrowserContext, actor: TestActor = 
 }
 export async function seedRouting(page: Page, actor: TestActor = 'anonymous', language: 'ar' | 'en' = 'en') {
   await page.addInitScript(({ actor, language }) => {
+    if (location.protocol !== 'https:') return;
     if (!localStorage.getItem('brouj.locale')) localStorage.setItem('brouj.locale', language);
     if (actor !== 'anonymous') localStorage.setItem('brouj.actor-hint', actor === 'customer' ? 'customer' : 'staff');
   }, { actor, language });

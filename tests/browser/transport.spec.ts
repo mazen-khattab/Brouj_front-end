@@ -2,7 +2,7 @@ import { expect, test } from './sessionFixtures';
 import { openPublicSessionActions } from './publicHeaderActions';
 
 const cors = {
-  'access-control-allow-origin': 'https://localhost:5173',
+  'access-control-allow-origin': `https://localhost:${process.env.BROUJ_TEST_PORT ?? '5173'}`,
   'access-control-allow-credentials': 'true',
   'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'Content-Type, X-CSRF-TOKEN',

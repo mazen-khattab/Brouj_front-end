@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import type { Page } from '@playwright/test';
 import { routeDefinitions } from '../../src/Router/routeDefinitions';
 import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
@@ -7,13 +7,13 @@ import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openPublicSessionActions } from './publicHeaderActions';
 
 const heading = (page: Page) => page.getByRole('heading', { level: 1 });
-const placeholderFile = /\/src\/Pages\/Catalogue\/CataloguePage\.tsx(?:\?.*)?$/;
+const publicProjectModule = /\/src\/Features\/Projects\/Public\/ProjectPage\.tsx(?:\?.*)?$/;
 for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
   test(`all route permissions and deep links for ${actor}`, async ({ page, context }) => {
     test.setTimeout(120_000);
     const server = await routingServer(context, actor); await seedRouting(page, actor);
     const adminFiles: string[] = [];
-    page.on('request', (request) => { if (/\/src\/(Layouts\/AdminLayout|Pages\/Admin\/|Features\/(Cities|Areas|Projects|Units)\/)/.test(request.url())) adminFiles.push(request.url()); });
+    page.on('request', (request) => { if (/\/src\/(Layouts\/AdminLayout|Features\/[^/]+\/Admin\/|Features\/Profile\/Staff\/|Features\/Dashboard\/|Features\/Planning\/(?!Public\/))/.test(request.url())) adminFiles.push(request.url()); });
     for (const route of routeDefinitions) {
       const path = route.path.replace(/:[^/]+/g, 'fixture');
       await page.goto(path);
@@ -106,7 +106,7 @@ test('lazy navigation uses a local pending view while the public header and foot
   await routingServer(context); await seedRouting(page);
   let release!: () => void;
   const pending = new Promise<void>((resolve) => { release = resolve; });
-  await page.route(placeholderFile, async (route) => { await pending; await route.continue(); });
+  await page.route(publicProjectModule, async (route) => { await pending; await route.continue(); });
   await page.goto('/'); await expect(heading(page)).toHaveText('Brouj');
   await page.getByRole('link', { name: 'Explore projects' }).click();
   await expect(page.getByText('Loading page', { exact: true })).toBeVisible();
@@ -134,11 +134,11 @@ test('bootstrap waits and unavailable session retries without a redirect or admi
 
 test('a failed lazy page preserves its layout and offers a safe reload', async ({ page, context }) => {
   await routingServer(context); await seedRouting(page);
-  await page.route(placeholderFile, (route) => route.abort('failed'));
+  await page.route(publicProjectModule, (route) => route.abort('failed'));
   await page.goto('/projects');
   await expect(heading(page)).toHaveText('This page could not open');
   await expect(page.locator('header')).toBeVisible(); await expect(page.locator('footer')).toBeVisible();
-  await page.unroute(placeholderFile);
+  await page.unroute(publicProjectModule);
   await page.getByRole('button', { name: 'Reload page' }).click();
   await expect(heading(page)).toHaveText('Projects');
 });

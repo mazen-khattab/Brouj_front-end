@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useTimePlan } from "../Plans/TimePlanContext";
 import { useStaffRead } from "../../../Hooks/useStaffRead";
 import { getStageTemplateById } from "../../../Services/Templates";
-import { useEditorGuard } from "../Shared/editorDraft";
+import { useEditorGuard } from "../../../Forms/editorDraft";
 import { stageFrom, stageInput } from "./mapping";
 import { TimePlanStageForm } from "./TimePlanStageForm";
 import { ApplyStageTemplateForm } from "./ApplyStageTemplateForm";
@@ -13,7 +13,7 @@ import { sessionBoundary } from "../../../Security/sessionBoundary";
 import { SourcePicker } from "../SourcePicker";
 import type { SourceChoice } from "../SourcePicker";
 import { PlanningRead } from "../Shared/Feedback";
-import { planningPanel } from "../Shared/classes";
+import { operationsPanel as planningPanel } from "../../../Components/panels";
 import { Button } from "../../../Components/Button";
 
 function SelectedTemplate({ id, disabled }: { id: string; disabled: boolean }) {

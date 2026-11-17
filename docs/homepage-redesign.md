@@ -16,7 +16,7 @@ Updated on 2026-10-30 with the owner's responsive hero, typography and navigatio
 
 ## Implementation
 
-`src/Pages/WelcomePage.tsx` composes the sections from `src/Components/Home/`. `HomeProvider`, `HomeContext` and `useHome` keep independent project/terms reads behind the existing services. Reads retain cancellation/latest-response protection and refresh after catalogue invalidation. Failures, retries and empty results use existing shared feedback.
+`src/Features/Home/HomePage.tsx` composes the sections from `src/Features/Home/`. `HomeProvider`, `HomeContext` and `useHome` keep independent project/terms reads behind the existing services. Reads retain cancellation/latest-response protection and refresh after catalogue invalidation. Failures, retries and empty results use existing shared feedback.
 
 `PublicLayout.tsx` supplies the footer and mounts `PublicHeader.tsx`. Its account disclosure supports Tab, Escape/focus return, focus departure and outside-click dismissal, and resets across routes/identities. Shared controls accept compact/vertical variants; admin navigation keeps its existing arrangement. `Navigation.tsx` distinguishes query-filter and hash destinations when marking links active. Styles stay in `src/Styles/global.css`; English/Arabic copy uses the `home` namespace. No dependencies, backend code, endpoints or DTOs changed.
 

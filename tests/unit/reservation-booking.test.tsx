@@ -1,8 +1,8 @@
 ﻿import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, expect, test, vi } from 'vitest';
-import { bookingInput, bookingValues, validateBooking } from '../../src/Account/reservationBooking';
-import { useReservationBookingController } from '../../src/Hooks/useReservationBooking';
+import { bookingInput, bookingValues, validateBooking } from '../../src/Features/Reservations/Customer/booking';
+import { useReservationBookingController } from '../../src/Features/Reservations/Customer/useReservationBooking';
 import { AuthContext } from '../../src/Context/AuthContext';
 import type { AuthValue } from '../../src/Context/AuthContext';
 import { ApiError } from '../../src/Types/failures';

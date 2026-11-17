@@ -29,7 +29,7 @@ export async function getActiveTermsAndConditions(options: RequestOptions = {}):
   });
 }
 
-/** GET /api/v1/admin/terms-and-conditions — AdminOnly; returns unwrapped domain data. */
+/** GET /api/v1/terms-and-conditions — AdminOnly; returns unwrapped domain data. */
 export async function getTermsAndConditionsVersions(
   args: { query?: GetTermsAndConditionsVersionsParameters } = {},
   options: RequestOptions = {},
@@ -49,7 +49,7 @@ export async function getTermsAndConditionsVersions(
   });
 }
 
-/** GET /api/v1/admin/terms-and-conditions/{id} — AdminOnly; returns unwrapped domain data. */
+/** GET /api/v1/terms-and-conditions/{id} — AdminOnly; returns unwrapped domain data. */
 export async function getTermsAndConditionsById(args: { id: Guid }, options: RequestOptions = {}): Promise<TermsDto> {
   return apiRequest<TermsDto>({
     method: "GET",

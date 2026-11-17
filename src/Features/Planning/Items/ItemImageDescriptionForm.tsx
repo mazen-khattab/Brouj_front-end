@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Textarea } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
-import { useEditorDraft } from "../Shared/editorDraft";
-import { planningFieldErrors } from "../Shared/fieldErrors";
+import { useEditorDraft } from "../../../Forms/editorDraft";
+import { serverFieldErrors } from "../../../Forms/fieldErrors";
 import { validateImageDescription } from "./validation";
 import type { ItemImageDescriptionDraft, ItemImageDescriptionFormProps } from "./types";
 
@@ -13,7 +13,7 @@ export function ItemImageDescriptionForm({ id, title, initial, disabled, pending
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof ItemImageDescriptionDraft)[]>([]);
   const fields: readonly (keyof ItemImageDescriptionDraft)[] = ["description"];
-  const errors = [...new Set([...invalid, ...planningFieldErrors(failure, fields)])];
+  const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof ItemImageDescriptionDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });

@@ -1,5 +1,7 @@
 # Project details redesign — implementation handoff
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 The user approved this plan and requested implementation in a **new session**. This file records the agreement; it does not claim implementation or verification.
 
 ## Workspace and authorization

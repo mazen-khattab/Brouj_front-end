@@ -5,14 +5,8 @@ import { ApiError } from '../Types/failures';
 export { routePaths } from './browserPaths';
 
 function segment(value: string): string {
-  if (typeof value !== 'string' || !value || value === '.' || value === '..') {
-    throw new ApiError('unknown');
-  }
-  try {
-    return encodeURIComponent(value); 
-  } catch { 
-    throw new ApiError('unknown');
-  }
+  if (typeof value !== 'string' || !value || value === '.' || value === '..') throw new ApiError('unknown');
+  try { return encodeURIComponent(value); } catch { throw new ApiError('unknown'); }
 }
 
 export const apiPaths = {

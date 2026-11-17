@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import type { BrowserContext } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { catalogueIds as ids, catalogueServer, catalogueUnit } from './catalogueFixtures';
@@ -25,7 +25,7 @@ async function detailsServer(context: BrowserContext) {
     if (url.pathname.endsWith('time-plan')) return state.planFailure ? fail(state.planFailure) : ok(plan);
     const number = Number(url.searchParams.get('pageNumber') ?? 1), size = Number(url.searchParams.get('pageSize') ?? 12);
     if (state.failUnits || number > 1 && state.failNextBatch) return fail(503);
-    const items = Array.from({ length: state.unitCount }, (_, index) => ({ ...catalogueUnit, id: `unit-${index}`, number: `A-${index + 1}` }));
+    const items = Array.from({ length: state.unitCount }, (_, index) => ({ ...catalogueUnit, id: `90000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, number: `A-${index + 1}` }));
     return ok({ items: items.slice((number - 1) * size, number * size), pageNumber: number, pageSize: size, totalCount: state.unitCount, totalPages: Math.ceil(state.unitCount / size) });
   });
   return { calls, state, plan };
@@ -44,9 +44,8 @@ for (const language of ['en', 'ar'] as const) {
     const carousel = page.locator('#project-units [aria-roledescription]');
     await expect(carousel.getByRole('article')).toHaveCount((page.viewportSize()?.width ?? 1440) >= 1280 ? 3 : 1);
     await expect(page.getByRole('heading', { name: 'Published schedule', exact: true })).toBeVisible();
-    await expect(page.locator('#project-units input, #project-units select, #project-units a')).toHaveCount(0);
-    await carousel.getByRole('button').first().click();
-    await expect(page.getByText(text.soon, { exact: true })).toBeVisible();
+    await expect(page.locator('#project-units input, #project-units select')).toHaveCount(0);
+    await expect(carousel.getByRole('link').first()).toHaveAttribute('href', `/projects/${ids.project}/units/90000000-0000-4000-8000-000000000001`);
     await expect(page).toHaveURL(path);
     const next = page.getByRole('button', { name: text.next, exact: true });
     for (let step = 0; step < 28; step++) {
@@ -55,13 +54,13 @@ for (const language of ['en', 'ar'] as const) {
       // Wait for an approaching-end prefetch before attempting the loaded boundary.
       await expect(page.locator('#project-units [aria-busy="true"]')).toHaveCount(0);
     }
-    await expect(carousel.getByRole('button').last()).toContainText('A-27');
+    await expect(carousel.getByRole('link').last()).toContainText('A-27');
     await expect(next).toBeDisabled();
     const unitCalls = server.calls.filter((url) => url.pathname.endsWith('/units'));
     expect(unitCalls.map((url) => url.searchParams.get('pageNumber'))).toEqual(['1', '2', '3']);
     expect(unitCalls.every((url) => url.searchParams.get('pageSize') === '12' && !url.searchParams.has('search'))).toBe(true);
     await carousel.focus(); await carousel.press('Home');
-    await expect(carousel.getByRole('button').first()).toContainText('A-1');
+    await expect(carousel.getByRole('link').first()).toContainText('A-1');
     await carousel.press(language === 'ar' ? 'ArrowLeft' : 'ArrowRight');
     await expect(page.getByRole('button', { name: text.previous, exact: true })).toBeEnabled();
 

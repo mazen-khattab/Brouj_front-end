@@ -8,7 +8,7 @@ import * as services from "../../../Services/Templates";
 import { executeTemplate } from "./commands";
 import type { TemplateKind, TemplateCommand } from "./commands";
 import { ApiError } from "../../../Types/failures";
-import { isGuid } from "../../../Catalogue/query";
+import { isGuid } from "../../../Services/identifiers";
 import { useAuth } from "../../../Hooks/useAuth";
 import { sessionBoundary } from "../../../Security/sessionBoundary";
 

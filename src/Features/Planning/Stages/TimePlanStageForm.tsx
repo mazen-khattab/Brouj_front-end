@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Input } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
-import { useEditorDraft } from "../Shared/editorDraft";
-import { planningFieldErrors } from "../Shared/fieldErrors";
+import { useEditorDraft } from "../../../Forms/editorDraft";
+import { serverFieldErrors } from "../../../Forms/fieldErrors";
 import { validateStage } from "./validation";
 import type { TimePlanStageDraft, TimePlanStageFormProps } from "./types";
 
@@ -18,7 +18,7 @@ export function TimePlanStageForm({
   const fields: readonly (keyof TimePlanStageDraft)[] = mode === "create"
     ? ["name", "deliveryDate", "percentage"]
     : ["name", "deliveryDate"];
-  const errors = [...new Set([...invalid, ...planningFieldErrors(failure, fields)])];
+  const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof TimePlanStageDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });

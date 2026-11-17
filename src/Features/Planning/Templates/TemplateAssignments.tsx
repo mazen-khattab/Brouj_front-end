@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTemplates } from "./TemplatesContext";
-import { useEditorDraft } from "../Shared/editorDraft";
+import { useEditorDraft } from "../../../Forms/editorDraft";
 import { moveRows, ordered } from "../Shared/ordering";
 import type { StageTemplateDto } from "../../../Types/contracts";
 import { SourcePicker } from "../SourcePicker";

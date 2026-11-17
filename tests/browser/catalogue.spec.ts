@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { catalogueIds as ids, catalogueServer } from './catalogueFixtures';
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openProjectFilters } from './projectFilterActions';
@@ -29,7 +29,7 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(page.getByText('1,234,567.89', { exact: false })).toBeVisible();
   expect(server.calls.find((url) => url.pathname === '/api/v1/units/' + ids.unit)?.searchParams.get('projectId')).toBe(ids.project);
   expect(server.calls.find((url) => url.pathname === '/api/v1/projects')?.searchParams.get('areaId')).toBe(ids.area);
-  await page.getByRole('link', { name: 'Current terms and conditions', exact: true }).click();
+  await page.locator('footer').getByRole('link', { name: 'Terms and conditions', exact: true }).click();
   await expect(page.getByText('Supplied legal text.', { exact: false })).toBeVisible();
   expect(await page.locator('main b').count()).toBe(0);
 });

@@ -90,6 +90,55 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": null
+        },
+        {
+          "name": "fullName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "ageGroup",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "identityNumber",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "placeOfResidence",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "preferredFinancialBracket",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "preferredRepaymentPeriod",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
         }
       ]
     },
@@ -2097,10 +2146,10 @@
         },
         {
           "name": "versionNumber",
-          "csharpType": "int",
+          "csharpType": "string",
           "nullable": false,
           "requiredMember": false,
-          "defaultExpression": null
+          "defaultExpression": "string.Empty"
         },
         {
           "name": "effectiveDate",
@@ -2138,10 +2187,10 @@
         },
         {
           "name": "versionNumber",
-          "csharpType": "int",
+          "csharpType": "string",
           "nullable": false,
           "requiredMember": false,
-          "defaultExpression": null
+          "defaultExpression": "string.Empty"
         },
         {
           "name": "effectiveDate",
@@ -2179,10 +2228,10 @@
         },
         {
           "name": "versionNumber",
-          "csharpType": "int",
+          "csharpType": "string",
           "nullable": false,
           "requiredMember": false,
-          "defaultExpression": null
+          "defaultExpression": "string.Empty"
         },
         {
           "name": "effectiveDate",
@@ -2319,6 +2368,13 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "percentage",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
         },
         {
           "name": "deliveryDate",
@@ -2493,6 +2549,13 @@
         {
           "name": "deliveryDate",
           "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "percentage",
+          "csharpType": "decimal",
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": null
@@ -3323,7 +3386,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/Terms/DTOs/CreateTermsVersionInputValidator.cs",
-      "rules": "public sealed class CreateTermsVersionInputValidator : AbstractValidator<CreateTermsVersionInput>\n{\n    public CreateTermsVersionInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Title).NotEmpty().MaximumLength(300);\n        RuleFor(input => input.Content).NotEmpty().MaximumLength(100000);\n        RuleFor(input => input.VersionNumber).GreaterThan(0);\n        RuleFor(input => input.EffectiveDate).NotEmpty();\n    }\n}"
+      "rules": "public sealed class CreateTermsVersionInputValidator : AbstractValidator<CreateTermsVersionInput>\n{\n    public CreateTermsVersionInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Title).NotEmpty().MaximumLength(300);\n        RuleFor(input => input.Content).NotEmpty().MaximumLength(100000);\n        RuleFor(input => input.VersionNumber).NotEmpty().MaximumLength(32);\n        RuleFor(input => input.EffectiveDate).NotEmpty();\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/PlanStageItemInputValidator.cs",
@@ -3335,7 +3398,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInputValidator.cs",
-      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
+      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Percentage).InclusiveBetween(0, 100);\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInputValidator.cs",
@@ -3555,7 +3618,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/Reservations/Commands/Create/CreateReservationCommandValidator.cs",
-      "rules": "public sealed class CreateReservationCommandValidator : AbstractValidator<CreateReservationCommand>\n{\n    public CreateReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n    }\n}"
+      "rules": "public sealed class CreateReservationCommandValidator : AbstractValidator<CreateReservationCommand>\n{\n    public CreateReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n\n        RuleFor(request => request.FullName)\n            .NotEmpty()\n            .MaximumLength(100);\n\n        RuleFor(request => request.IdentityNumber)\n            .NationalId();\n\n        RuleFor(request => request.Phone)\n            .EgyptianPhone();\n\n        RuleFor(request => request.AgeGroup)\n            .NotEmpty()\n            .MaximumLength(16);\n\n        RuleFor(request => request.PlaceOfResidence)\n            .NotEmpty()\n            .MaximumLength(100);\n\n        RuleFor(request => request.PreferredFinancialBracket)\n            .GreaterThan(0);\n\n        RuleFor(request => request.PreferredRepaymentPeriod)\n            .GreaterThan(0);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Reservations/Queries/GetAll/GetReservationsQueryValidator.cs",

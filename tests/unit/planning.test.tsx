@@ -13,9 +13,9 @@ import { executePlan } from "../../src/Features/Planning/Plans/commands";
 import { executeTemplate } from "../../src/Features/Planning/Templates/commands";
 import type { PlanCommand } from "../../src/Features/Planning/Plans/commands";
 import { assertCompleteOrdering, moveRows, orderingInput } from "../../src/Features/Planning/Shared/ordering";
-import { planningFieldErrors } from "../../src/Features/Planning/Shared/fieldErrors";
+import { serverFieldErrors } from "../../src/Forms/fieldErrors";
 import { stageFromTemplateInput, stageInput, stageUpdateInput, stageFrom } from "../../src/Features/Planning/Stages/mapping";
-import { validPlanningDate } from "../../src/Features/Planning/Shared/dates";
+import { validDateTime } from "../../src/Validation/dateTime";
 import { ApiError } from "../../src/Types/failures";
 import * as plans from "../../src/Services/TimePlans";
 import * as templates from "../../src/Services/Templates";
@@ -70,7 +70,7 @@ afterEach(() => vi.restoreAllMocks());
 test.each(["2026-12-01T09:00:00+02:00", "2026-12-01T09:00:00Z", "2028-02-29T09:00:00.1234567-14:00"])(
   "explicit real offset date passes: %s",
   (value) => {
-    expect(validPlanningDate(value)).toBe(true);
+    expect(validDateTime(value)).toBe(true);
   },
 );
 
@@ -85,7 +85,7 @@ test.each([
   "2026-12-01T09:00:00+01:60",
   "0000-12-01T09:00:00Z",
 ])("missing or invalid planning date is rejected: %s", (value) => {
-  expect(validPlanningDate(value)).toBe(false);
+  expect(validDateTime(value)).toBe(false);
 });
 
 test("feature validation explicitly covers plan, stage, item, status, image and template fields", () => {
@@ -105,7 +105,7 @@ test("feature validation explicitly covers plan, stage, item, status, image and 
   // Unknown fields cannot accidentally acquire date validation; the feature owns its explicit rules.
   const extended = { name: "Stage", deliveryDate: date, percentage: "25", notes: "A regular text field" };
   expect(validateStage(extended, "create")).toEqual([]);
-  expect(planningFieldErrors(new ApiError("transport", { fieldErrors: { "Input.Name": ["Untrusted text"] } }), ["name", "code"])).toEqual(["name"]);
+  expect(serverFieldErrors(new ApiError("transport", { fieldErrors: { "Input.Name": ["Untrusted text"] } }), ["name", "code"])).toEqual(["name"]);
 });
 
 test("ordering preserves input arrays and checks the complete unique sibling set and contiguous positions", () => {

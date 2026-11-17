@@ -1,6 +1,6 @@
 # Reservation form and backend handoff
 
-The unit details page for both project types ends with **Reserve now**. The modal collects a four-part name, phone, 14-digit national ID, age group, residence, financial preference and repayment period. All fields are required. Signed-in customers start with their current name, phone and national ID; edits apply to this reservation only. Preference selections start empty for every new booking.
+The form and its controller, validation, and UI types live in `src/Features/Reservations/Customer`; the unit page integrates through explicit unit/refresh props. The unit details page for both project types ends with **Reserve now**. The modal collects a four-part name, phone, 14-digit national ID, age group, residence, financial preference and repayment period. All fields are required. Signed-in customers start with their current name, phone and national ID; edits apply to this reservation only. Preference selections start empty for every new booking.
 
 Guests also enter email and password. Submission first registers the customer through the existing authentication coordinator, establishes the customer session, and then calls the protected reservation endpoint. An existing account must sign in using the link in the modal. A registration failure cannot create a reservation. No customer profile update is sent.
 

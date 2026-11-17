@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import type { Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import { governanceServer, governanceIds as ids, governanceDate as date, governanceLog, governanceStaff, governanceTerms } from "./governanceFixtures";

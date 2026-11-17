@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Input, Select } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
-import { useEditorDraft } from "../Shared/editorDraft";
-import { planningFieldErrors } from "../Shared/fieldErrors";
+import { useEditorDraft } from "../../../Forms/editorDraft";
+import { serverFieldErrors } from "../../../Forms/fieldErrors";
 import { validateItemStatus } from "./validation";
 import type { TimePlanItemStatusDraft, TimePlanItemStatusFormProps } from "./types";
 
@@ -13,7 +13,7 @@ export function TimePlanItemStatusForm({ id, title, initial, disabled, pending, 
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof TimePlanItemStatusDraft)[]>([]);
   const fields: readonly (keyof TimePlanItemStatusDraft)[] = ["status","confirmedDate"];
-  const errors = [...new Set([...invalid, ...planningFieldErrors(failure, fields)])];
+  const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof TimePlanItemStatusDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });

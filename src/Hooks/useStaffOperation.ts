@@ -3,8 +3,8 @@ import type { RefObject } from "react";
 import { useAuth } from "./useAuth";
 import { sessionBoundary } from "../Security/sessionBoundary";
 import { ApiError } from "../Types/failures";
-import { uncertainWrite } from "../Account/policy";
-import { isGuid } from "../Catalogue/query";
+import { uncertainWrite } from "../Services/writeOutcome";
+import { isGuid } from "../Services/identifiers";
 
 export interface StaffWriteGate {
   locked: boolean;

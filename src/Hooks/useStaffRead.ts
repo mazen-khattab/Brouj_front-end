@@ -2,10 +2,10 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { useAuth } from "./useAuth";
 import { ApiError } from "../Types/failures";
 import { sessionBoundary } from "../Security/sessionBoundary";
-import type { CatalogueRead } from "./useCatalogueRead";
+import type { ResourceRead } from "./useResourceRead";
 
 export interface StaffRead<T> {
-  result: CatalogueRead<T>;
+  result: ResourceRead<T>;
   reload: (signal?: AbortSignal) => Promise<T>;
 }
 
@@ -17,7 +17,7 @@ export function useStaffRead<T>(key: string, load: (signal: AbortSignal) => Prom
   const active = useRef(false);
   const latest = useRef(0);
   const controller = useRef<AbortController | null>(null);
-  const [stored, setStored] = useState<{ key: string; result: CatalogueRead<T> }>();
+  const [stored, setStored] = useState<{ key: string; result: ResourceRead<T> }>();
   const target = useRef({ key, load, generation, staff });
   useLayoutEffect(() => {
     target.current = { key, load, generation, staff };

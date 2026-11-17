@@ -1,12 +1,12 @@
 # Customer account and public schedules
 
-Part 07 connects the customer routes to typed services behind the customer guard. The project-details redesign makes embedded and standalone time plans public using their own independent read component. The unit confirmation module is lazy and mounts only for a confirmed customer. API.tsx remains the sole transport boundary. No private DTO, password or form draft is persisted or logged.
+Part 07 connects the customer routes to typed services behind the customer guard. The project-details redesign makes embedded and standalone time plans public using their own independent read component. The booking form is lazy and supports guests and customers through `Reservations/Customer`. Profile, reservation history, and order history use separate domain providers. API.tsx remains the sole transport boundary. No private DTO, password or form draft is persisted or logged.
 
 | Screen/action | Contract and boundary |
 |---|---|
 | Profile | GET/PATCH `/api/v1/customers/me`; explicit fName, lName, phone, identityNumber and email only |
 | Password | POST `/api/v1/customers/me/change-password`; currentPassword and newPassword unchanged, including spaces |
-| Confirm reservation | POST `/api/v1/reservations` with `{unitId}` only; returned GUID drives detail navigation and GET |
+| Confirm reservation | POST `/api/v1/reservations` with the reservation-specific payload described in [reservation-booking.md](reservation-booking.md); returned GUID drives detail navigation and GET |
 | Own reservations | GET `/api/v1/reservations/me`; numeric status 0–2, bounded pageNumber/pageSize |
 | Own reservation | GET `/api/v1/reservations/{id}`; POST its `/cancel` only after confirmation |
 | Own orders | GET `/api/v1/orders/me`; numeric status 0–3, bounded pagination |

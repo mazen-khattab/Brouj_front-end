@@ -1,10 +1,10 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { ProgressGallery } from '../../src/Components/Catalogue/ProgressGallery';
-import { ProjectTimePlan } from '../../src/Components/Catalogue/ProjectTimePlan';
-import { UnitCarousel } from '../../src/Components/Catalogue/UnitCarousel';
-import { createMediaResolver } from '../../src/Catalogue/media';
+import { ProgressGallery } from '../../src/Features/Planning/Public/ProgressGallery';
+import { ProjectTimePlan } from '../../src/Features/Planning/Public/ProjectTimePlan';
+import { UnitCarousel } from '../../src/Features/Units/Public/UnitCarousel';
+import { createMediaResolver } from '../../src/Media/delivery';
 import * as Units from '../../src/Services/Units';
 import * as Plans from '../../src/Services/TimePlans';
 import type { PaginationResult, UnitListDto, TimePlanDto } from '../../src/Types/contracts';

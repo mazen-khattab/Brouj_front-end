@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { openPublicSessionActions } from './publicHeaderActions';
 import { accountServer } from './accountFixtures';
 import { adminOperationsServer } from './adminOperationsFixtures';
@@ -68,6 +68,9 @@ for (const language of ['ar', 'en'] as const) {
           mask: [page.getByText(/Fixture Customer|Test Staff|staff@example\.test|customer@example\.test/)],
         });
         if (actor === 'customer') {
+          // Exercise logout cleanup from a protected account route after checking the public schedule.
+          await page.goto(routePaths.reservations);
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText(copy.reservations);
           await openPublicSessionActions(page);
         } else if (info.project.name.includes('mobile')) {
           await page.getByRole('button', { name: copy.menu, exact: true }).click();
@@ -76,7 +79,7 @@ for (const language of ['ar', 'en'] as const) {
         await expect(page.locator('#auth-email')).toBeVisible();
       }
       // The development server's own HMR WebSocket is expected; the application starts none.
-      expect(socketRequests.every((url) => new URL(url).host === 'localhost:5173')).toBe(true);
+      expect(socketRequests.every((url) => new URL(url).host === `localhost:${process.env.BROUJ_TEST_PORT ?? '5173'}`)).toBe(true);
       expect(apiRequests.length).toBeGreaterThan(0);
       expect(apiRequests.every((path) => /^\/api\/v1\/(customers|users|auth|cities|areas|projects|units|terms-and-conditions|reservations|orders|admin\/(reservations|orders))(\/|$)/.test(path))).toBe(true);
       expect(await page.evaluate(() => (window as unknown as { realtimeEventSourceCount: number }).realtimeEventSourceCount)).toBe(0);

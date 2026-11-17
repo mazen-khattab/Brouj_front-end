@@ -116,7 +116,7 @@ test('failed production lazy chunk offers reload and recovers without exposing a
   await releaseServer(context);
   await page.addInitScript(() => localStorage.setItem('brouj.locale', 'en'));
   let blocked = true;
-  await page.route('**/' + manifest['src/Pages/Catalogue/CataloguePage.tsx']!.file, (route) => blocked ? route.abort('failed') : route.continue());
+  await page.route('**/' + manifest['src/Features/Projects/Public/ProjectPage.tsx']!.file, (route) => blocked ? route.abort('failed') : route.continue());
   await page.goto('/');
   await page.getByRole('link', { name: 'Explore projects' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page could not open');

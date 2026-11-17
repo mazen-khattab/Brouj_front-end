@@ -1,5 +1,7 @@
 # Part 04 completion report
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved** by the user in the Part 05 invocation, with the explicit real-backend verification dependency below. Part 03 was approved by the owner before this phase. Its report and the master ledger record that approval. This report describes Part 04 at its handoff; subsequent routing work is recorded in the Part 05 report.
 
 ## Delivered

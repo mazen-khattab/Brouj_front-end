@@ -5,7 +5,7 @@ import { AuthContext } from '../../src/Context/AuthContext';
 import type { AuthValue } from '../../src/Context/AuthContext';
 import { LocaleProvider } from '../../src/Context/LocaleProvider';
 import { createLocaleInstance } from '../../src/i18n/instance';
-import CustomerLoginPage from '../../src/Pages/Auth/CustomerLoginPage';
+import CustomerLoginPage from '../../src/Features/Authentication/Customer/LoginPage';
 
 test('failed login keeps edits but a session identity change removes old credentials', () => {
   const instance = createLocaleInstance('en');

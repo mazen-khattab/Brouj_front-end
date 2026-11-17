@@ -9,7 +9,7 @@ import { getProjectTimePlan } from "../../../Services/TimePlans";
 import { executePlan } from "./commands";
 import type { PlanCommand } from "./commands";
 import { ApiError } from "../../../Types/failures";
-import { isGuid } from "../../../Catalogue/query";
+import { isGuid } from "../../../Services/identifiers";
 import { useAuth } from "../../../Hooks/useAuth";
 import { sessionBoundary } from "../../../Security/sessionBoundary";
 import { useRealtimeReload } from "../../../Hooks/useRealtimeReload";
