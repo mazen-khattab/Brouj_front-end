@@ -1,6 +1,6 @@
 # API/UI contract matrix
 
-Verified against backend commit `84fab425c6c2cf48d4cecfe5025274284c8c4bdd`.
+Verified against backend commit `760db374f169316dcfe1b48432bb11abf785241c`.
 
 104 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.
 
@@ -101,8 +101,8 @@ Verified against backend commit `84fab425c6c2cf48d4cecfe5025274284c8c4bdd`.
 | PUT /api/v1/admin/item-templates/{id}/active | body: SetItemTemplateActiveRequest; query: none | ApiResponse<Guid> | Services/Templates | TemplatesContext | Admin / item templates / SetItemTemplateActive | AdminOnly | 10 | ItemTemplateErrors.NotFound |
 | DELETE /api/v1/admin/item-templates/{id} | body: none; query: none | ApiResponse<Guid> | Services/Templates | TemplatesContext | Admin / item templates / DeleteItemTemplate | AdminOnly | 10 | ItemTemplateErrors.NotFound |
 | GET /api/v1/terms-and-conditions/current | body: none; query: none | ApiResponse<TermsDto> | Services/Terms | TermsContext | Website / current terms / GetActiveTermsAndConditions | Anonymous | 06 | TermsErrors.NotFound |
-| GET /api/v1/admin/terms-and-conditions | body: none; query: GetTermsAndConditionsVersionsParameters | ApiResponse<PaginationResult<TermsListDto>> | Services/Terms | TermsContext | Admin / terms versions and activation / GetTermsAndConditionsVersions | AdminOnly | 11 | 401 unauthenticated / 403 actor policy |
-| GET /api/v1/admin/terms-and-conditions/{id} | body: none; query: none | ApiResponse<TermsDto> | Services/Terms | TermsContext | Admin / terms versions and activation / GetTermsAndConditionsById | AdminOnly | 11 | TermsErrors.NotFound |
+| GET /api/v1/terms-and-conditions | body: none; query: GetTermsAndConditionsVersionsParameters | ApiResponse<PaginationResult<TermsListDto>> | Services/Terms | TermsContext | Admin / terms versions and activation / GetTermsAndConditionsVersions | AdminOnly | 11 | 401 unauthenticated / 403 actor policy |
+| GET /api/v1/terms-and-conditions/{id} | body: none; query: none | ApiResponse<TermsDto> | Services/Terms | TermsContext | Admin / terms versions and activation / GetTermsAndConditionsById | AdminOnly | 11 | TermsErrors.NotFound |
 | POST /api/v1/admin/terms-and-conditions | body: CreateTermsVersionInput; query: none | ApiResponse<Guid> | Services/Terms | TermsContext | Admin / terms versions and activation / CreateTermsAndConditionsVersion | AdminOnly | 11 | TermsErrors.Conflict |
 | POST /api/v1/admin/terms-and-conditions/{id}/activate | body: none; query: none | ApiResponse<Guid> | Services/Terms | TermsContext | Admin / terms versions and activation / ActivateTermsAndConditions | AdminOnly | 11 | TermsErrors.NotFound |
 | GET /api/v1/admin/activity-logs | body: none; query: GetActivityLogsParameters | ApiResponse<PaginationResult<ActivityLogDto>> | Services/ActivityLogs | ActivityLogsContext | Admin / staff activity log / GetActivityLogs | AdminOnly | 11 | 401 unauthenticated / 403 actor policy |

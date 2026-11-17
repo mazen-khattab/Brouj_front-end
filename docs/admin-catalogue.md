@@ -13,7 +13,7 @@ These replace the previous /admin/catalogue routes. Public catalogue browsing is
 
 ## Feature ownership
 
-Each folder under src/Features (Cities, Areas, Projects, Units) owns:
+Each `Admin` folder under `src/Features/{Cities,Areas,Projects,Units}` owns:
 
 - Its Page, List, and explicit Form JSX.
 - types.ts: typed form drafts and entity types based on generated contracts.

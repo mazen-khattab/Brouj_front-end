@@ -1,5 +1,7 @@
 # Part 07 — Customer account and reservations
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. Approved by the user on 2026-10-29 in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_08`. Part 06 had been approved with the Part 07 invocation. This report covers Part 07 only; no deployment is included.
 
 ## Delivered behavior

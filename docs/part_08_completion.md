@@ -1,5 +1,7 @@
 # Part 08 — Admin catalogue and media
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. The user approved Part 08 on 2026-10-29 in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_09`. Part 07 had been approved with the Part 08 invocation. This report covers Part 08 only; no backend edit or deployment is included.
 
 ## Delivered behavior

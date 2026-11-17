@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTimePlan } from "../Plans/TimePlanContext";
-import { useEditorDraft, useEditorGuard } from "../Shared/editorDraft";
+import { useEditorDraft, useEditorGuard } from "../../../Forms/editorDraft";
 import { moveRows, ordered, orderingInput } from "../Shared/ordering";
 import { fileIssue } from "./validation";
 import { ItemImageDescriptionForm } from "./ItemImageDescriptionForm";
@@ -10,7 +10,7 @@ import type { PlanStageItemDto } from "../../../Types/contracts";
 import { Button } from "../../../Components/Button";
 import { Input, Textarea } from "../../../Components/Fields";
 import { Alert } from "../../../Components/Feedback";
-import { MediaGallery } from "../../../Components/Catalogue/MediaGallery";
+import { MediaGallery } from "../../../Components/MediaGallery";
 import { ConfirmButton, MoveControls } from "../Shared/Feedback";
 import { useLocale } from "../../../Hooks/useLocale";
 import { formatNumber } from "../../../i18n/format";

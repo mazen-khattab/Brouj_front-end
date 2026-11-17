@@ -1,12 +1,12 @@
 import { ApiError } from "../../../Types/failures";
-import type { StageDraftInput, StageTemplateDto, TimePlanInput, TimePlanStageInput, TimePlanStageDto } from "../../../Types/contracts";
+import type { StageDraftInput, StageTemplateDto, TimePlanInput, TimePlanStageDto } from "../../../Types/contracts";
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
 
 export function stageFrom(source?: TimePlanStageDto): TimePlanStageDraft {
   return { name: source?.name ?? "", deliveryDate: source?.deliveryDate ?? "", percentage: source ? String(source.percentage) : "" };
 }
 
-export function stageInput(values: TimePlanStageDraft): TimePlanStageInput {
+export function stageInput(values: TimePlanStageDraft): Pick<StageDraftInput, "name" | "deliveryDate" | "percentage"> {
   return { name: values.name, deliveryDate: values.deliveryDate || null, percentage: Number(values.percentage) };
 }
 

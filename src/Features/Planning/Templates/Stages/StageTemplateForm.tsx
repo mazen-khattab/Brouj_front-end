@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Input } from "../../../../Components/Fields";
 import { Button } from "../../../../Components/Button";
 import { ValidationSummary } from "../../../../Components/Feedback";
-import { useEditorDraft } from "../../Shared/editorDraft";
-import { planningFieldErrors } from "../../Shared/fieldErrors";
+import { useEditorDraft } from "../../../../Forms/editorDraft";
+import { serverFieldErrors } from "../../../../Forms/fieldErrors";
 import { validateStageTemplate } from "./validation";
 import type { StageTemplateDraft, StageTemplateFormProps } from "./types";
 
@@ -13,7 +13,7 @@ export function StageTemplateForm({ id, title, initial, disabled, pending, failu
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof StageTemplateDraft)[]>([]);
   const fields: readonly (keyof StageTemplateDraft)[] = ["name","code"];
-  const errors = [...new Set([...invalid, ...planningFieldErrors(failure, fields)])];
+  const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof StageTemplateDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });

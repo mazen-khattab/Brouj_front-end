@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { catalogueIds, catalogueServer } from './catalogueFixtures';
 import { routingServer, seedRouting } from './routingFixtures';
 import { openProjectFilters } from './projectFilterActions';

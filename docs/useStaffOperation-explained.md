@@ -41,7 +41,7 @@ If `TimePlanProvider.tsx` called the backend directly for all of these:
    - `ReservationsAdminProvider` (converting reservations)
    - `TemplatesProvider` (managing stage & item templates)
    - `CustomerOperationsProvider` (deleting and restoring customer accounts)
-   - `useGovernanceResource` (managing legal terms and staff users)
+   - `useStaffResource` (managing legal terms and staff users)
 3. **Separation of Concerns:** Each layer does exactly **one** job:
    - **`PlanningForm.tsx` (Reusable UI View):** Only cares about input inputs, validation errors, and button rendering. Does not know what an API or a Stage is.
    - **`StageComposer.tsx` (Screen Section):** Manages the UI toggle between choosing a template vs. adding a manual stage.

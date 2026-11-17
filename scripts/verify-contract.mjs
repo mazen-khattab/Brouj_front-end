@@ -155,8 +155,10 @@ function ownership(endpoint) {
       context = "CustomerOrdersContext / OrdersAdminContext";
     } else context = `${admin ? `${family}Admin` : `Customer${family}`}Context`;
   } else if (family === "Terms") {
-    phase = admin ? "11" : "06";
-    screen = admin
+    // Protected reads share the public controller prefix; policy determines ownership.
+    const administration = endpoint.policy === "AdminOnly";
+    phase = administration ? "11" : "06";
+    screen = administration
       ? "Admin / terms versions and activation"
       : "Website / current terms";
   } else if (family === "ActivityLogs") {

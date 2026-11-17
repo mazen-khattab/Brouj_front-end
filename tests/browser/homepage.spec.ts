@@ -175,7 +175,7 @@ test('homepage handles independent read failures, retry and an empty initiative 
   await terms.getByRole('button', { name: 'Try again' }).click();
   await expect(terms.getByRole('heading', { name: 'Published terms' })).toBeVisible();
   await context.route('https://localhost:7249/api/v1/projects?*', (route) => route.fulfill({
-    headers: { 'access-control-allow-origin': 'https://localhost:5173', 'access-control-allow-credentials': 'true' },
+    headers: { 'access-control-allow-origin': `https://localhost:${process.env.BROUJ_TEST_PORT ?? '5173'}`, 'access-control-allow-credentials': 'true' },
     json: { success: true, data: { items: [], pageNumber: 1, pageSize: 3, totalCount: 0, totalPages: 0 }, message: null },
   }));
   await page.reload();

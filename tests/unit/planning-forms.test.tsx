@@ -2,7 +2,7 @@ import { useState } from "react";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import { expect, test, vi } from "vitest";
 import { renderUi } from "../renderUi";
-import { GuardContext } from "../../src/Features/Planning/Shared/editorDraft";
+import { GuardContext } from "../../src/Forms/editorDraft";
 import { TimePlanStageForm } from "../../src/Features/Planning/Stages/TimePlanStageForm";
 import { StageTemplateForm } from "../../src/Features/Planning/Templates/Stages/StageTemplateForm";
 import { ItemTemplateForm } from "../../src/Features/Planning/Templates/Items/ItemTemplateForm";

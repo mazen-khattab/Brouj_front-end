@@ -8,7 +8,7 @@ import { PageLoading } from "../Router/RouteFeedback";
 import { routePaths } from "../Router/routePaths";
 import { useAuth } from "../Hooks/useAuth";
 import { UserRole } from "../Types/contracts";
-import { adminNavigation } from "../Pages/Admin/navigation";
+import { adminNavigation } from "../Router/adminNavigation";
 
 export default function AdminLayout() {
   const auth = useAuth();

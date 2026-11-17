@@ -1,5 +1,7 @@
 # Part 01 completion report
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-28. Status: **Approved**. Implementation was explicitly requested with `$implement-brouj-frontend-part part_01`. Subsequent user approval in this conversation: "part 1 is approved"; the user confirmed HTTPS certificates were created and the project runs successfully, and requested Part 02. The verification below records the original Part 01 handoff.
 
 ## Implemented behavior and changed files

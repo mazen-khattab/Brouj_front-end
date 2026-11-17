@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { openPublicSessionActions } from './publicHeaderActions';
 import { accountIds as ids, accountServer } from './accountFixtures';
 import { catalogueIds } from './catalogueFixtures';

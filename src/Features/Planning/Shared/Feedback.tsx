@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, ErrorPanel, Loading } from "../../../Components/Feedback";
 import { Button } from "../../../Components/Button";
 import { Dialog } from "../../../Components/Dialog";
-import type { CatalogueRead } from "../../../Hooks/useCatalogueRead";
+import type { ResourceRead } from "../../../Hooks/useResourceRead";
 import type { StaffOperation } from "../../../Hooks/useStaffOperation";
 import { apiFailureMessage } from "../../../i18n/apiFailures";
 
@@ -13,7 +13,7 @@ export function PlanningRead({
   reload,
   retained = false,
 }: {
-  result: CatalogueRead<unknown>;
+  result: ResourceRead<unknown>;
   reload: () => Promise<unknown>;
   retained?: boolean;
 }) {

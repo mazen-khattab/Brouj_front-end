@@ -1,5 +1,7 @@
 # Part 02 completion report
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-28. Status: **Approved**. Approval reference: the owner stated "Ok, Approved. Now, let's navigate to the next part." and requested Part 03. Part 01 was explicitly approved in this conversation. This report reflects the latest owner-requested luxury design revision: varied layered backgrounds using shades of the three brand colors. The approved fonts, shared components and 16px corners remain. Earlier Tailwind, palette, animation, backdrop and notification requirements remain implemented. The screenshots supersede previous Part 02 design evidence.
 
 ## Owner-requested updates implemented

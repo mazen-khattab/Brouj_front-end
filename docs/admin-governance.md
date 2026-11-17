@@ -1,6 +1,6 @@
 # Admin governance and staff workflows
 
-Part 11 implements the seven existing governance/account routes inside the lazy admin branch. Each route mounts a focused TermsAdmin, ActivityLogs, StaffAdmin or StaffAccount provider. Private state is discarded at actor, profile ID, session generation and route changes. No records or passwords are written to browser storage or telemetry.
+The existing routes now have independent entries in `Features/Terms/Admin`, `ActivityLogs/Admin`, `Staff/Admin`, and `Profile/Staff`; public legal terms live in `Terms/Public`. The Governance page/form dispatcher has been removed. Each route mounts a focused TermsAdmin, ActivityLogs, StaffAdmin or StaffAccount provider. Private state is discarded at actor, profile ID, session generation and route changes. No records or passwords are written to browser storage or telemetry.
 
 ## Terms
 

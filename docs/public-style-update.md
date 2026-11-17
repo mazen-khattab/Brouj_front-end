@@ -13,9 +13,9 @@ Authentication handlers, validators, pending/error states, credential cleanup an
 ## Implementation
 
 - `src/Components/PublicHeader.tsx`, `src/Styles/global.css`: sticky navbar, bounded mobile panel and scroll offset.
-- `src/Pages/AboutPage.tsx`, browser paths, route definitions and router: new public route, lazy rendering, title/breadcrumb/access integration.
-- `src/Components/OwnerGallery.tsx` and `Home/AboutSection.tsx`: shared owner hover/focus/tap behavior and a homepage link to the full story.
-- `src/Pages/Auth/AuthPage.tsx`: image-free form layout for all three auth modes.
+- `src/Features/About/AboutPage.tsx`, browser paths, route definitions and router: new public route, lazy rendering, title/breadcrumb/access integration.
+- `src/Components/OwnerGallery.tsx` and `src/Features/Home/AboutSection.tsx`: shared owner hover/focus/tap behavior and a homepage link to the full story.
+- `src/Features/Authentication/Customer/LoginPage.tsx`, `Customer/RegistrationPage.tsx`, and `Staff/LoginPage.tsx`: independent authentication forms retain the image-free layout.
 - English/Arabic `home.json`: About page copy. `docs/routing-access.md`: current public route map.
 - `tests/browser/publicStyle.spec.ts` and the updated homepage navigation case: sticky scrolling, direct About loads, owner interaction, route links, image-free auth screens, language switching and return-query preservation.
 

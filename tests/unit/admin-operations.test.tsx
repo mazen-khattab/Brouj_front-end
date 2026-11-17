@@ -1,25 +1,30 @@
-import { StrictMode, useRef } from "react";
+import { act,renderHook,waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { StrictMode,useRef } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, expect, test, vi } from "vitest";
-import { AuthContext } from "../../src/Context/AuthContext";
+import { afterEach,expect,test,vi } from "vitest";
 import type { AuthValue } from "../../src/Context/AuthContext";
-import { canComplete, canConvert, customerOperation, readOperationsQuery, writeOperationsQuery } from "../../src/AdminOperations/policy";
+import { AuthContext } from "../../src/Context/AuthContext";
+import { useCustomerOperations } from "../../src/Features/Customers/Admin/CustomerOperationsContext";
+import { CustomerOperationsProvider } from "../../src/Features/Customers/Admin/CustomerOperationsProvider";
+import { customerOperation } from "../../src/Features/Customers/Admin/policy";
+import { readCustomersQuery,writeCustomersQuery } from "../../src/Features/Customers/Admin/useCustomersQuery";
+import { useOrdersAdmin } from "../../src/Features/Orders/Admin/OrdersAdminContext";
+import { OrdersAdminProvider } from "../../src/Features/Orders/Admin/OrdersAdminProvider";
+import { canComplete } from "../../src/Features/Orders/Admin/policy";
+import { readOrdersQuery,writeOrdersQuery } from "../../src/Features/Orders/Admin/useQuery";
+import { canConvert } from "../../src/Features/Reservations/Admin/policy";
+import { useReservationsAdmin } from "../../src/Features/Reservations/Admin/ReservationsAdminContext";
+import { ReservationsAdminProvider } from "../../src/Features/Reservations/Admin/ReservationsAdminProvider";
+import { readReservationsQuery } from "../../src/Features/Reservations/Admin/useQuery";
 import { useStaffOperation } from "../../src/Hooks/useStaffOperation";
 import { useStaffRead } from "../../src/Hooks/useStaffRead";
-import { useCustomerOperations } from "../../src/Context/CustomerOperationsContext";
-import { CustomerOperationsProvider } from "../../src/Context/CustomerOperationsProvider";
-import { useReservationsAdmin } from "../../src/Context/ReservationsAdminContext";
-import { ReservationsAdminProvider } from "../../src/Context/ReservationsAdminProvider";
-import { useOrdersAdmin } from "../../src/Context/OrdersAdminContext";
-import { OrdersAdminProvider } from "../../src/Context/OrdersAdminProvider";
 import { sessionBoundary } from "../../src/Security/sessionBoundary";
-import { ApiError } from "../../src/Types/failures";
 import * as customers from "../../src/Services/CustomersAdmin";
-import * as reservations from "../../src/Services/Reservations";
 import * as orders from "../../src/Services/Orders";
-import type { CustomerDto, OrderDto, ReservationDto } from "../../src/Types/contracts";
+import * as reservations from "../../src/Services/Reservations";
+import type { CustomerDto,OrderDto,ReservationDto } from "../../src/Types/contracts";
+import { ApiError } from "../../src/Types/failures";
 
 const id = "10000000-0000-4000-8000-000000000001";
 const orderId = "20000000-0000-4000-8000-000000000001";
@@ -93,26 +98,24 @@ test("customer operation and approved queries preserve the real soft-delete and 
   expect(customerOperation(customer)).toBe("deletion");
   expect(customerOperation({ ...customer, deletedAt: "2026-10-29T10:00:00Z" })).toBe("restoration");
   const input = new URLSearchParams("pageNumber=2&pageSize=100&status=3&isDeleted=true&dateFrom=2020&search=private@example.test&extra=1");
-  const customerQuery = readOperationsQuery(input, "customers");
-  expect(customerQuery).toEqual({ pageNumber: 2, pageSize: 100, status: null, isDeleted: true });
-  expect(writeOperationsQuery(customerQuery, "customers").toString()).toBe("pageNumber=2&pageSize=100&isDeleted=true");
-  expect(readOperationsQuery(input, "reservations").status).toBeNull();
-  expect(readOperationsQuery(input, "orders").status).toBe(3);
-  expect(writeOperationsQuery(readOperationsQuery(input, "orders"), "orders").toString()).toBe("pageNumber=2&pageSize=100&status=3");
+  const customerQuery = readCustomersQuery(input);
+  expect(customerQuery).toEqual({ pageNumber: 2, pageSize: 100, isDeleted: true });
+  expect(writeCustomersQuery(customerQuery).toString()).toBe("pageNumber=2&pageSize=100&isDeleted=true");
+  expect(readReservationsQuery(input).status).toBeNull();
+  expect(readOrdersQuery(input).status).toBe(3);
+  expect(writeOrdersQuery(readOrdersQuery(input)).toString()).toBe("pageNumber=2&pageSize=100&status=3");
 });
 
 test("invalid query values fall back to bounded defaults and cannot carry unsupported filters", () => {
-  expect(readOperationsQuery(new URLSearchParams("pageNumber=-1&pageSize=101&status=1.5&isDeleted=1"), "customers")).toEqual({
+  expect(readCustomersQuery(new URLSearchParams("pageNumber=-1&pageSize=101&status=1.5&isDeleted=1"))).toEqual({
     pageNumber: 1,
     pageSize: 20,
-    status: null,
     isDeleted: null,
   });
-  expect(readOperationsQuery(new URLSearchParams("pageNumber=2147483648&pageSize=0&status=999"), "reservations")).toEqual({
+  expect(readReservationsQuery(new URLSearchParams("pageNumber=2147483648&pageSize=0&status=999"))).toEqual({
     pageNumber: 1,
     pageSize: 20,
     status: null,
-    isDeleted: null,
   });
 });
 

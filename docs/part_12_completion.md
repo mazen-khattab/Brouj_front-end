@@ -1,5 +1,7 @@
 # Part 12 — SignalR readiness
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. Part 11 was approved by the user in this conversation: “Ok, Approved. Now, let's navigate to the next part.” with `$implement-brouj-frontend-part part_12`. Part 12 received the same explicit user approval on 2026-10-29 with `$implement-brouj-frontend-part part_13`. Part 13 evidence is recorded separately.
 
 ## Delivered behavior

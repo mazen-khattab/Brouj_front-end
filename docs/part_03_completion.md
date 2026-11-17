@@ -1,5 +1,7 @@
 # Part 03 completion report
 
+> Historical implementation snapshot. Current source ownership and verification are documented in [feature-architecture.md](feature-architecture.md).
+
 Date: 2026-10-29. Status: **Approved**. The owner explicitly stated "Ok, Approved. Now, let's navigate to the next part." and requested Part 04. Prerequisite satisfied: the owner previously approved Part 02 and requested `$implement-brouj-frontend-part part_03`. This report records the Part 03 implementation scope.
 
 ## Implemented behavior

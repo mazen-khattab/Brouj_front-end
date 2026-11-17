@@ -107,7 +107,7 @@
       "phase": "07",
       "service": "Services/CustomerProfile.ts",
       "consumers": [
-        "src/Context/AccountDataProvider.tsx:37",
+        "src/Features/Profile/Customer/DataProvider.tsx:17",
         "src/Services/session.ts:13"
       ],
       "exclusion": null
@@ -121,7 +121,7 @@
       "phase": "07",
       "service": "Services/CustomerProfile.ts",
       "consumers": [
-        "src/Context/CustomerActionProvider.tsx:49"
+        "src/Features/Profile/Customer/ActionProvider.tsx:64"
       ],
       "exclusion": null
     },
@@ -134,7 +134,7 @@
       "phase": "07",
       "service": "Services/CustomerProfile.ts",
       "consumers": [
-        "src/Context/CustomerActionProvider.tsx:53"
+        "src/Features/Profile/Customer/ActionProvider.tsx:80"
       ],
       "exclusion": null
     },
@@ -147,7 +147,7 @@
       "phase": "11",
       "service": "Services/StaffProfile.ts",
       "consumers": [
-        "src/Context/StaffAccountProvider.tsx:11",
+        "src/Features/Profile/Staff/StaffAccountProvider.tsx:11",
         "src/Services/session.ts:14"
       ],
       "exclusion": null
@@ -161,7 +161,7 @@
       "phase": "11",
       "service": "Services/StaffProfile.ts",
       "consumers": [
-        "src/Context/StaffAccountProvider.tsx:23"
+        "src/Features/Profile/Staff/StaffAccountProvider.tsx:24"
       ],
       "exclusion": null
     },
@@ -174,7 +174,7 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:34"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:38"
       ],
       "exclusion": null
     },
@@ -187,8 +187,8 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:41",
-        "src/Context/StaffAdminProvider.tsx:72"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:53",
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:86"
       ],
       "exclusion": null
     },
@@ -201,7 +201,7 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:62"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:76"
       ],
       "exclusion": null
     },
@@ -214,7 +214,7 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:66"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:80"
       ],
       "exclusion": null
     },
@@ -227,7 +227,7 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:68"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:82"
       ],
       "exclusion": null
     },
@@ -240,7 +240,7 @@
       "phase": "11",
       "service": "Services/StaffAdmin.ts",
       "consumers": [
-        "src/Context/StaffAdminProvider.tsx:68"
+        "src/Features/Staff/Admin/StaffAdminProvider.tsx:82"
       ],
       "exclusion": null
     },
@@ -253,7 +253,7 @@
       "phase": "09",
       "service": "Services/CustomersAdmin.ts",
       "consumers": [
-        "src/Context/CustomerOperationsProvider.tsx:28"
+        "src/Features/Customers/Admin/CustomerOperationsProvider.tsx:28"
       ],
       "exclusion": null
     },
@@ -266,8 +266,8 @@
       "phase": "09",
       "service": "Services/CustomersAdmin.ts",
       "consumers": [
-        "src/Context/CustomerOperationsProvider.tsx:24",
-        "src/Context/CustomerOperationsProvider.tsx:47"
+        "src/Features/Customers/Admin/CustomerOperationsProvider.tsx:24",
+        "src/Features/Customers/Admin/CustomerOperationsProvider.tsx:47"
       ],
       "exclusion": null
     },
@@ -280,7 +280,7 @@
       "phase": "09",
       "service": "Services/CustomersAdmin.ts",
       "consumers": [
-        "src/Context/CustomerOperationsProvider.tsx:59"
+        "src/Features/Customers/Admin/CustomerOperationsProvider.tsx:59"
       ],
       "exclusion": null
     },
@@ -293,7 +293,7 @@
       "phase": "09",
       "service": "Services/CustomersAdmin.ts",
       "consumers": [
-        "src/Context/CustomerOperationsProvider.tsx:60"
+        "src/Features/Customers/Admin/CustomerOperationsProvider.tsx:60"
       ],
       "exclusion": null
     },
@@ -306,11 +306,11 @@
       "phase": "06",
       "service": "Services/Cities.ts",
       "consumers": [
-        "src/Context/CatalogueListProvider.tsx:36",
-        "src/Features/Areas/CitySelector.tsx:42",
-        "src/Features/Cities/CityPage.tsx:42",
-        "src/Features/Cities/CityPage.tsx:58",
-        "src/Features/Cities/List.tsx:42"
+        "src/Features/Areas/Admin/CitySelector.tsx:42",
+        "src/Features/Cities/Admin/CityPage.tsx:41",
+        "src/Features/Cities/Admin/CityPage.tsx:57",
+        "src/Features/Cities/Admin/List.tsx:41",
+        "src/Features/Cities/Public/ListProvider.tsx:26"
       ],
       "exclusion": null
     },
@@ -323,10 +323,10 @@
       "phase": "06",
       "service": "Services/Cities.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:31",
-        "src/Features/Areas/CitySelector.tsx:48",
-        "src/Features/Cities/CityForm.tsx:60",
-        "src/Features/Cities/useRecord.ts:26",
+        "src/Features/Areas/Admin/CitySelector.tsx:47",
+        "src/Features/Cities/Admin/CityForm.tsx:58",
+        "src/Features/Cities/Admin/useRecord.ts:26",
+        "src/Features/Cities/Public/DetailProvider.tsx:13",
         "src/Hooks/useLocationLookup.ts:15"
       ],
       "exclusion": null
@@ -340,7 +340,7 @@
       "phase": "06",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Context/CatalogueListProvider.tsx:43"
+        "src/Features/Areas/Public/ListProvider.tsx:36"
       ],
       "exclusion": null
     },
@@ -353,11 +353,11 @@
       "phase": "06",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Context/CatalogueListProvider.tsx:44",
-        "src/Features/Areas/AreaPage.tsx:43",
-        "src/Features/Areas/AreaPage.tsx:59",
-        "src/Features/Areas/List.tsx:43",
-        "src/Features/Projects/AreaSelector.tsx:42"
+        "src/Features/Areas/Admin/AreaPage.tsx:42",
+        "src/Features/Areas/Admin/AreaPage.tsx:58",
+        "src/Features/Areas/Admin/List.tsx:42",
+        "src/Features/Areas/Public/ListProvider.tsx:37",
+        "src/Features/Projects/Admin/AreaSelector.tsx:42"
       ],
       "exclusion": null
     },
@@ -370,10 +370,10 @@
       "phase": "06",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:33",
-        "src/Features/Areas/AreaForm.tsx:61",
-        "src/Features/Areas/useRecord.ts:26",
-        "src/Features/Projects/AreaSelector.tsx:48",
+        "src/Features/Areas/Admin/AreaForm.tsx:59",
+        "src/Features/Areas/Admin/useRecord.ts:26",
+        "src/Features/Areas/Public/DetailProvider.tsx:13",
+        "src/Features/Projects/Admin/AreaSelector.tsx:47",
         "src/Hooks/useLocationLookup.ts:16"
       ],
       "exclusion": null
@@ -387,7 +387,7 @@
       "phase": "08",
       "service": "Services/Cities.ts",
       "consumers": [
-        "src/Features/Cities/CityForm.tsx:53"
+        "src/Features/Cities/Admin/CityForm.tsx:51"
       ],
       "exclusion": null
     },
@@ -400,7 +400,7 @@
       "phase": "08",
       "service": "Services/Cities.ts",
       "consumers": [
-        "src/Features/Cities/CityForm.tsx:52"
+        "src/Features/Cities/Admin/CityForm.tsx:51"
       ],
       "exclusion": null
     },
@@ -413,7 +413,7 @@
       "phase": "08",
       "service": "Services/Cities.ts",
       "consumers": [
-        "src/Features/Cities/CityPage.tsx:38"
+        "src/Features/Cities/Admin/CityPage.tsx:37"
       ],
       "exclusion": null
     },
@@ -426,7 +426,7 @@
       "phase": "08",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Features/Areas/AreaForm.tsx:54"
+        "src/Features/Areas/Admin/AreaForm.tsx:52"
       ],
       "exclusion": null
     },
@@ -439,7 +439,7 @@
       "phase": "08",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Features/Areas/AreaForm.tsx:53"
+        "src/Features/Areas/Admin/AreaForm.tsx:52"
       ],
       "exclusion": null
     },
@@ -452,7 +452,7 @@
       "phase": "08",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Features/Areas/AreaPage.tsx:39"
+        "src/Features/Areas/Admin/AreaPage.tsx:38"
       ],
       "exclusion": null
     },
@@ -465,7 +465,7 @@
       "phase": "08",
       "service": "Services/Areas.ts",
       "consumers": [
-        "src/Features/Areas/Amenities.tsx:37"
+        "src/Features/Areas/Admin/Amenities.tsx:38"
       ],
       "exclusion": null
     },
@@ -478,13 +478,13 @@
       "phase": "06",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Context/CatalogueListProvider.tsx:48",
-        "src/Context/HomeProvider.tsx:13",
+        "src/Features/Home/HomeProvider.tsx:13",
         "src/Features/Planning/SourcePicker.tsx:52",
-        "src/Features/Projects/List.tsx:43",
-        "src/Features/Projects/ProjectPage.tsx:45",
-        "src/Features/Projects/ProjectPage.tsx:61",
-        "src/Features/Units/ProjectSelector.tsx:42"
+        "src/Features/Projects/Admin/List.tsx:42",
+        "src/Features/Projects/Admin/ProjectPage.tsx:44",
+        "src/Features/Projects/Admin/ProjectPage.tsx:60",
+        "src/Features/Projects/Public/ListProvider.tsx:28",
+        "src/Features/Units/Admin/ProjectSelector.tsx:42"
       ],
       "exclusion": null
     },
@@ -497,12 +497,12 @@
       "phase": "06",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:35",
         "src/Features/Planning/Plans/TimePlanProvider.tsx:28",
-        "src/Features/Projects/ProjectForm.tsx:67",
-        "src/Features/Projects/useRecord.ts:26",
-        "src/Features/Units/ProjectSelector.tsx:48",
-        "src/Features/Units/UnitForm.tsx:37"
+        "src/Features/Projects/Admin/ProjectForm.tsx:65",
+        "src/Features/Projects/Admin/useRecord.ts:26",
+        "src/Features/Projects/Public/DetailProvider.tsx:13",
+        "src/Features/Units/Admin/ProjectSelector.tsx:47",
+        "src/Features/Units/Admin/UnitForm.tsx:37"
       ],
       "exclusion": null
     },
@@ -515,11 +515,10 @@
       "phase": "06",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Components/Catalogue/UnitCarousel.tsx:40",
-        "src/Context/CatalogueListProvider.tsx:50",
-        "src/Features/Units/List.tsx:44",
-        "src/Features/Units/UnitPage.tsx:45",
-        "src/Features/Units/UnitPage.tsx:61"
+        "src/Features/Units/Admin/List.tsx:43",
+        "src/Features/Units/Admin/UnitPage.tsx:44",
+        "src/Features/Units/Admin/UnitPage.tsx:60",
+        "src/Features/Units/Public/UnitCarousel.tsx:40"
       ],
       "exclusion": null
     },
@@ -532,9 +531,8 @@
       "phase": "07, 10",
       "service": "Services/TimePlans.ts",
       "consumers": [
-        "src/Components/Catalogue/ProjectTimePlan.tsx:95",
-        "src/Context/AccountDataProvider.tsx:47",
-        "src/Features/Planning/Plans/TimePlanProvider.tsx:39"
+        "src/Features/Planning/Plans/TimePlanProvider.tsx:39",
+        "src/Features/Planning/Public/useTimePlan.ts:14"
       ],
       "exclusion": null
     },
@@ -547,7 +545,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/ProjectForm.tsx:60"
+        "src/Features/Projects/Admin/ProjectForm.tsx:58"
       ],
       "exclusion": null
     },
@@ -560,7 +558,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/ProjectForm.tsx:59"
+        "src/Features/Projects/Admin/ProjectForm.tsx:58"
       ],
       "exclusion": null
     },
@@ -573,7 +571,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/ProjectPage.tsx:41"
+        "src/Features/Projects/Admin/ProjectPage.tsx:40"
       ],
       "exclusion": null
     },
@@ -586,7 +584,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/Amenities.tsx:37"
+        "src/Features/Projects/Admin/Amenities.tsx:38"
       ],
       "exclusion": null
     },
@@ -599,7 +597,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/Images.tsx:129"
+        "src/Features/Projects/Admin/Images.tsx:129"
       ],
       "exclusion": null
     },
@@ -612,7 +610,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/Images.tsx:52"
+        "src/Features/Projects/Admin/Images.tsx:52"
       ],
       "exclusion": null
     },
@@ -625,7 +623,7 @@
       "phase": "08",
       "service": "Services/Projects.ts",
       "consumers": [
-        "src/Features/Projects/Images.tsx:62"
+        "src/Features/Projects/Admin/Images.tsx:62"
       ],
       "exclusion": null
     },
@@ -638,7 +636,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/UnitForm.tsx:63"
+        "src/Features/Units/Admin/UnitForm.tsx:63"
       ],
       "exclusion": null
     },
@@ -664,9 +662,9 @@
       "phase": "06",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:37",
-        "src/Features/Units/UnitForm.tsx:70",
-        "src/Features/Units/useRecord.ts:26"
+        "src/Features/Units/Admin/UnitForm.tsx:70",
+        "src/Features/Units/Admin/useRecord.ts:26",
+        "src/Features/Units/Public/DetailProvider.tsx:13"
       ],
       "exclusion": null
     },
@@ -679,7 +677,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/UnitForm.tsx:62"
+        "src/Features/Units/Admin/UnitForm.tsx:62"
       ],
       "exclusion": null
     },
@@ -692,7 +690,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/UnitPage.tsx:41"
+        "src/Features/Units/Admin/UnitPage.tsx:40"
       ],
       "exclusion": null
     },
@@ -705,7 +703,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Amenities.tsx:37"
+        "src/Features/Units/Admin/Amenities.tsx:38"
       ],
       "exclusion": null
     },
@@ -718,7 +716,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Images.tsx:129"
+        "src/Features/Units/Admin/Images.tsx:129"
       ],
       "exclusion": null
     },
@@ -731,7 +729,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Images.tsx:52"
+        "src/Features/Units/Admin/Images.tsx:52"
       ],
       "exclusion": null
     },
@@ -744,7 +742,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Images.tsx:62"
+        "src/Features/Units/Admin/Images.tsx:62"
       ],
       "exclusion": null
     },
@@ -757,8 +755,7 @@
       "phase": "07",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/CustomerActionProvider.tsx:54",
-        "src/Hooks/useReservationBooking.ts:95"
+        "src/Features/Reservations/Customer/useReservationBooking.ts:95"
       ],
       "exclusion": null
     },
@@ -771,7 +768,7 @@
       "phase": "07",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/AccountDataProvider.tsx:43"
+        "src/Features/Reservations/Customer/DataProvider.tsx:40"
       ],
       "exclusion": null
     },
@@ -784,7 +781,7 @@
       "phase": "07",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/AccountDataProvider.tsx:44"
+        "src/Features/Reservations/Customer/DataProvider.tsx:41"
       ],
       "exclusion": null
     },
@@ -797,7 +794,7 @@
       "phase": "07",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/CustomerActionProvider.tsx:55"
+        "src/Features/Reservations/Customer/CancellationProvider.tsx:39"
       ],
       "exclusion": null
     },
@@ -810,7 +807,7 @@
       "phase": "09",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/ReservationsAdminProvider.tsx:29"
+        "src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:29"
       ],
       "exclusion": null
     },
@@ -823,8 +820,8 @@
       "phase": "09",
       "service": "Services/Reservations.ts",
       "consumers": [
-        "src/Context/ReservationsAdminProvider.tsx:27",
-        "src/Context/ReservationsAdminProvider.tsx:47"
+        "src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:27",
+        "src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:47"
       ],
       "exclusion": null
     },
@@ -837,7 +834,7 @@
       "phase": "09",
       "service": "Services/Orders.ts",
       "consumers": [
-        "src/Context/ReservationsAdminProvider.tsx:78"
+        "src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:78"
       ],
       "exclusion": null
     },
@@ -850,7 +847,7 @@
       "phase": "07",
       "service": "Services/Orders.ts",
       "consumers": [
-        "src/Context/AccountDataProvider.tsx:45"
+        "src/Features/Orders/Customer/DataProvider.tsx:40"
       ],
       "exclusion": null
     },
@@ -863,7 +860,7 @@
       "phase": "09",
       "service": "Services/Orders.ts",
       "consumers": [
-        "src/Context/OrdersAdminProvider.tsx:28"
+        "src/Features/Orders/Admin/OrdersAdminProvider.tsx:28"
       ],
       "exclusion": null
     },
@@ -876,10 +873,10 @@
       "phase": "07, 09",
       "service": "Services/Orders.ts",
       "consumers": [
-        "src/Context/AccountDataProvider.tsx:46",
-        "src/Context/OrdersAdminProvider.tsx:26",
-        "src/Context/OrdersAdminProvider.tsx:41",
-        "src/Context/ReservationsAdminProvider.tsx:60"
+        "src/Features/Orders/Admin/OrdersAdminProvider.tsx:26",
+        "src/Features/Orders/Admin/OrdersAdminProvider.tsx:41",
+        "src/Features/Orders/Customer/DataProvider.tsx:41",
+        "src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:60"
       ],
       "exclusion": null
     },
@@ -892,7 +889,7 @@
       "phase": "09",
       "service": "Services/Orders.ts",
       "consumers": [
-        "src/Context/OrdersAdminProvider.tsx:58"
+        "src/Features/Orders/Admin/OrdersAdminProvider.tsx:58"
       ],
       "exclusion": null
     },
@@ -1287,8 +1284,8 @@
       "phase": "06",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/CatalogueDetailProvider.tsx:39",
-        "src/Context/HomeProvider.tsx:16"
+        "src/Features/Home/HomeProvider.tsx:16",
+        "src/Features/Terms/Public/TermsProvider.tsx:8"
       ],
       "exclusion": null
     },
@@ -1301,7 +1298,7 @@
       "phase": "11",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/TermsAdminProvider.tsx:20"
+        "src/Features/Terms/Admin/TermsAdminProvider.tsx:20"
       ],
       "exclusion": null
     },
@@ -1314,8 +1311,8 @@
       "phase": "11",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/TermsAdminProvider.tsx:24",
-        "src/Context/TermsAdminProvider.tsx:40"
+        "src/Features/Terms/Admin/TermsAdminProvider.tsx:24",
+        "src/Features/Terms/Admin/TermsAdminProvider.tsx:40"
       ],
       "exclusion": null
     },
@@ -1328,7 +1325,7 @@
       "phase": "11",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/TermsAdminProvider.tsx:38"
+        "src/Features/Terms/Admin/TermsAdminProvider.tsx:38"
       ],
       "exclusion": null
     },
@@ -1341,7 +1338,7 @@
       "phase": "11",
       "service": "Services/Terms.ts",
       "consumers": [
-        "src/Context/TermsAdminProvider.tsx:53"
+        "src/Features/Terms/Admin/TermsAdminProvider.tsx:53"
       ],
       "exclusion": null
     },
@@ -1354,7 +1351,7 @@
       "phase": "11",
       "service": "Services/ActivityLogs.ts",
       "consumers": [
-        "src/Context/ActivityLogsProvider.tsx:19"
+        "src/Features/ActivityLogs/Admin/ActivityLogsProvider.tsx:20"
       ],
       "exclusion": null
     },
@@ -1367,7 +1364,7 @@
       "phase": "11",
       "service": "Services/ActivityLogs.ts",
       "consumers": [
-        "src/Context/ActivityLogsProvider.tsx:27"
+        "src/Features/ActivityLogs/Admin/ActivityLogsProvider.tsx:37"
       ],
       "exclusion": null
     },

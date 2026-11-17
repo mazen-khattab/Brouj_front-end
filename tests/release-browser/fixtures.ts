@@ -83,10 +83,10 @@ export async function releaseServer(context: BrowserContext) {
     }
     const itemTemplate = { id: planningIds.itemTemplate, name: 'Reusable inspection', code: 'INSPECTION', isActive: true };
     for (const [collection, row] of Object.entries({ customers: syntheticCustomer, reservations: syntheticReservation, orders: syntheticOrder, 'stage-templates': planningTemplate, 'item-templates': itemTemplate, 'terms-and-conditions': governanceTerms, users: governanceStaff, 'activity-logs': governanceLog })) {
-      if (path === `/admin/${collection}`) {
+      if (path === `/admin/${collection}` || collection === 'terms-and-conditions' && path === `/${collection}`) {
         return page([row]);
       }
-      if (path.startsWith(`/admin/${collection}/`)) {
+      if (path.startsWith(`/admin/${collection}/`) || collection === 'terms-and-conditions' && path.startsWith(`/${collection}/`)) {
         return ok(row);
       }
     }
