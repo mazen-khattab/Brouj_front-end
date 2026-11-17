@@ -1,26 +1,20 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
-import {
-  areaInput,
-  cityInput,
-  draftFrom,
-  fileIssue,
-  invalidFields,
-  projectInput,
-  unitInput,
-  unitTotalFits,
-  validAmenities,
-} from "../../src/AdminCatalogue/model";
+import { draftFrom as projectDraft, projectInput } from "../../src/Features/Projects/mapping";
+import { unitInput } from "../../src/Features/Units/mapping";
+import { invalidFields as invalidProjectFields, fileIssue, validAmenities } from "../../src/Features/Projects/validation";
+import { invalidFields as invalidAreaFields } from "../../src/Features/Areas/validation";
+import { invalidFields as invalidUnitFields, unitTotalFits } from "../../src/Features/Units/validation";
 import type { ProjectDto } from "../../src/Types/contracts";
 import { AuthContext } from "../../src/Context/AuthContext";
 import type { AuthValue } from "../../src/Context/AuthContext";
-import { AdminCatalogueProvider } from "../../src/Context/AdminCatalogueProvider";
-import { useAdminCatalogue } from "../../src/Context/AdminCatalogueContext";
-import type { AdminCatalogueValue } from "../../src/Context/AdminCatalogueContext";
+import { CityEditorProvider } from "../../src/Features/Cities/EditorProvider";
+import { useCityEditor } from "../../src/Features/Cities/EditorContext";
+import type { CityEditorValue } from "../../src/Features/Cities/EditorContext";
 import { sessionBoundary } from "../../src/Security/sessionBoundary";
 import { ApiError } from "../../src/Types/failures";
-import { useAdminRecord } from "../../src/Hooks/useAdminRecord";
+import { useCityRecord } from "../../src/Features/Cities/useRecord";
 import * as cities from "../../src/Services/Cities";
 import { renderUi } from "../renderUi";
 
@@ -62,18 +56,18 @@ const project: ProjectDto = {
 };
 
 function mount() {
-  let value!: AdminCatalogueValue;
+  let value!: CityEditorValue;
   function Probe() {
-    value = useAdminCatalogue();
+    value = useCityEditor();
     return null;
   }
   const router = createMemoryRouter([
     {
       path: "/",
       element: (
-        <AdminCatalogueProvider scope="staff:1">
+        <CityEditorProvider scope="staff:1">
           <Probe />
-        </AdminCatalogueProvider>
+        </CityEditorProvider>
       ),
     },
   ]);
@@ -142,7 +136,7 @@ test("same-editor paging retains dirty state while switching to a create mode st
 });
 
 test("full project PATCH input strips identity, images, amenities and server-controlled garage fields", () => {
-  expect(projectInput(draftFrom("project", project))).toEqual({
+  expect(projectInput(projectDraft(project))).toEqual({
     name: "Fixture",
     areaId: id,
     description: null,
@@ -156,9 +150,7 @@ test("full project PATCH input strips identity, images, amenities and server-con
     neighborPrice: null,
     drawDate: null,
   });
-  expect(cityInput({ name: "City", id, deletedAt: "extra" })).toEqual({ name: "City" });
-  expect(areaInput({ name: "Area", cityId: id, cityName: "Read only" })).toEqual({ name: "Area", cityId: id });
-  expect(unitInput({ number: "A", size: "20", floorNumber: "0", meterPrice: "5", neighborMeterPrice: "", isAvailable: "false" })).toEqual({
+  expect(unitInput({ ...{ projectId: id, number: "A", size: "20", floorNumber: "0", meterPrice: "5", neighborMeterPrice: "", isAvailable: "false" } })).toEqual({
     number: "A",
     size: 20,
     floorNumber: 0,
@@ -168,11 +160,11 @@ test("full project PATCH input strips identity, images, amenities and server-con
 });
 
 test("project validators distinguish initiative-only fields, coordinate ranges and decimal precision", () => {
-  const valid = draftFrom("project", project);
-  expect(invalidFields("project", valid)).toEqual([]);
-  expect(invalidFields("project", { ...valid, projectType: "1" })).toEqual(expect.arrayContaining(["price", "neighborPrice", "drawDate"]));
+  const valid = projectDraft(project);
+  expect(invalidProjectFields(valid)).toEqual([]);
+  expect(invalidProjectFields({ ...valid, projectType: "1" })).toEqual(expect.arrayContaining(["price", "neighborPrice", "drawDate"]));
   expect(
-    invalidFields("project", {
+    invalidProjectFields({
       ...valid,
       latitude: "91",
       longitude: "-181",
@@ -184,9 +176,9 @@ test("project validators distinguish initiative-only fields, coordinate ranges a
       drawDate: "invalid",
     }),
   ).toEqual(expect.arrayContaining(["latitude", "longitude", "size", "price", "floorCount", "plannedUnitCount", "neighborPrice", "drawDate"]));
-  expect(invalidFields("project", { ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-12-01T12:00:00+02:00" })).toEqual([]);
-  expect(invalidFields("area", { name: "Area", cityId: "free-form-id" })).toContain("cityId");
-  expect(invalidFields("project", { ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-02-31T12:00:00Z" })).toContain(
+  expect(invalidProjectFields({ ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-12-01T12:00:00+02:00" })).toEqual([]);
+  expect(invalidAreaFields({ name: "Area", cityId: "free-form-id" })).toContain("cityId");
+  expect(invalidProjectFields({ ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-02-31T12:00:00Z" })).toContain(
     "drawDate",
   );
 });
@@ -196,7 +188,18 @@ test("unit monetary overflow and scale are checked without float rounding at the
   expect(unitTotalFits("1", "999999999999999.9901")).toBe(false);
   expect(unitTotalFits("100", "1.0001")).toBe(true);
   expect(unitTotalFits("1", "1.00001")).toBe(false);
-  expect(invalidFields("unit", { number: "N", floorNumber: "0", meterPrice: "0", size: "0.0001", neighborMeterPrice: "" })).toEqual([]);
+  expect(invalidUnitFields({ projectId: id, number: "N", floorNumber: "0", meterPrice: "0", size: "0.0001", neighborMeterPrice: "" })).toEqual([]);
+});
+
+test("unit validation owns project selection and project-specific pricing requirements", () => {
+  const draft = { projectId: id, number: "A", floorNumber: "1", meterPrice: "10", size: "20", neighborMeterPrice: "" };
+  expect(invalidUnitFields({ ...draft, projectId: "" })).toContain("projectId");
+  expect(invalidUnitFields(draft, project)).toEqual([]);
+  expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5" }, project)).toContain("neighborMeterPrice");
+  const initiative = { ...project, projectType: 1 as const, price: 300 };
+  expect(invalidUnitFields(draft, initiative)).toContain("neighborMeterPrice");
+  expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5" }, initiative)).toEqual([]);
+  expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5", meterPrice: "20" }, initiative)).toContain("neighborMeterPrice");
 });
 
 test("amenities allow empty replacement, bound collection size, and require Name/Value pairs", () => {
@@ -353,7 +356,7 @@ test("actor-generation changes and unmount aborts prevent late success/refresh",
 
 test("record refresh retains an editable snapshot during outages and aborts on unmount", async () => {
   const get = vi.spyOn(cities, "getCityById").mockResolvedValue({ id, name: "Initial" });
-  const view = renderHook(() => useAdminRecord("city", id, "", 1));
+  const view = renderHook(() => useCityRecord(id, 1));
   await waitFor(() => expect(view.result.current.data).toEqual({ id, name: "Initial" }));
   get.mockRejectedValue(new ApiError("network"));
   await act(async () => {

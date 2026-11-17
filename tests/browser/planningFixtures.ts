@@ -49,9 +49,10 @@ export const planningPlan: TimePlanDto = {
       name: "Foundations",
       deliveryDate: planningDate,
       sortOrder: 1,
+      percentage: 40,
       items: [planningItem, { ...planningItem, id: planningIds.item2, name: "Concrete work", sortOrder: 2, images: [] }],
     },
-    { id: planningIds.stage2, name: "Finishing", deliveryDate: planningDate, sortOrder: 2, items: [] },
+    { id: planningIds.stage2, name: "Finishing", deliveryDate: planningDate, sortOrder: 2, percentage: 60, items: [] },
   ],
 };
 export const planningTemplate: StageTemplateDto = {
@@ -176,7 +177,7 @@ export async function planningServer(context: BrowserContext, actor: "admin" | "
         if (state.staleOrder && state.plan) {
           state.plan = {
             ...state.plan,
-            stages: [...state.plan.stages, { id: id(), name: "Concurrent stage", deliveryDate: planningDate, sortOrder: 3, items: [] }],
+            stages: [...state.plan.stages, { id: id(), name: "Concurrent stage", deliveryDate: planningDate, sortOrder: 3, percentage: 0, items: [] }],
           };
         }
         return fail(rejected);
@@ -301,6 +302,7 @@ export async function planningServer(context: BrowserContext, actor: "admin" | "
           id: created,
           name: source?.name ?? String(body.name),
           deliveryDate: String(body.deliveryDate),
+          percentage: Number(body.percentage ?? 0),
           sortOrder: plan.stages.length + 1,
           items: drafts.map((entry, index) => ({
             id: id(),

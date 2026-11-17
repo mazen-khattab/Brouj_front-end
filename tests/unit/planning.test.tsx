@@ -4,22 +4,18 @@ import { act, fireEvent, render, renderHook, waitFor } from "@testing-library/re
 import { afterEach, expect, test, vi } from "vitest";
 import { AuthContext } from "../../src/Context/AuthContext";
 import type { AuthValue } from "../../src/Context/AuthContext";
-import { TimePlanProvider } from "../../src/Context/TimePlanProvider";
-import { useTimePlan } from "../../src/Context/TimePlanContext";
-import { TemplatesProvider } from "../../src/Context/TemplatesProvider";
-import { useTemplates } from "../../src/Context/TemplatesContext";
+import { TimePlanProvider } from "../../src/Features/Planning/Plans/TimePlanProvider";
+import { useTimePlan } from "../../src/Features/Planning/Plans/TimePlanContext";
+import { TemplatesProvider } from "../../src/Features/Planning/Templates/TemplatesProvider";
+import { useTemplates } from "../../src/Features/Planning/Templates/TemplatesContext";
 import { useStaffOperation } from "../../src/Hooks/useStaffOperation";
-import { executePlan, executeTemplate } from "../../src/Planning/commands";
-import type { PlanCommand } from "../../src/Planning/commands";
-import {
-  assertCompleteOrdering,
-  invalidPlanningFields,
-  moveRows,
-  orderingInput,
-  planningFieldErrors,
-  stageDraft,
-  validPlanningDate,
-} from "../../src/Planning/policy";
+import { executePlan } from "../../src/Features/Planning/Plans/commands";
+import { executeTemplate } from "../../src/Features/Planning/Templates/commands";
+import type { PlanCommand } from "../../src/Features/Planning/Plans/commands";
+import { assertCompleteOrdering, moveRows, orderingInput } from "../../src/Features/Planning/Shared/ordering";
+import { planningFieldErrors } from "../../src/Features/Planning/Shared/fieldErrors";
+import { stageFromTemplateInput, stageInput, stageUpdateInput, stageFrom } from "../../src/Features/Planning/Stages/mapping";
+import { validPlanningDate } from "../../src/Features/Planning/Shared/dates";
 import { ApiError } from "../../src/Types/failures";
 import * as plans from "../../src/Services/TimePlans";
 import * as templates from "../../src/Services/Templates";
@@ -35,7 +31,13 @@ import { catalogueProject } from "../browser/catalogueFixtures";
 import { sessionBoundary } from "../../src/Security/sessionBoundary";
 import { LocaleProvider } from "../../src/Context/LocaleProvider";
 import { createLocaleInstance } from "../../src/i18n/instance";
-import { SourcePicker } from "../../src/Components/Planning/SourcePicker";
+import { SourcePicker } from "../../src/Features/Planning/SourcePicker";
+
+import { validatePlan } from "../../src/Features/Planning/Plans/validation";
+import { validateStage } from "../../src/Features/Planning/Stages/validation";
+import { validateItem, validateItemStatus, validateImageDescription } from "../../src/Features/Planning/Items/validation";
+import { validateStageTemplate } from "../../src/Features/Planning/Templates/Stages/validation";
+import { validateItemTemplate } from "../../src/Features/Planning/Templates/Items/validation";
 
 const signal = new AbortController().signal;
 const auth: AuthValue = {
@@ -86,15 +88,23 @@ test.each([
   expect(validPlanningDate(value)).toBe(false);
 });
 
-test("client validation matches required plan dates, names/codes, optional confirmation and completed rules", () => {
-  expect(invalidPlanningFields({ name: " ", deliveryDate: "" })).toEqual(["name", "deliveryDate"]);
-  expect(invalidPlanningFields({ name: "Stage", deliveryDate: date })).toEqual([]);
-  expect(invalidPlanningFields({ name: "x".repeat(101), code: "x".repeat(65) })).toEqual(["name", "code"]);
-  expect(invalidPlanningFields({ name: "Item", dueDate: date, confirmedDate: "" })).toEqual([]);
-  expect(invalidPlanningFields({ name: "Item", dueDate: date, confirmedDate: "" }, true)).toEqual(["confirmedDate"]);
-  expect(invalidPlanningFields({ status: "2", confirmedDate: "" })).toEqual(["confirmedDate"]);
-  expect(invalidPlanningFields({ status: "2", confirmedDate: date })).toEqual([]);
-  expect(invalidPlanningFields({ status: "3", description: "x".repeat(20001) })).toEqual(["status", "description"]);
+test("feature validation explicitly covers plan, stage, item, status, image and template fields", () => {
+  expect(validatePlan({ name: " ", deliveryDate: "" })).toEqual(["name", "deliveryDate"]);
+  expect(validatePlan({ name: "Plan", deliveryDate: date })).toEqual([]);
+  expect(validateStageTemplate({ name: "x".repeat(101), code: "x".repeat(65) })).toEqual(["name", "code"]);
+  expect(validateItemTemplate({ name: "x".repeat(101), code: "x".repeat(65) })).toEqual(["name", "code"]);
+  expect(validateItem({ name: "Item", dueDate: date, confirmedDate: "" })).toEqual([]);
+  expect(validateItem({ name: "Item", dueDate: date, confirmedDate: "" }, true)).toEqual(["confirmedDate"]);
+  expect(validateItemStatus({ status: "2", confirmedDate: "" })).toEqual(["confirmedDate"]);
+  expect(validateItemStatus({ status: "2", confirmedDate: date })).toEqual([]);
+  expect(validateItemStatus({ status: "3", confirmedDate: "" })).toEqual(["status"]);
+  expect(validateImageDescription({ description: "x".repeat(20001) })).toEqual(["description"]);
+  for (const percentage of ["50", "0", "100"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage }, "create")).toEqual([]);
+  for (const percentage of ["100.1", "-1", "abc", "", "Infinity"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage }, "create")).toEqual(["percentage"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "" }, "edit")).toEqual([]);
+  // Unknown fields cannot accidentally acquire date validation; the feature owns its explicit rules.
+  const extended = { name: "Stage", deliveryDate: date, percentage: "25", notes: "A regular text field" };
+  expect(validateStage(extended, "create")).toEqual([]);
   expect(planningFieldErrors(new ApiError("transport", { fieldErrors: { "Input.Name": ["Untrusted text"] } }), ["name", "code"])).toEqual(["name"]);
 });
 
@@ -137,22 +147,25 @@ test("ordering preserves input arrays and checks the complete unique sibling set
 
 test("template drafts carry source references, explicit dates and reject inactive/incomplete sources", () => {
   const rows = template.items.map((row) => ({ itemTemplateId: row.itemTemplateId, dueDate: date, confirmedDate: "" }));
-  const input = stageDraft("Ignored manual name", date, rows, template);
+  const values = { name: "Ignored manual name", deliveryDate: date, percentage: "25" };
+  const input = stageFromTemplateInput(template, values, rows);
   expect(input.stageTemplateId).toBe(ids.stageTemplate);
+  expect(input.percentage).toBe(25);
   expect(input.items.map((row) => row.itemTemplateId)).toEqual([ids.itemTemplate, ids.itemTemplate2]);
   expect(input.items.every((row) => row.dueDate === date && row.confirmedDate === null)).toBe(true);
-  expect(() => stageDraft("", date, rows, { ...template, isActive: false })).toThrow(ApiError);
-  expect(() => stageDraft("", date, rows, { ...template, items: template.items.map((row) => ({ ...row, isActive: false })) })).toThrow(ApiError);
-  expect(() => stageDraft("", date, [], template)).toThrow(ApiError);
+  expect(() => stageFromTemplateInput({ ...template, isActive: false }, values, rows)).toThrow(ApiError);
+  expect(() => stageFromTemplateInput({ ...template, items: template.items.map((row) => ({ ...row, isActive: false })) }, values, rows)).toThrow(ApiError);
+  expect(() => stageFromTemplateInput(template, values, [])).toThrow(ApiError);
   expect(() =>
-    stageDraft(
-      "",
-      date,
-      rows.map((row) => ({ ...row, itemTemplateId: ids.item })),
+    stageFromTemplateInput(
       template,
+      values,
+      rows.map((row) => ({ ...row, itemTemplateId: ids.item })),
     ),
   ).toThrow(ApiError);
-  expect(stageDraft("Manual", date, [{ name: "Manual item", dueDate: date, confirmedDate: "" }]).items[0]!.itemTemplateId).toBeNull();
+  expect(stageInput(values)).toEqual({ name: values.name, deliveryDate: date, percentage: 25 });
+  expect(stageUpdateInput(values)).toEqual({ name: values.name, deliveryDate: date });
+  expect(stageFrom(plan.stages[0]!)).toMatchObject({ name: plan.stages[0]!.name, deliveryDate: plan.stages[0]!.deliveryDate });
 });
 
 test.each([

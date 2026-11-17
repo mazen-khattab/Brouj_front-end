@@ -7,11 +7,20 @@ import { catalogueIds, catalogueProject } from "./catalogueFixtures";
 import en from "../../src/i18n/locales/en/admin.json" with { type: "json" };
 import ar from "../../src/i18n/locales/ar/admin.json" with { type: "json" };
 
-const base = "/admin/catalogue";
+const base = "/admin";
 const projectPath = `${base}/projects/${catalogueIds.project}`;
-const unitPath = `${projectPath}/units/${catalogueIds.unit}`;
+const unitPath = `${base}/units/${catalogueIds.unit}?projectId=${catalogueIds.project}`;
 const save = (page: Page) => page.getByRole("button", { name: "Save record", exact: true });
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==", "base64");
+const runtimeErrors = new WeakMap<Page, string[]>();
+test.beforeEach(({ page }) => {
+  const errors: string[] = [];
+  runtimeErrors.set(page, errors);
+  page.on("pageerror", (error) => errors.push(error.message));
+});
+test.afterEach(({ page }) => {
+  expect(runtimeErrors.get(page)).toEqual([]);
+});
 const expectedProject = {
   name: catalogueProject.name,
   areaId: catalogueIds.area,
@@ -31,12 +40,75 @@ async function field(page: Page, name: string, value: string) {
   await page.locator(`#field-${name}`).fill(value);
 }
 
+async function dashboardLink(page: Page, name: string) {
+  const menu = page.getByRole("button", { name: "Menu", exact: true });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole("navigation", { name: "Dashboard navigation", exact: true })
+    .getByRole("link", { name, exact: true }).click();
+}
+
 async function deleteCurrent(page: Page) {
   await page.getByRole("button", { name: "Delete record", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Confirm action" }).click();
   await expect(page.getByText("The record was deleted.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Back to list" }).click();
 }
+
+test("dashboard exposes four independent features and units only load for the selected project", async ({ page, context }) => {
+  const server = await adminCatalogueServer(context);
+  await seedRouting(page, "admin");
+  await page.goto("/admin");
+  const dashboard = page.getByRole("navigation", { name: "Your Brouj workspace", exact: true });
+  for (const [name, path] of [["Cities", "cities"], ["Areas", "areas"], ["Projects", "projects"], ["Units", "units"]]) {
+    await expect(dashboard.getByRole("link", { name: name!, exact: true })).toHaveAttribute("href", `/admin/${path}`);
+  }
+  await dashboard.getByRole("link", { name: "Units", exact: true }).click();
+  await expect(page.getByText(en.selectProjectForUnits, { exact: true })).toBeVisible();
+  expect(server.calls.filter((call) => call.url.pathname.endsWith("/units"))).toHaveLength(0);
+  await page.getByLabel(en.filterByProject, { exact: true }).selectOption(catalogueIds.project);
+  await expect(page.locator("table tbody tr")).toHaveCount(1);
+  expect(server.calls.some((call) => call.url.pathname.endsWith(`/projects/${catalogueIds.project}/units`))).toBe(true);
+  await page.getByLabel(en.filterByProject, { exact: true }).selectOption("");
+  await expect(page.locator("table")).toHaveCount(0);
+});
+
+test("standalone unit creation requires a project and preserves it through editing", async ({ page, context }) => {
+  const server = await adminCatalogueServer(context);
+  await seedRouting(page, "admin");
+  await page.goto("/admin/units?create=1");
+  await expect(page.locator("#field-projectId")).toBeEnabled();
+  await expect(save(page)).toBeDisabled();
+  expect(server.calls.some((call) => call.method === "POST")).toBe(false);
+  await page.locator("#field-projectId").selectOption(catalogueIds.project);
+  for (const [key, value] of Object.entries({ number: "Standalone", meterPrice: "50", floorNumber: "1", size: "90", neighborMeterPrice: "60" })) {
+    await field(page, key, value);
+  }
+  await save(page).click();
+  await expect(page).toHaveURL(/\/admin\/units\/[0-9a-f-]+\?projectId=/);
+  await expect(page.locator("#field-projectId")).toHaveValue(catalogueIds.project);
+  await expect(page.locator("#field-projectId")).toBeDisabled();
+  await expect(page.getByText(en.unitProjectFixed, { exact: true })).toBeVisible();
+  await field(page, "number", "Updated standalone");
+  await save(page).click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  const patch = server.calls.findLast((call) => call.method === "PATCH")!;
+  expect(patch.url.searchParams.get("projectId")).toBe(catalogueIds.project);
+  expect(patch.body).not.toHaveProperty("projectId");
+});
+
+test("area editing owns its required city selection and maps the new relationship", async ({ page, context }) => {
+  const server = await adminCatalogueServer(context);
+  await seedRouting(page, "admin");
+  await page.goto(`/admin/areas/${catalogueIds.area}`);
+  await page.locator("#field-cityId").selectOption("");
+  await save(page).click();
+  await expect(page.locator("#field-cityId")).toHaveAttribute("aria-invalid", "true");
+  expect(server.calls.some((call) => call.method === "PATCH")).toBe(false);
+  await page.locator("#field-cityId").selectOption(catalogueIds.city2);
+  await save(page).click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({ name: "East Quarter", cityId: catalogueIds.city2 });
+});
 
 test("create, edit and delete a complete hierarchy with selected parents and full update payloads", async ({ page, context }) => {
   test.setTimeout(120000);
@@ -71,13 +143,13 @@ test("create, edit and delete a complete hierarchy with selected parents and ful
   await field(page, "description", "Full update without nested images");
   await save(page).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
-  await page.getByRole("link", { name: "Create record", exact: true }).click();
+  await page.getByRole("link", { name: en.createUnit, exact: true }).click();
   for (const [key, value] of Object.entries({ number: "N-1", meterPrice: "50", floorNumber: "1", size: "90" })) {
     await field(page, key, value);
   }
   await save(page).click();
-  await expect(page).toHaveURL(/\/units\/[0-9a-f-]+$/);
-  const unitId = page.url().split("/").at(-1)!;
+  await expect(page).toHaveURL(/\/units\/[0-9a-f-]+\?projectId=/);
+  const unitId = new URL(page.url()).pathname.split("/").at(-1)!;
   await field(page, "number", "N-2");
   await save(page).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
@@ -88,6 +160,7 @@ test("create, edit and delete a complete hierarchy with selected parents and ful
   expect(Object.keys(projectPatch.body as object).sort()).toEqual(Object.keys(expectedProject).sort());
   await deleteCurrent(page);
   expect(server.calls.findLast((call) => call.method === "DELETE")!.url.searchParams.get("projectId")).toBe(projectId);
+  await page.goto(`${base}/projects/${projectId}`);
   await deleteCurrent(page);
   await page.goto(`${base}/areas/${areaId}`);
   await deleteCurrent(page);
@@ -264,7 +337,7 @@ test("a removed image retains its text draft after conflict and local previews a
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { previewCounts: { revoked: number } }).previewCounts.revoked))
     .toBeGreaterThan(0);
-  await page.getByRole("navigation", { name: "Catalogue", exact: true }).getByRole("link", { name: "Cities", exact: true }).click();
+  await dashboardLink(page, "Cities");
   await page.getByRole("button", { name: en.discard }).click();
   await expect(page.locator("#upload-file")).toHaveCount(0);
   const counts = await page.evaluate(() => (window as unknown as { previewCounts: { created: number; revoked: number } }).previewCounts);
@@ -279,7 +352,7 @@ test("pending writes block duplicate dispatch and navigation until the current r
   server.state.delayWrite = 1200;
   await save(page).click();
   await expect(page.locator('form button[type="submit"]')).toBeDisabled();
-  await page.getByRole("navigation", { name: "Catalogue", exact: true }).getByRole("link", { name: "Areas", exact: true }).click();
+  await dashboardLink(page, "Areas");
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("dialog").getByRole("button", { name: en.discard })).toBeDisabled();
   await expect(page.getByRole("dialog").getByRole("button", { name: en.stay })).toBeEnabled();
@@ -288,18 +361,12 @@ test("pending writes block duplicate dispatch and navigation until the current r
   expect(server.calls.filter((call) => call.method === "PATCH")).toHaveLength(1);
 });
 
-test("unit-list search retains the project draft and its later leave confirmation", async ({ page, context }) => {
-  const server = await adminCatalogueServer(context);
+test("project links to an independent units list and confirms leaving its draft", async ({ page, context }) => {
+  await adminCatalogueServer(context);
   await seedRouting(page, "admin");
   await page.goto(projectPath);
   await field(page, "name", "Draft retained while searching units");
-  await page.locator("#search-unit").fill("A-204");
-  await expect
-    .poll(() => server.calls.some((call) => call.url.pathname.endsWith("/units") && call.url.searchParams.get("search") === "A-204"))
-    .toBe(true);
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(page.locator("#field-name")).toHaveValue("Draft retained while searching units");
-  await page.getByRole("navigation", { name: "Catalogue", exact: true }).getByRole("link", { name: "Cities", exact: true }).click();
+  await page.getByRole("link", { name: en.units, exact: true }).click();
   await expect(page.getByRole("dialog")).toContainText(en.leaveDescription);
   await page.getByRole("button", { name: en.stay }).click();
   await expect(page.locator("#field-name")).toHaveValue("Draft retained while searching units");
@@ -362,11 +429,11 @@ for (const language of ["ar", "en"] as const) {
       name: "A long supplied project name with several words for wrapping and layout review",
     });
     await seedRouting(page, "admin", language);
-    await mkdir("docs/evidence/part_08", { recursive: true });
+    await mkdir("test-results/dashboard-features", { recursive: true });
     async function capture(name: string) {
       await expect(page.locator("html")).toHaveAttribute("dir", language === "ar" ? "rtl" : "ltr");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      await page.screenshot({ path: `docs/evidence/part_08/${language}-${page.viewportSize()!.width}-${name}.png`, fullPage: true });
+      await page.screenshot({ path: `test-results/dashboard-features/${language}-${page.viewportSize()!.width}-${name}.png`, fullPage: true });
     }
     await page.goto(`${base}/projects`);
     await expect(page.locator("table tbody tr")).toHaveCount(1);

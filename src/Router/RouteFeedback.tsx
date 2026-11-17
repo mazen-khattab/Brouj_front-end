@@ -1,11 +1,6 @@
 import { useLayoutEffect } from "react";
 import type { ReactNode } from "react";
-import {
-  Link,
-  useLocation,
-  useRouteError,
-  isRouteErrorResponse,
-} from "react-router-dom";
+import { Link, useLocation, useRouteError, isRouteErrorResponse } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Loading } from "../Components/Feedback";
 import { BrandWordmark } from "../Components/BrandWordmark";
@@ -15,16 +10,13 @@ import { routePaths } from "./routePaths";
 export function RouteHeading({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const { t } = useTranslation();
+  
   useLayoutEffect(() => {
     document.title = `${String(children)} · ${t("brand")}`;
   }, [children, t]);
+
   return (
-    <h1
-      key={pathname}
-      data-route-focus
-      tabIndex={-1}
-      className="text-3xl font-medium leading-relaxed focus:outline-none sm:text-4xl"
-    >
+    <h1 key={pathname} data-route-focus tabIndex={-1} className="text-3xl font-medium leading-relaxed focus:outline-none sm:text-4xl">
       {children}
     </h1>
   );
@@ -46,13 +38,7 @@ export function PageLoading({ full = false }: { full?: boolean }) {
   );
 }
 
-export function RouteMessage({
-  kind = "notFound",
-  action,
-}: {
-  kind?: "notFound" | "forbidden" | "routeError";
-  action?: ReactNode;
-}) {
+export function RouteMessage({ kind = "notFound", action }: { kind?: "notFound" | "forbidden" | "routeError"; action?: ReactNode }) {
   const { t } = useTranslation("routing");
   return (
     <section
@@ -65,9 +51,7 @@ export function RouteMessage({
       <div id="route-message-title">
         <RouteHeading>{t(kind)}</RouteHeading>
       </div>
-      <p className="max-w-prose leading-8 text-muted">
-        {t(kind + "Description")}
-      </p>
+      <p className="max-w-prose leading-8 text-muted">{t(kind + "Description")}</p>
       <div className="flex flex-wrap items-center gap-5">
         {action}
         <Link className="underline" to={routePaths.home}>
@@ -84,14 +68,8 @@ export function RouteErrorView() {
   // Never echo chunk URLs, exception messages, or private loader data to the page.
   return (
     <RouteMessage
-      kind={
-        isRouteErrorResponse(error) && error.status === 404
-          ? "notFound"
-          : "routeError"
-      }
-      action={
-        <Button onClick={() => window.location.reload()}>{t("reload")}</Button>
-      }
+      kind={isRouteErrorResponse(error) && error.status === 404 ? "notFound" : "routeError"}
+      action={<Button onClick={() => window.location.reload()}>{t("reload")}</Button>}
     />
   );
 }

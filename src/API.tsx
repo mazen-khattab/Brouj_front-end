@@ -86,7 +86,7 @@ export function createApiTransport(
     if (config.signal?.aborted) {
       throw new ApiError("canceled");
     }
-
+    
     if (!safe.has((config.method ?? "GET").toUpperCase()) && config.brouj?.generation !== security.generation()) {
       throw new ApiError("canceled");
     }
@@ -135,10 +135,14 @@ export function createApiTransport(
 
   const responseInterceptor = client.interceptors.response.use(
     (response) => {
-      if (response.status < 200 || response.status >= 300 || (isRecord(response.data) && response.data.success === false))
+      if (response.status < 200 || response.status >= 300 || (isRecord(response.data) && response.data.success === false)) {
         throw failureFromResponse(response.status, response.data, retryHeader(response.headers));
-      if (!isRecord(response.data) || response.data.success !== true || !Object.hasOwn(response.data, "data") || response.data.data === undefined)
+      }
+
+      if (!isRecord(response.data) || response.data.success !== true || !Object.hasOwn(response.data, "data") || response.data.data === undefined) {
         throw new ApiError("transport", { status: response.status });
+      }
+
       return response;
     },
     (error: unknown) => Promise.reject(normalize(error)),
@@ -195,11 +199,19 @@ export function createApiTransport(
         ...(requestSignal ? { signal: requestSignal } : {}),
       };
       const response = await client.request<{ success: true; data: T }>(config);
-      if (stamp && boundary.stamp()?.generation !== stamp.generation) throw new ApiError("canceled");
-      if (input.metadata.authenticated && generation !== security.generation()) throw new ApiError("canceled");
+
+      if (stamp && boundary.stamp()?.generation !== stamp.generation) {
+        throw new ApiError("canceled");
+      }
+
+      if (input.metadata.authenticated && generation !== security.generation()) {
+        throw new ApiError("canceled");
+      }
+
       return response.data.data;
     } catch (error: unknown) {
       const failure = normalize(error);
+
       const eligible =
         dispatched &&
         failure.status === 401 &&
@@ -207,12 +219,18 @@ export function createApiTransport(
         !input.metadata.skipAuthenticationRecovery &&
         !input.metadata.sessionControl &&
         stamp;
+
       if (eligible && !replayed && !input.signal?.aborted) {
         const recovered = await waitForRecovery(boundary.recover(stamp), input.signal).catch((error: unknown) => {
           throw normalize(error);
         });
-        if (recovered && boundary.stamp()?.generation === stamp.generation && !input.signal?.aborted) return execute<T>(input, true);
-      } else if (eligible && replayed) boundary.rejected(stamp);
+
+        if (recovered && boundary.stamp()?.generation === stamp.generation && !input.signal?.aborted) {
+          return execute<T>(input, true);
+        }
+      } else if (eligible && replayed) {
+        boundary.rejected(stamp);
+      }
       if (
         dispatched &&
         failure.status === 401 &&
@@ -228,15 +246,21 @@ export function createApiTransport(
       throw failure;
     } finally {
       leave();
-      for (const signal of signals) signal.removeEventListener("abort", abort);
-      if (dispatched && input.metadata.changesIdentity) security.invalidate();
+      for (const signal of signals) {
+        signal.removeEventListener("abort", abort);
+      }
+      if (dispatched && input.metadata.changesIdentity) {
+        security.invalidate();
+      }
     }
   }
 
   return {
     request: <T,>(input: ApiRequest) => execute<T>(input),
     async csrf(signal?: AbortSignal) {
-      if (disposed) throw new ApiError("canceled");
+      if (disposed) {
+        throw new ApiError("canceled");
+      }
       try {
         return (await security.ensure(loadProof, signal)).value;
       } catch (error: unknown) {

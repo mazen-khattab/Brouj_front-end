@@ -68,14 +68,14 @@ export const timePlanPage: RouteDefinition = {
 export const adminPages: RouteDefinition[] = [
   { path: "/admin", title: "dashboard", access: "staff", phase: 5 },
   ...[
-    ["catalogue", "catalogue"],
-    ["catalogue/cities", "cities"],
-    ["catalogue/cities/:cityId", "city"],
-    ["catalogue/areas", "areas"],
-    ["catalogue/areas/:areaId", "area"],
-    ["catalogue/projects", "projects"],
-    ["catalogue/projects/:projectId", "project"],
-    ["catalogue/projects/:projectId/units/:unitId", "unit"],
+    ["cities", "cities"],
+    ["cities/:cityId", "city"],
+    ["areas", "areas"],
+    ["areas/:areaId", "area"],
+    ["projects", "projects"],
+    ["projects/:projectId", "project"],
+    ["units", "units"],
+    ["units/:unitId", "unit"],
   ].map(([path, title]) => ({
     path: `/admin/${path}`,
     title: title!,

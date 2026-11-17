@@ -4,12 +4,7 @@ import type { RouteObject } from "react-router-dom";
 import RootLayout from "./RootLayout";
 import { AccessGuard } from "./AccessGuard";
 import { RouteErrorView, RouteMessage } from "./RouteFeedback";
-import {
-  accountPages,
-  adminPages,
-  publicPages,
-  timePlanPage,
-} from "./routeDefinitions";
+import { accountPages, adminPages, publicPages, timePlanPage } from "./routeDefinitions";
 import { routePaths } from "./routePaths";
 
 const PublicLayout = lazy(() => import("../Layouts/PublicLayout"));
@@ -21,27 +16,32 @@ const CataloguePage = lazy(() => import("../Pages/Catalogue/CataloguePage"));
 const AccountPage = lazy(() => import("../Pages/Account/AccountPage"));
 const TimePlanPage = lazy(() => import("../Pages/Account/TimePlanPage"));
 const AdminGovernancePage = lazy(() => import("../Pages/Admin/GovernancePage"));
-const AdminCataloguePage = lazy(() => import("../Pages/Admin/CataloguePage"));
+const CityPage = lazy(() => import("../Features/Cities/CityPage"));
+const AreaPage = lazy(() => import("../Features/Areas/AreaPage"));
+const ProjectPage = lazy(() => import("../Features/Projects/ProjectPage"));
+const UnitPage = lazy(() => import("../Features/Units/UnitPage"));
 const AdminOperationsPage = lazy(() => import("../Pages/Admin/OperationsPage"));
-const AdminPlanningPage = lazy(() => import("../Pages/Admin/PlanningPage"));
+const AdminPlanningPage = lazy(() => import("../Features/Planning/PlanningPage"));
 const DashboardPage = lazy(() => import("../Pages/Admin/DashboardPage"));
 const CustomerLoginPage = lazy(() => import("../Pages/Auth/CustomerLoginPage"));
-const CustomerRegistrationPage = lazy(
-  () => import("../Pages/Auth/CustomerRegistrationPage"),
-);
+const CustomerRegistrationPage = lazy(() => import("../Pages/Auth/CustomerRegistrationPage"));
 const StaffLoginPage = lazy(() => import("../Pages/Auth/StaffLoginPage"));
 
 const adminChildren: RouteObject[] = adminPages.map((page) => ({
-  ...(page.path === "/admin"
-    ? { index: true as const }
-    : { path: page.path.slice("/admin/".length) }),
+  ...(page.path === "/admin" ? { index: true as const } : { path: page.path.slice("/admin/".length) }),
   handle: page,
   errorElement: <RouteErrorView />,
   element:
     page.path === "/admin" ? (
       <DashboardPage />
-    ) : page.phase === 8 ? (
-      <AdminCataloguePage title={page.title} />
+    ) : page.path.startsWith("/admin/cities") ? (
+      <CityPage />
+    ) : page.path.startsWith("/admin/areas") ? (
+      <AreaPage />
+    ) : page.path.startsWith("/admin/projects") ? (
+      <ProjectPage />
+    ) : page.path.startsWith("/admin/units") ? (
+      <UnitPage />
     ) : page.phase === 9 ? (
       <AdminOperationsPage title={page.title} />
     ) : page.phase === 10 ? (
@@ -51,13 +51,9 @@ const adminChildren: RouteObject[] = adminPages.map((page) => ({
     ),
 }));
 
-const staffChildren = adminChildren.filter(
-  (route) => route.handle.access !== "superAdmin",
-);
+const staffChildren = adminChildren.filter((route) => route.handle.access !== "superAdmin");
 
-const superAdminChildren = adminChildren.filter(
-  (route) => route.handle.access === "superAdmin",
-);
+const superAdminChildren = adminChildren.filter((route) => route.handle.access === "superAdmin");
 
 export const appRoutes: RouteObject[] = [
   {
@@ -72,14 +68,7 @@ export const appRoutes: RouteObject[] = [
             path: page.path,
             handle: page,
             errorElement: <RouteErrorView />,
-            element:
-              page.path === "/" ? (
-                <WelcomePage />
-              ) : page.path === routePaths.about ? (
-                <AboutPage />
-              ) : (
-                <CataloguePage kind={page.title} />
-              ),
+            element: page.path === "/" ? <WelcomePage /> : page.path === routePaths.about ? <AboutPage /> : <CataloguePage kind={page.title} />,
           })),
           {
             path: timePlanPage.path,
@@ -95,11 +84,9 @@ export const appRoutes: RouteObject[] = [
                 element: <AccountLayout />,
                 children: [
                   ...accountPages.map((page) => ({
-                    ...(page.path === "/account"
-                      ? { index: true as const }
-                      : { path: page.path.slice("/account/".length) }),
+                    ...(page.path === "/account" ? { index: true as const } : { path: page.path.slice("/account/".length) }),
                     handle: page,
-                    element: <AccountPage kind={page.title as 'profile' | 'reservations' | 'reservation' | 'orders' | 'order'} />,
+                    element: <AccountPage kind={page.title as "profile" | "reservations" | "reservation" | "orders" | "order"} />,
                     errorElement: <RouteErrorView />,
                   })),
                   { path: "*", element: <RouteMessage /> },
@@ -155,9 +142,7 @@ export const appRoutes: RouteObject[] = [
 if (import.meta.env.DEV) {
   const ComponentShowcase = lazy(() => import("../Pages/ComponentShowcase"));
   const AuthPreview = lazy(() => import("../Pages/AuthPreview"));
-  appRoutes[0]!.children!.push(
-    { path: "/__showcase", element: <ComponentShowcase /> },
-    { path: "/__auth", element: <AuthPreview /> },
-  );
+  appRoutes[0]!.children!.push({ path: "/__showcase", element: <ComponentShowcase /> }, { path: "/__auth", element: <AuthPreview /> });
 }
+
 export const router = createBrowserRouter(appRoutes);

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useStaffAccount } from "../../Context/StaffAccountContext";
 import { GovernanceRead, GovernanceFeedback, GovernanceForm, governancePanel } from "../../Components/Governance/Shared";
 import { Facts } from "../../Components/Catalogue/PropertyFacts";
-import { EditorGuardProvider } from "../../Planning/EditorGuard";
+import { EditorGuardProvider } from "../../Features/Planning/Shared/EditorGuard";
 
 export default function StaffAccountWorkspace() {
   const context = useStaffAccount();

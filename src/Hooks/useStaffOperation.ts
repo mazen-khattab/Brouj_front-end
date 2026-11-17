@@ -37,6 +37,7 @@ export function useStaffOperation(name: string, gate: RefObject<StaffWriteGate>)
   const controller = useRef<AbortController | null>(null);
   const reconcile = useRef<((signal: AbortSignal) => Promise<unknown>) | null>(null);
   const [state, setState] = useState<StaffOperationState>({ pending: false, blocked: false, uncertain: false, succeeded: false });
+
   useEffect(() => {
     active.current = true;
     return () => {
@@ -53,12 +54,14 @@ export function useStaffOperation(name: string, gate: RefObject<StaffWriteGate>)
     if (!current() || gate.current.locked || gate.current.unresolved.size) {
       return undefined;
     }
+
     gate.current.locked = true;
     const request = new AbortController();
     controller.current = request;
     reconcile.current = job.reconcile;
     setState({ pending: true, targetId: job.id, blocked: false, uncertain: false, succeeded: false });
     let acknowledged = false;
+
     try {
       const id = await job.write(request.signal);
       if (!current() || request.signal.aborted) {

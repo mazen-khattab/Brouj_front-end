@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { routeDefinitions } from '../../src/Router/routeDefinitions';
 import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
+import ar from '../../src/i18n/locales/ar/routing.json' with { type: 'json' };
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openPublicSessionActions } from './publicHeaderActions';
 
@@ -12,7 +13,7 @@ for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
     test.setTimeout(120_000);
     const server = await routingServer(context, actor); await seedRouting(page, actor);
     const adminFiles: string[] = [];
-    page.on('request', (request) => { if (/\/src\/(Layouts\/AdminLayout|Pages\/Admin\/)/.test(request.url())) adminFiles.push(request.url()); });
+    page.on('request', (request) => { if (/\/src\/(Layouts\/AdminLayout|Pages\/Admin\/|Features\/(Cities|Areas|Projects|Units)\/)/.test(request.url())) adminFiles.push(request.url()); });
     for (const route of routeDefinitions) {
       const path = route.path.replace(/:[^/]+/g, 'fixture');
       await page.goto(path);
@@ -144,6 +145,7 @@ test('a failed lazy page preserves its layout and offers a safe reload', async (
 
 for (const language of ['ar', 'en'] as const) {
   test(`bilingual layout review and language persistence in ${language}`, async ({ page, context }, info) => {
+    const switched = language === 'en' ? ar : en;
     const server = await routingServer(context, 'customer'); await seedRouting(page, 'customer', language);
     for (const [layout, path, actor] of [
       ['public', '/', 'customer'], ['account', '/account/reservations', 'customer'], ['admin', '/admin', 'superAdmin'],
@@ -163,11 +165,11 @@ for (const language of ['ar', 'en'] as const) {
     }
     await page.getByRole('button', { name: language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية' }).click();
     if (info.project.name.includes('mobile')) await page.getByRole('button', { name: language === 'en' ? 'القائمة' : 'Menu', exact: true }).click();
-    await page.getByRole('navigation', { name: language === 'en' ? 'التنقل في لوحة الإدارة' : 'Dashboard navigation' }).getByRole('link', { name: language === 'en' ? 'العقارات' : 'Catalogue', exact: true }).click();
-    await expect(heading(page)).toHaveText(language === 'en' ? 'العقارات' : 'Catalogue');
+    await page.getByRole('navigation', { name: language === 'en' ? 'التنقل في لوحة الإدارة' : 'Dashboard navigation' }).getByRole('link', { name: switched.cities, exact: true }).click();
+    await expect(heading(page)).toHaveText(switched.cities);
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', language === 'en' ? 'ar' : 'en');
-    await expect(heading(page)).toHaveText(language === 'en' ? 'العقارات' : 'Catalogue');
+    await expect(heading(page)).toHaveText(switched.cities);
     await page.getByRole('navigation', { name: language === 'en' ? 'مسار التنقل' : 'Breadcrumbs' }).getByRole('link', { name: language === 'en' ? 'الرئيسية' : 'Home', exact: true }).click();
     await expect(heading(page)).toHaveText(language === 'en' ? 'بروج' : 'Brouj');
     server.state.actor = 'customer'; await page.goto('/account');

@@ -10,7 +10,7 @@ export async function accountServer(context: BrowserContext, actor: 'anonymous' 
   const reservation: ReservationDto = { id: accountIds.reservation, unitId: catalogueIds.unit, unitNumber: 'A-204', projectName: 'Garden Residence', number: 'R-FIXTURE-ONE', status: 0, reservationDate: '2026-10-01T12:00:00Z', cancelledAt: null, orderId: null };
   const order: OrderDto = { id: accountIds.order, reservationId: accountIds.reservation, unitId: catalogueIds.unit, unitNumber: 'A-204', projectName: 'Garden Residence', number: 'O-FIXTURE-ONE', status: 1, totalPrice: 1234567.89, completedAt: null };
   const plan: TimePlanDto = { id: '70000000-0000-4000-8000-000000000001', projectId: catalogueIds.project, name: 'Published schedule', deliveryDate: '2027-12-01T12:00:00Z', stages: [
-    { id: 'stage', name: 'Structure', sortOrder: 0, deliveryDate: '2027-06-01T12:00:00Z', items: [
+    { id: 'stage', name: 'Structure', sortOrder: 0, percentage: 50, deliveryDate: '2027-06-01T12:00:00Z', items: [
       { id: 'item-one', name: 'Foundations', sortOrder: 0, status: 2, dueDate: '2026-12-01T12:00:00Z', confirmedDate: '2026-11-29T12:00:00Z', images: [{ id: 'image-one', imagePath: 'C:\\PRIVATE-PROGRESS\\image.webp', description: 'Published progress note.', sortOrder: 0 }] },
       { id: 'item-two', name: 'Upper floors', sortOrder: 1, status: 1, dueDate: '2027-05-01T12:00:00Z', confirmedDate: null, images: [] },
     ] },

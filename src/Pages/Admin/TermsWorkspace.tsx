@@ -10,7 +10,7 @@ import { DataTable } from "../../Components/DataTable";
 import { Pagination } from "../../Components/Pagination";
 import { Button } from "../../Components/Button";
 import { Facts } from "../../Components/Catalogue/PropertyFacts";
-import { EditorGuardProvider } from "../../Planning/EditorGuard";
+import { EditorGuardProvider } from "../../Features/Planning/Shared/EditorGuard";
 
 export default function TermsWorkspace() {
   const context = useTermsAdmin();

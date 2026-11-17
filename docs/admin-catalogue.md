@@ -1,19 +1,51 @@
-# Admin catalogue and media
+# Independent dashboard features — Phase 1
 
-Staff enter through `/admin/catalogue`. Cities, areas and projects have paginated public GET lists and staff-only create/edit/delete controls. Each project contains its paginated unit list and project-scoped unit creation. Create forms use `?create=1`; project unit creation uses `?createUnit=1`. These are modes of the existing approved routes. Detail routes retain their original paths and access policies. Parent selectors search with a 300 ms debounce and page through 20 results; area choices include the supplied city name. Unit parent projects come from the route and cannot be reassigned in an update.
+Staff now have four direct navigation entries and independent lazy-loaded pages:
 
-The forms explicitly select the approved `CityInput`, `AreaInput`, `ProjectInput` and `UnitInput` properties. PATCH sends the full input, including unchanged loaded values and explicit nulls, while excluding identities, images, amenities, garage values, availability, totals and percentages. Unit detail/update/delete carry the required `projectId` query. Project type, initiative fields, geographic bounds, integer limits, decimal precision, unit total limits and parent relationships follow live backend validators/handlers. Server relationships and recalculated amounts remain authoritative. Read-only project/unit facts show returned values with locale formatting.
+| Feature | List / create | Detail |
+| --- | --- | --- |
+| Cities | /admin/cities, ?create=1 | /admin/cities/:cityId |
+| Areas | /admin/areas, ?create=1 | /admin/areas/:areaId |
+| Projects | /admin/projects, ?create=1 | /admin/projects/:projectId |
+| Units | /admin/units, ?create=1 | /admin/units/:unitId?projectId=… |
 
-Amenities are independent Name/Value drafts. Replacement sends the entire collection, including an empty array when removing all pairs. The UI explains removal semantics and confirms replacement. Each name is required and limited to 100 characters; each value is required and limited to 32; collections are limited to 100. Saving amenities does not save or erase record edits.
+These replace the previous /admin/catalogue routes. Public catalogue browsing is unchanged.
 
-Project and unit media each support one-file creation, optional AltText updates and confirmed deletion. No image ordering or global amenity endpoint is exposed. Files must be nonempty, no larger than 5 MiB, and use matching JPEG/PNG/WebP extensions and MIME types with a valid filename. The storage service remains responsible for byte signatures and any more restrictive configured policy. Existing services construct FormData with one `File` and optional `AltText`, leaving the multipart boundary to the browser. Preview object URLs are revoked on file replacement, successful upload and unmount. A successful upload is followed by a detail read and clears the local file only after that read succeeds.
+## Feature ownership
 
-Persisted image paths stay inside the shared resolver boundary. No approved delivery mapping is configured, so the gallery renders localized placeholders while uploads and metadata remain usable. Paths never become image URLs or page text. The existing gallery also handles broken approved delivery URLs. This is the plan-permitted media dependency; actual persisted-image display still requires an approved mapping before release or an explicit release disposition.
+Each folder under src/Features (Cities, Areas, Projects, Units) owns:
 
-`AdminCatalogueProvider` lives under the staff guard and is keyed by actor, ID, generation, route and create mode. It coordinates synchronous write locks, localized feedback, unsaved-navigation confirmation and before-unload protection. Locks include authoritative post-write reads. Mutations invalidate any still-mounted public/admin lists; there is no persistent catalogue cache. Same-record refreshes and unit-list query changes keep the editor mounted, preserving independent drafts and their dirty markers. Leaving the route or changing create mode confirms draft loss. Reads use cancellation and latest-response protection; stale actor generations cannot publish mutation success or start a subsequent write. Private drafts and DTOs are not persisted or logged.
+- Its Page, List, and explicit Form JSX.
+- types.ts: typed form drafts and entity types based on generated contracts.
+- validation.ts: its business validation, including amenities/uploads where applicable.
+- Components and feature hooks call Services directly for reads and writes.
+- Projects and Units have mapping.ts for draft initialization, number/null conversion, and explicit writable payloads. Cities and Areas keep their small mappings inside their forms.
+- Browser links use Router/browserPaths.ts; there are no feature-local URL wrappers.
+- EditorContext.ts, EditorProvider.tsx, useRecord.ts: independent editor state, request locks, and session-bound reads.
+- Local parent selectors, feedback, amenities, media editors, and property facts where needed.
 
-409 responses refresh authoritative data and retain drafts without retrying the write. Delete conflicts re-read the record rather than treating it as deleted. Network, interrupted, malformed-success or server-failure outcomes block further writes until an explicit current-data check succeeds. A missing record after an uncertain delete is reconciled with the affected list. Creates/uploads require checking the displayed current list before another attempt; cancellation does not imply rollback. An image removed by another staff member retains its edited text as a read-only recoverable draft, with image actions disabled. Confirmed project deletion explains the backend cascade over units, media and time plans; reservations can prevent it. There is no deleted-record catalogue or restore operation.
+There is no dashboard kind dispatcher, union draft schema, shared entity form, or shared business validator. UI primitives, generated API services/contracts, authentication, formatting, and core request helpers remain shared. Public/admin read invalidation stays connected so writes refresh mounted views.
 
-The service generator's verification compares parsed TypeScript structure to its generated expectation. It tolerates whitespace, quote style, comments and trailing commas while retaining declarations, type-only imports, variable modes, literals and executable structure. A focused regression proves endpoint/method/query/authentication/call changes still fail comparison. This preserves concurrent user formatting without regenerating their service files.
+To add an entity field, update its local draft type, form, validation, payload mapping (inside the form or mapping.ts), and labels, plus the backend contract if needed. Other entity folders do not need changes. Generated Services files and Types/contracts.ts still follow the contract-generation workflow.
 
-See [Part 08 completion evidence](part_08_completion.md), [API/UI matrix](contracts/api-ui-matrix.md), [wire contract](contracts/wire-contracts.md) and the inherited [live-session verification dependency](session-verification.md). No backend edits, account provisioning, real SQL write verification, media hosting or deployment are included in this phase.
+## Relationships and UX
+
+AreaForm requires a searchable, paginated City selector on create and edit. ProjectForm similarly selects an Area. No raw identifier entry is needed.
+
+Units starts with a searchable, paginated Project filter. Without a selection it prompts for a project and sends no unit-list request: the API has no global unit-list endpoint. The filter lives in ?projectId=… and survives pagination and links. Project detail links to the standalone Units list and creation form with that project preselected.
+
+UnitForm always includes a required Project selector. Creation lets staff choose a project independently of the list filter. Editing shows the existing project with an explanatory hint and disables reassignment: the backend PATCH accepts projectId as a scope query, not a writable relationship. Creation uses the selected project's POST route; reads, edits, and deletes retain matching scope. Moving units would require a backend contract change.
+
+Regular/initiative rules, monetary precision, nullable inputs, amenities, uploads, metadata, and confirmed deletion remain in the owning feature. PATCH mapping excludes read-only identity, garage, availability, calculated, media, and amenity properties.
+
+Drafts survive same-record refreshes and failed/conflicting operations. Navigation and before-unload guards protect unsaved edits. Writes hold a synchronous lock through authoritative refresh. Ambiguous outcomes and failed follow-up reads block another write until an explicit successful check. Unmount cancels requests, and stale authentication generations cannot publish success.
+
+## Planning boundary
+
+Phase 1 did not change Planning. Phase 2 has now moved it into src/Features/Planning with explicit, feature-owned forms. The temporary src/AdminCatalogue/model.ts upload helper has been relocated to Planning/Items/validation.ts and the obsolete file removed. See [Planning feature ownership](planning-features.md).
+
+## Verification
+
+The unit suite covers payloads, validation, drafts, duplicate-write locks, uncertain outcomes, conflict recovery, and stale/canceled reads. tests/browser/adminCatalogue.spec.ts covers all four direct dashboard entries, Project filtering, required relationship selection, standalone Unit creation/editing, hierarchy CRUD, amenities, uploads, draft retention, and navigation protection in desktop/mobile Chromium. It asserts no uncaught page errors and checks Arabic/English layout overflow. Screenshots go to test-results/dashboard-features.
+
+Run npm test -- --maxWorkers=2, npm run lint, npm run build, npm run routes:check-build, and npm run test:browser -- tests/browser/adminCatalogue.spec.ts --workers=2. On Windows the HTTPS browser harness may need NODE_OPTIONS=--use-system-ca.

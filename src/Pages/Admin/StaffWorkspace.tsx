@@ -9,7 +9,7 @@ import { Pagination } from "../../Components/Pagination";
 import { Button } from "../../Components/Button";
 import { Input, Select } from "../../Components/Fields";
 import { Facts } from "../../Components/Catalogue/PropertyFacts";
-import { EditorGuardProvider } from "../../Planning/EditorGuard";
+import { EditorGuardProvider } from "../../Features/Planning/Shared/EditorGuard";
 
 export default function StaffWorkspace() {
   const context = useStaffAdmin();

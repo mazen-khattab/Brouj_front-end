@@ -62,7 +62,7 @@ for (const locale of ['ar', 'en'] as const) {
       expect(await page.evaluate(() => (window as unknown as { cspViolations: string[] }).cspViolations)).toEqual([]);
       review.push({ route: route.path, title: route.title, durationMs: Date.now() - started, passed: true });
       await page.screenshot({ path: info.outputPath(`${locale}-${route.title}-${review.length}.png`), scale: 'css', animations: 'disabled', mask: [page.locator('input'), page.getByText(/Synthetic colleague|colleague@example.test|fixture-customer@example.test/)] });
-      if (['/projects', '/account', '/admin/terms', '/admin/catalogue/projects'].includes(route.path)) {
+      if (['/projects', '/account', '/admin/terms', '/admin/projects'].includes(route.path)) {
         await page.screenshot({ path: `docs/evidence/part_13/${locale}-${info.project.name.includes('mobile') ? '375' : '1440'}-${route.path === '/projects' ? 'public' : route.path === '/account' ? 'account' : route.path.includes('catalogue') ? 'catalogue' : 'terms'}.png`, fullPage: true, scale: 'css', animations: 'disabled', mask: [page.locator('input'), page.getByText(/Synthetic colleague|colleague@example.test|fixture-customer@example.test/)] });
       }
       await page.keyboard.press('Tab');

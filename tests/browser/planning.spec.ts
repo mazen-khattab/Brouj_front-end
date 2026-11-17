@@ -9,6 +9,15 @@ import ar from "../../src/i18n/locales/ar/timePlans.json" with { type: "json" };
 const planPath = `/admin/time-plans/${ids.project}`;
 const templatePath = `/admin/templates/stages?id=${ids.stageTemplate}`;
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==", "base64");
+const runtimeErrors = new WeakMap<Page, string[]>();
+test.beforeEach(({ page }) => {
+  const errors: string[] = [];
+  runtimeErrors.set(page, errors);
+  page.on("pageerror", error => errors.push(error.message));
+});
+test.afterEach(({ page }) => {
+  expect(runtimeErrors.get(page)).toEqual([]);
+});
 
 async function saveForm(page: Page, title: string) {
   await page.getByRole("form", { name: title, exact: true }).getByRole("button", { name: en.save, exact: true }).click();
@@ -45,6 +54,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await page.getByText(en.addStage, { exact: true }).click();
   await page.locator("#add-stage-name").fill("New manual stage");
   await page.locator("#add-stage-deliveryDate").fill(planningDate);
+  await page.locator("#add-stage-percentage").fill("25");
   await saveForm(page, en.manualStage);
   const stage = server.state.plan!.stages[0]!;
   await page.getByRole("button", { name: stage.name, exact: true }).click();
@@ -188,8 +198,9 @@ test("server template application supplies every mapped item date and also suppo
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
-  await expect(page.locator("#template-delivery")).toHaveAttribute("aria-invalid", "true");
-  await page.locator("#template-delivery").fill(planningDate);
+  await expect(page.locator("#template-deliveryDate")).toHaveAttribute("aria-invalid", "true");
+  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-percentage").fill("25");
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
@@ -198,6 +209,7 @@ test("server template application supplies every mapped item date and also suppo
   expect(server.calls.findLast((call) => call.method === "POST")!.body).toEqual({
     stageTemplateId: ids.stageTemplate,
     name: "Reusable construction stage",
+    percentage: 25,
     deliveryDate: planningDate,
     items: [
       { itemTemplateId: ids.itemTemplate, name: "Survey", dueDate: planningDate, confirmedDate: null },
@@ -206,7 +218,8 @@ test("server template application supplies every mapped item date and also suppo
   });
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.emptyTemplate);
   await expect(page.getByText(en.emptyTemplate, { exact: true })).toBeVisible();
-  await page.locator("#template-delivery").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-percentage").fill("25");
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect.poll(() => server.state.plan!.stages.length).toBe(4);
   expect(server.calls.findLast((call) => call.method === "POST")!.body.items).toEqual([]);
@@ -225,7 +238,8 @@ test("inactive mapped templates cannot be applied and a newly stale template rep
   await page.reload();
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
-  await page.locator("#template-delivery").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-percentage").fill("25");
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.state.failNext = 409;
@@ -290,7 +304,8 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await page.goto(planPath);
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
-  await page.locator("#template-delivery").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-percentage").fill("25");
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.stages.set(ids.stageTemplate, { ...server.stages.get(ids.stageTemplate)!, items: [server.stages.get(ids.stageTemplate)!.items[1]!] });
@@ -302,7 +317,8 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await page.getByRole("button", { name: en.resetTemplateDates, exact: true }).click();
   await expect(page.locator("#template-due-1")).toHaveCount(0);
   await expect(page.locator("#template-due-0")).toHaveValue("");
-  await page.locator("#template-delivery").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-percentage").fill("25");
   await page.locator("#template-due-0").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
@@ -503,12 +519,12 @@ for (const language of ["ar", "en"] as const) {
         : "Foundation engineering inspection and approval with a long supplied project stage name";
     server.state.plan = { ...planningPlan, stages: planningPlan.stages.map((row, index) => (index === 0 ? { ...row, name: longName } : row)) };
     await seedRouting(page, "superAdmin", language);
-    await mkdir("docs/evidence/part_10", { recursive: true });
+    await mkdir("test-results/planning-refactor", { recursive: true });
     async function capture(name: string) {
       await expect(page.locator("html")).toHaveAttribute("dir", language === "ar" ? "rtl" : "ltr");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await page.screenshot({
-        path: `docs/evidence/part_10/${language}-${page.viewportSize()!.width}-${name}.png`,
+        path: `test-results/planning-refactor/${language}-${page.viewportSize()!.width}-${name}.png`,
         fullPage: true,
         mask: [page.locator("[data-private]")],
       });
