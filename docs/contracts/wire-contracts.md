@@ -1,6 +1,6 @@
 # Verified backend wire contracts
 
-Verified on 2026-10-28 against the backend revision in [api-ui-matrix.json](api-ui-matrix.json). The frontend matrix reconciles all 101 business controller actions with the Part 8 JSON/Markdown inventory. CSRF is a separate supporting endpoint. No backend source was changed or live business data requested.
+Refreshed on 2026-11-17 against the backend revision and working-source hashes in [api-ui-matrix.json](api-ui-matrix.json) and [source-manifest.json](source-manifest.json). The frontend matrix reconciles all 104 business controller actions with the Part 8 JSON/Markdown inventory. CSRF is a separate supporting endpoint. Two stale Terms GET URLs were corrected in the backend inventory; no backend runtime source was changed or live business data requested.
 
 Use [api-ui-matrix.md](api-ui-matrix.md) for UI ownership, [backend-schemas.json](backend-schemas.json) for exact source types, nullable fields, defaults and validation rules, and [source-manifest.json](source-manifest.json) for normalized source hashes. Schema records describe C# types, not generated TypeScript or a replacement JSON Schema. Shared internal `UploadInput` is included as source context; browsers send the transport `IFormFile` field, never a JSON stream. `requiredMember` records C# declarations; actual acceptance also depends on MVC binding and the recorded validators. A missing initializer means CLR defaults, not an invented optional-field guarantee.
 
@@ -42,6 +42,8 @@ The schema inventory includes the full validators, including names/lengths, cond
 ## Authentication and actor boundaries
 
 One browser has one active actor because customer/staff sessions share the API-host cookie names. Admin and SuperAdmin are staff roles. `AdminOnly` permits both staff roles; `SuperAdminOnly` narrows staff administration. `MemberOnly` permits customers or staff, with live account/ownership checks in Application. Customer order detail deliberately uses `GET /api/v1/admin/orders/{id}`. Project schedules use anonymous `GET /api/v1/projects/{projectId}/time-plan`; all time-plan writes remain staff protected. Neither URL naming nor a UI guard establishes server access rights.
+
+Terms `versionNumber` is a string in creation, list, and detail DTOs; creation requires a nonempty value of at most 32 characters. `GET /api/v1/terms-and-conditions/current` is anonymous. The list and detail reads at `GET /api/v1/terms-and-conditions` and `GET /api/v1/terms-and-conditions/{id}` remain `AdminOnly`. Creation and activation retain the `/api/v1/admin/terms-and-conditions` prefix and the same policy. Contract ownership follows that policy rather than the presence of `/admin` in a URL.
 
 Browser calls must use credentials over approved HTTPS origins: development `https://localhost:5173` to `https://localhost:7249`; production `https://brouj.com` to `https://api.brouj.com`. Cookies are HttpOnly, Secure, host-only, path `/`, SameSite Strict. Never read cookies or store authentication tokens/private DTOs in localStorage. `expiresAt` describes refresh-session expiry, not a reliable access-token timer.
 

@@ -33,7 +33,7 @@ For a submission started as a guest, `email` and `password` are also included in
 | `preferredFinancialBracket` | `350000`, `500000`, `650000` (EGP amounts, JSON numbers) |
 | `preferredRepaymentPeriod` | `6`, `9`, `12` (months, JSON numbers) |
 
-The form uses a separate `ReservationBookingInput` type extending the currently generated `{ unitId }` contract. The existing generated service forwards the extended body unchanged. Backend source, generated contract snapshots and registration endpoints remain unchanged. Update the backend reservation request, command validation, persistence and responses to store these details against each reservation. The current backend may ignore or reject the additional properties until that work is complete; frontend checks do not establish persistence.
+The form uses a separate `ReservationBookingInput` type extending the generated reservation request with restricted UI options and guest continuation fields. The refreshed backend snapshot now declares the reservation-specific fields shown in the example and their validators. The service continues forwarding the body unchanged; no booking behavior changed during snapshot reconciliation. Live persistence remains unverified. The backend request does not declare guest `email`/`password`, and its residence/name limits are 100 characters, so the existing guest payload and longer frontend values still need separate integration reconciliation. Registration endpoints remain unchanged.
 
 Success still expects the existing API envelope with the reservation GUID and navigates to its account detail. Duplicate submits are blocked. Reservation conflicts reload current unit data; uncertain writes offer a link to current reservations and prevent another submission. Closing the modal clears its draft. Drafts and credentials are never written to browser storage or URLs.
 
@@ -41,4 +41,4 @@ Order creation retains the current backend workflow: an administrator converts a
 
 ## Testing
 
-Run `npm run test:browser -- tests/browser/reservationBooking.spec.ts tests/browser/account.spec.ts tests/browser/catalogue.spec.ts --workers=2` with the project's trusted local HTTPS setup. Browser tests use intercepted API fixtures. Focused unit coverage is in `tests/unit/reservation-booking.test.tsx`. Live persistence of additional fields requires the backend update above.
+Run `npm run test:browser -- tests/browser/reservationBooking.spec.ts tests/browser/account.spec.ts tests/browser/catalogue.spec.ts --workers=2` with the project's trusted local HTTPS setup. Browser tests use intercepted API fixtures. Focused unit coverage is in `tests/unit/reservation-booking.test.tsx`. These checks do not establish live persistence or acceptance of the guest continuation fields described above.
