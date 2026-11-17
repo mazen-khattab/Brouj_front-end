@@ -11,8 +11,14 @@ import { getCurrentCustomer } from '../../src/Services/CustomerProfile';
 import { getCurrentUser } from '../../src/Services/StaffProfile';
 import { createReservation, getMyReservations } from '../../src/Services/Reservations';
 import type { Actor } from '../../src/Types/auth';
+import type { CreateReservationRequest } from '../../src/Types/contracts';
 
 const customer = { id: '00000000-0000-0000-0000-000000000001', fName: 'Customer', lName: 'Fixture', email: 'customer@example.test', phone: '01000000000', identityNumber: '10000000000000' };
+const reservationBody: CreateReservationRequest = {
+  unitId: customer.id, fullName: 'Customer Reservation Fixture Name', ageGroup: '21-27',
+  identityNumber: customer.identityNumber, phone: customer.phone, placeOfResidence: 'Fixture City',
+  preferredFinancialBracket: 350000, preferredRepaymentPeriod: 6,
+};
 const staff = { id: '00000000-0000-0000-0000-000000000002', name: 'Staff fixture', email: 'staff@example.test', phone: '01000000000', role: 0, deletedAt: null };
 const disposers: (() => void)[] = [];
 afterEach(async () => { for (const dispose of disposers.splice(0)) dispose(); await Promise.resolve(); });
@@ -75,7 +81,7 @@ test('concurrent real service 401s rotate once, rebind CSRF and replay every req
 });
 test('a mutation rejected with definitive 401 replays with fresh proof and retains GUID data', async () => {
   const f = await fixture(); f.server.expired = true;
-  await expect(createReservation({ body: { unitId: customer.id } })).resolves.toBe(customer.id);
+  await expect(createReservation({ body: reservationBody })).resolves.toBe(customer.id);
   expect(f.calls.filter((config) => config.url === '/api/v1/reservations')).toHaveLength(2);
   expect(f.calls.at(-1)?.headers.get('X-CSRF-TOKEN')).toBe('customer-proof');
 });
@@ -125,7 +131,7 @@ test('new unsafe requests are blocked while a session refresh is pending', async
   });
   const first = expect(getMyReservations()).rejects.toMatchObject({ status: 401 });
   await vi.waitFor(() => expect(f.coordinator.getSnapshot().pending).toBe(true));
-  await expect(createReservation({ body: { unitId: customer.id } })).rejects.toMatchObject({ kind: 'canceled' });
+  await expect(createReservation({ body: reservationBody })).rejects.toMatchObject({ kind: 'canceled' });
   gate.resolve(); await first;
   expect(f.calls.filter((config) => config.url === '/api/v1/reservations')).toHaveLength(0);
 });

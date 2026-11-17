@@ -1,6 +1,6 @@
 import type { CreateReservationRequest } from "../../../Types/contracts";
 
-/** Requested reservation payload, pending the matching backend endpoint update. */
+/** Booking option subsets and guest continuation fields layered over the generated request. */
 export interface ReservationBookingInput extends CreateReservationRequest {
   fullName: string;
   phone: string;
