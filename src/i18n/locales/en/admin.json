@@ -36,7 +36,7 @@
     "deletionTitle": "Soft-delete this customer?",
     "deletionDescription": "This marks the account as deleted. It does not physically erase the customer or historical records. The account can be restored where the server permits it.",
     "restorationTitle": "Restore this customer?",
-    "restorationDescription": "This restores the account\u0027s active state. Restoration can be refused if its account details conflict with another active account.",
+    "restorationDescription": "This restores the account's active state. Restoration can be refused if its account details conflict with another active account.",
     "conversionTitle": "Create an order from this reservation?",
     "conversionDescription": "Confirm conversion of this processing reservation. The order total and the order and reservation statuses will be supplied after creation.",
     "completionTitle": "Select and complete this initiative order?",
@@ -44,8 +44,8 @@
     "completionEligibility": "Only pending initiative orders can be completed. Current eligibility and any competing selection are checked before the action is accepted.",
     "deletionSaved": "The customer was marked as soft-deleted and current data was reloaded.",
     "restorationSaved": "The customer was restored and current data was reloaded.",
-    "conversionSaved": "The order and reservation were reloaded. Open the linked order to review the server\u0027s total and status.",
-    "completionSaved": "The current order status was reloaded. Related order views will refresh to show the server\u0027s result.",
+    "conversionSaved": "The order and reservation were reloaded. Open the linked order to review the server's total and status.",
+    "completionSaved": "The current order status was reloaded. Related order views will refresh to show the server's result.",
     "deletionConflict": "The customer state changed or deletion is unavailable. Current data was checked; review it before continuing.",
     "restorationConflict": "Restoration was refused, possibly because account details are already in use. Current data was checked; no automatic retry was sent.",
     "conversionConflict": "The reservation may already have an order, its status may have changed, or the unit may be unavailable. Current data was checked without repeating conversion.",
@@ -90,7 +90,7 @@
   "confirm": "Confirm action",
   "cancel": "Cancel",
   "leaveTitle": "Leave this editor?",
-  "leaveDescription": "You have unsaved changes. Leaving discards this page\u0027s drafts. A pending write must finish before you leave.",
+  "leaveDescription": "You have unsaved changes. Leaving discards this page's drafts. A pending write must finish before you leave.",
   "discard": "Discard and leave",
   "stay": "Keep editing",
   "amenities": "Amenities",
@@ -131,9 +131,15 @@
     "number": "Unit number",
     "meterPrice": "Price per m²",
     "floorNumber": "Floor number",
-    "neighborMeterPrice": "Neighbor price per m²"
+    "neighborMeterPrice": "Neighbor price per m²",
+    "projectId": "Project"
   },
   "deleteProjectHint": "Delete this entire project? This also removes its units, amenities, images and time plan, and discards all drafts on this page. Any reservation prevents deletion. This cannot be undone.",
   "imageRemoved": "This image no longer exists in current data. Your text draft is preserved below for copying; image actions are unavailable.",
-  "initiativeUnitHint": "Required for an initiative unit. Its calculated total must not exceed the project price."
+  "initiativeUnitHint": "Required for an initiative unit. Its calculated total must not exceed the project price.",
+  "filterByProject": "Filter by project",
+  "selectProjectForUnits": "Select a project to view its units.",
+  "unitProjectFixed": "This unit belongs to this project. Moving units between projects is not supported.",
+  "createUnit": "Create unit",
+  "activeRecords": "Active records"
 }

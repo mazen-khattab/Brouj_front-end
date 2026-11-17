@@ -7,6 +7,7 @@ export type SessionIdentity =
   | { status: 'bootstrapping' | 'anonymous' | 'unavailable'; actor: null }
   | { status: 'customer'; actor: 'customer'; profile: CurrentCustomerDto }
   | { status: 'staff'; actor: 'staff'; profile: UserDto; role: UserRole };
+
 export type AuthState = SessionIdentity & {
   generation: number;
   pending: boolean;
@@ -16,6 +17,7 @@ export type AuthState = SessionIdentity & {
   /** Known identity must be signed out before another login can replace its cookies. */
   logoutRequired: boolean;
 };
+
 export class SessionActionError extends Error {
   constructor(readonly code: 'busy' | 'logoutRequired' | 'signInRequired' | 'hydration', readonly failure?: ApiFailure) {
     super('The session action could not be completed.');

@@ -4,18 +4,8 @@ import { AuthContext } from "./AuthContext";
 import { sessionCoordinator } from "../Services/session";
 import type { SessionCoordinator } from "../Security/sessionCoordinator";
 
-export function AuthProvider({
-  children,
-  coordinator = sessionCoordinator,
-}: {
-  children: ReactNode;
-  coordinator?: SessionCoordinator;
-}) {
-  const state = useSyncExternalStore(
-    coordinator.subscribe,
-    coordinator.getSnapshot,
-    coordinator.getSnapshot,
-  );
+export function AuthProvider({ children, coordinator = sessionCoordinator }: { children: ReactNode; coordinator?: SessionCoordinator }) {
+  const state = useSyncExternalStore(coordinator.subscribe, coordinator.getSnapshot, coordinator.getSnapshot);
   useLayoutEffect(() => coordinator.start(), [coordinator]);
   return (
     <AuthContext

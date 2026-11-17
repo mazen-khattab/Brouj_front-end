@@ -20,8 +20,8 @@ import { ReservationsAdminProvider } from '../../src/Context/ReservationsAdminPr
 import { useReservationsAdmin } from '../../src/Context/ReservationsAdminContext';
 import { OrdersAdminProvider } from '../../src/Context/OrdersAdminProvider';
 import { useOrdersAdmin } from '../../src/Context/OrdersAdminContext';
-import { TimePlanProvider } from '../../src/Context/TimePlanProvider';
-import { useTimePlan } from '../../src/Context/TimePlanContext';
+import { TimePlanProvider } from '../../src/Features/Planning/Plans/TimePlanProvider';
+import { useTimePlan } from '../../src/Features/Planning/Plans/TimePlanContext';
 import { sessionBoundary } from '../../src/Security/sessionBoundary';
 import * as reservations from '../../src/Services/Reservations';
 import * as orders from '../../src/Services/Orders';

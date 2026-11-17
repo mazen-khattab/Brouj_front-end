@@ -108,8 +108,8 @@ test('project change aborts a carousel read and rejects its late response', asyn
 
 test('public plan keeps server ordering, unknown status and missing-plan retry behavior', async () => {
   const plan: TimePlanDto = { id: 'plan', projectId: id, name: 'Published schedule', deliveryDate: '2027-01-01T00:00:00Z', stages: [
-    { id: 'z', name: 'First supplied stage', sortOrder: 2, deliveryDate: '2027-01-01T00:00:00Z', items: [{ id: 'item', name: 'Work item', sortOrder: 1, status: 99 as 0, dueDate: '2026-12-01T00:00:00Z', confirmedDate: null, images: [] }] },
-    { id: 'a', name: 'Second supplied stage', sortOrder: 1, deliveryDate: '2027-01-01T00:00:00Z', items: [] },
+    { id: 'z', name: 'First supplied stage', sortOrder: 2, percentage: 40, deliveryDate: '2027-01-01T00:00:00Z', items: [{ id: 'item', name: 'Work item', sortOrder: 1, status: 99 as 0, dueDate: '2026-12-01T00:00:00Z', confirmedDate: null, images: [] }] },
+    { id: 'a', name: 'Second supplied stage', sortOrder: 1, percentage: 60, deliveryDate: '2027-01-01T00:00:00Z', items: [] },
   ] };
   const read = vi.spyOn(Plans, 'getProjectTimePlan').mockRejectedValueOnce(new ApiError('transport', { status: 404 })).mockResolvedValueOnce(plan);
   const { container } = renderUi(<ProjectTimePlan projectId={id} />);

@@ -4,8 +4,18 @@
 export type Guid = string;
 export type OffsetDateTime = string;
 
-export interface ApiResponse<T> { success: true; data: T; message: string | null }
-export interface PaginationResult<T> { items: ReadonlyArray<T>; pageNumber: number; pageSize: number; totalCount: number; totalPages: number }
+export interface ApiResponse<T> {
+  success: true;
+  data: T;
+  message: string | null;
+}
+export interface PaginationResult<T> {
+  items: ReadonlyArray<T>;
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
 
 export const ActivityAction = {
   Created: 0,
@@ -98,7 +108,12 @@ export const FeatureErrorCode = {
 } as const;
 export type FeatureErrorCode = (typeof FeatureErrorCode)[keyof typeof FeatureErrorCode];
 
-export interface ApiErrorResponse { success: false; code: FeatureErrorCode; message: string; errors: Readonly<Record<string, ReadonlyArray<string>>> | null }
+export interface ApiErrorResponse {
+  success: false;
+  code: FeatureErrorCode;
+  message: string;
+  errors: Readonly<Record<string, ReadonlyArray<string>>> | null;
+}
 
 /** src/Brouj.Application/Features/ActivityLogs/DTOs/ActivityLogDto.cs */
 export interface ActivityLogDto {
@@ -590,6 +605,7 @@ export interface StageDraftInput {
   stageTemplateId: Guid | null;
   name: string;
   deliveryDate: OffsetDateTime | null;
+  percentage: number;
   items: ReadonlyArray<StageItemDraftInput>;
 }
 
@@ -681,11 +697,18 @@ export interface TimePlanInput {
   deliveryDate: OffsetDateTime | null;
 }
 
+export interface TimePlanStageInput {
+  name: string;
+  deliveryDate: OffsetDateTime | null;
+  percentage: number;
+}
+
 /** src/Brouj.Application/Features/TimePlans/DTOs/TimePlanStageDto.cs */
 export interface TimePlanStageDto {
   id: Guid;
   name: string;
   sortOrder: number;
+  percentage: number;
   deliveryDate: OffsetDateTime;
   items: ReadonlyArray<PlanStageItemDto>;
 }

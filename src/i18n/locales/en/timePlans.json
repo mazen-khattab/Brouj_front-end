@@ -32,10 +32,12 @@
     "confirmedDate": "Confirmation date",
     "status": "Status",
     "description": "Description",
-    "file": "Image file"
+    "file": "Image file",
+    "percentage": "Stage percentage"
   },
   "invalidField": "Check {{field}}.",
   "dateHint": "Required. Include the time and UTC offset, for example 2026-12-01T09:00:00+02:00.",
+  "percentageHint": "Required. Number between 0 and 100.",
   "confirmedHint": "Optional unless Completed. Include the time and UTC offset, for example 2026-12-01T09:00:00+02:00.",
   "dateInvalid": "Enter a valid date, time and UTC offset.",
   "searchSource": "Search {{source}}",

@@ -1,5 +1,5 @@
 import { validEmail } from "../Pages/Auth/validation";
-import { validPlanningDate } from "../Planning/policy";
+import { validPlanningDate } from "../Features/Planning/Shared/dates";
 import { isGuid } from "../Catalogue/query";
 import type { CreateTermsVersionInput, CreateUserInput, UpdateUserInput, ActivityLogDto } from "../Types/contracts";
 

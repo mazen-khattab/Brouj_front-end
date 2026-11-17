@@ -43,6 +43,7 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
   let unbind = () => {};
   let unsubscribe = () => {};
   const listeners = new Set<() => void>();
+  
   let state: AuthState = {
     status: "bootstrapping",
     actor: null,
@@ -129,7 +130,7 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
   async function locked<T>(work: () => Promise<T>): Promise<T> {
     return platform.lock ? platform.lock(work) : work();
   }
-  
+
   function flushReload() {
     if (reloadAfterTransition && !transition && !refreshPromise) {
       reloadAfterTransition = false;
@@ -431,4 +432,5 @@ export function createSessionCoordinator(services: SessionServices, platform: Se
     logout,
   };
 }
+
 export type SessionCoordinator = ReturnType<typeof createSessionCoordinator>;

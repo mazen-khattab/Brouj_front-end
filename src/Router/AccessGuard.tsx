@@ -11,19 +11,9 @@ import { LanguageSwitcher } from "../Components/LanguageSwitcher";
 import { useToast } from "../Hooks/useToast";
 import type { ReactNode } from "react";
 
-function GuardFrame({
-  standalone,
-  children,
-}: {
-  standalone: boolean;
-  children: ReactNode;
-}) {
+function GuardFrame({ standalone, children }: { standalone: boolean; children: ReactNode }) {
   return standalone ? (
-    <main
-      id="route-content"
-      tabIndex={-1}
-      className="mx-auto max-w-4xl px-5 py-10 sm:px-10"
-    >
+    <main id="route-content" tabIndex={-1} className="mx-auto max-w-4xl px-5 py-10 sm:px-10">
       {children}
     </main>
   ) : (
@@ -37,16 +27,16 @@ export function AccessGuard({ access }: { access: Access }) {
   const { t } = useTranslation("routing");
   const notify = useToast();
   const standalone = access === "staff" || access === "anonymous";
-  if (auth.status === "bootstrapping")
+
+  if (auth.status === "bootstrapping") {
     return (
       <GuardFrame standalone={standalone}>
         <PageLoading />
       </GuardFrame>
     );
-  if (
-    auth.status === "unavailable" ||
-    (auth.status === "anonymous" && auth.logoutRequired)
-  )
+  }
+
+  if (auth.status === "unavailable" || (auth.status === "anonymous" && auth.logoutRequired)) {
     return (
       <GuardFrame standalone={standalone}>
         <section className="grid gap-6 rounded-ui bg-ivory p-8 text-primary">
@@ -58,10 +48,7 @@ export function AccessGuard({ access }: { access: Access }) {
           <RouteHeading>{t("sessionUnavailable")}</RouteHeading>
           <Alert tone="error">{t("sessionUnavailableDescription")}</Alert>
           {auth.reason && <p>{t(auth.reason, { ns: "auth" })}</p>}
-          <Button
-            pending={auth.pending}
-            onClick={() => void auth.retryBootstrap().catch(() => undefined)}
-          >
+          <Button pending={auth.pending} onClick={() => void auth.retryBootstrap().catch(() => undefined)}>
             {t("retry", { ns: "auth" })}
           </Button>
           {auth.logoutRequired && (
@@ -69,14 +56,12 @@ export function AccessGuard({ access }: { access: Access }) {
               variant="secondary"
               pending={auth.pending}
               onClick={() =>
-                void auth
-                  .logout()
-                  .catch(() =>
-                    notify({
-                      tone: "error",
-                      message: { namespace: "auth", key: "logoutUnconfirmed" },
-                    }),
-                  )
+                void auth.logout().catch(() =>
+                  notify({
+                    tone: "error",
+                    message: { namespace: "auth", key: "logoutUnconfirmed" },
+                  }),
+                )
               }
             >
               {t("logout", { ns: "auth" })}
@@ -85,32 +70,21 @@ export function AccessGuard({ access }: { access: Access }) {
         </section>
       </GuardFrame>
     );
+  }
+
   if (access === "anonymous") {
-    if (auth.actor)
-      return (
-        <Navigate
-          replace
-          to={allowedReturnPath(
-            new URLSearchParams(location.search).get("returnTo"),
-            auth,
-          )}
-        />
-      );
+    if (auth.actor) {
+      return <Navigate replace to={allowedReturnPath(new URLSearchParams(location.search).get("returnTo"), auth)} />;
+    }
     return <Outlet />;
   }
+
   if (!auth.actor) {
-    const login =
-      access === "staff" || access === "superAdmin"
-        ? routePaths.staffLogin
-        : routePaths.login;
-    return (
-      <Navigate
-        replace
-        to={`${login}?${new URLSearchParams({ returnTo: location.pathname + location.search + location.hash })}`}
-      />
-    );
+    const login = access === "staff" || access === "superAdmin" ? routePaths.staffLogin : routePaths.login;
+    return <Navigate replace to={`${login}?${new URLSearchParams({ returnTo: location.pathname + location.search + location.hash })}`} />;
   }
-  if (!permits(access, auth))
+
+  if (!permits(access, auth)) {
     return (
       <GuardFrame standalone={standalone}>
         {standalone && (
@@ -128,6 +102,7 @@ export function AccessGuard({ access }: { access: Access }) {
         />
       </GuardFrame>
     );
+  }
   // Future feature providers and local page state are discarded at each identity/generation boundary.
   return <Outlet key={`${auth.actor}:${auth.profile.id}:${auth.generation}`} />;
 }

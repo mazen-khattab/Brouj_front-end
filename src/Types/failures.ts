@@ -1,11 +1,6 @@
 import { FeatureErrorCode } from "./contracts";
 
-export type FailureKind =
-  | "feature"
-  | "transport"
-  | "network"
-  | "canceled"
-  | "unknown";
+export type FailureKind = "feature" | "transport" | "network" | "canceled" | "unknown";
 
 export type FieldErrors = Readonly<Record<string, ReadonlyArray<string>>>;
 
@@ -27,15 +22,9 @@ export class ApiError extends Error implements ApiFailure {
   readonly fieldErrors: FieldErrors;
   readonly retryAfter: number | undefined;
   readonly diagnosticTrace: string | undefined;
-  constructor(
-    kind: FailureKind,
-    details: Partial<Omit<ApiFailure, "kind">> = {},
-  ) {
-    super(
-      kind === "canceled"
-        ? "Request canceled."
-        : "The request could not be completed.",
-    );
+  
+  constructor(kind: FailureKind, details: Partial<Omit<ApiFailure, "kind">> = {}) {
+    super(kind === "canceled" ? "Request canceled." : "The request could not be completed.");
     this.name = "ApiError";
     this.kind = kind;
     this.status = details.status;
@@ -64,38 +53,26 @@ function fieldErrors(value: unknown): FieldErrors {
             (message: unknown) =>
               typeof message === "string" &&
               message.length <= 512 &&
-              !Array.from(message).some(
-                (character) => character.charCodeAt(0) < 32,
-              ) &&
+              !Array.from(message).some((character) => character.charCodeAt(0) < 32) &&
               !/\bat\s+\S+\([^)]*\)|System\.\w*Exception/.test(message),
           ),
       ),
   ) as FieldErrors;
 }
 
-export function parseRetryAfter(
-  value: unknown,
-  now = Date.now(),
-): number | undefined {
+export function parseRetryAfter(value: unknown, now = Date.now()): number | undefined {
   if (typeof value !== "string") return undefined;
   const trimmed = value.trim();
   if (/^\d+$/.test(trimmed)) {
     const seconds = Number(trimmed);
     return Number.isSafeInteger(seconds) ? seconds : undefined;
   }
-  if (!/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), .+ GMT$/.test(trimmed))
-    return undefined;
+  if (!/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), .+ GMT$/.test(trimmed)) return undefined;
   const instant = Date.parse(trimmed);
-  return Number.isFinite(instant)
-    ? Math.max(0, Math.ceil((instant - now) / 1000))
-    : undefined;
+  return Number.isFinite(instant) ? Math.max(0, Math.ceil((instant - now) / 1000)) : undefined;
 }
 
-export function failureFromResponse(
-  status: number,
-  body: unknown,
-  retryAfter?: unknown,
-): ApiError {
+export function failureFromResponse(status: number, body: unknown, retryAfter?: unknown): ApiError {
   const feature = isRecord(body) && body.success === false;
   const code =
     feature &&
@@ -104,12 +81,7 @@ export function failureFromResponse(
     (Object.values(FeatureErrorCode) as number[]).includes(body.code)
       ? (body.code as FeatureErrorCode)
       : undefined;
-  const trace =
-    isRecord(body) &&
-    typeof body.traceId === "string" &&
-    /^[A-Za-z0-9:._-]{1,128}$/.test(body.traceId)
-      ? body.traceId
-      : undefined;
+  const trace = isRecord(body) && typeof body.traceId === "string" && /^[A-Za-z0-9:._-]{1,128}$/.test(body.traceId) ? body.traceId : undefined;
   return new ApiError(feature ? "feature" : "transport", {
     status,
     featureCode: code,

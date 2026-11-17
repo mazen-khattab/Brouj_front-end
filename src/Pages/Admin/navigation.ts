@@ -1,7 +1,10 @@
 import { routePaths } from "../../Router/routePaths";
 export const adminNavigation = [
   { path: routePaths.admin.home, title: "dashboard" },
-  { path: routePaths.admin.catalogue, title: "catalogue" },
+  { path: routePaths.admin.cities, title: "cities" },
+  { path: routePaths.admin.areas, title: "areas" },
+  { path: routePaths.admin.projects, title: "projects" },
+  { path: routePaths.admin.units, title: "units" },
   { path: routePaths.admin.customers, title: "customers" },
   { path: routePaths.admin.reservations, title: "reservations" },
   { path: routePaths.admin.orders, title: "orders" },
