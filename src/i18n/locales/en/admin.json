@@ -1,4 +1,30 @@
 {
+  "paymentPlan": {
+    "title": "Payment plan",
+    "row": "Installment {{number}}",
+    "installmentName": "Installment name",
+    "chooseName": "Choose an installment name",
+    "names": {
+      "downpayment": "Downpayment",
+      "installment": "Installment",
+      "deposit": "Deposit"
+    },
+    "installmentNumber": "Installment number",
+    "installmentPercentage": "Percentage",
+    "installmentPeriodMonths": "Months from start",
+    "add": "Add installment",
+    "remove": "Remove",
+    "removeRow": "Remove {{row}}",
+    "save": "Save payment plan",
+    "total": "Entered total: {{total}}",
+    "empty": "Add at least one installment.",
+    "invalidName": "Choose an installment name.",
+    "invalidNumber": "Enter a whole number from 1 to 2,147,483,647.",
+    "duplicateNumber": "Use a different number for each installment.",
+    "invalidPercentage": "Enter a percentage greater than 0 and up to 100, with at most four decimal places.",
+    "invalidMonths": "Enter a whole number from 0 to 2,147,483,647.",
+    "invalidTotal": "Installment percentages must total 100%. The entered total is {{total}}."
+  },
   "operations": {
     "loading": "Loading operational records",
     "loadFailed": "Records unavailable",

@@ -1,4 +1,30 @@
 {
+  "paymentPlan": {
+    "title": "خطة السداد",
+    "row": "القسط {{number}}",
+    "installmentName": "اسم القسط",
+    "chooseName": "اختر اسم القسط",
+    "names": {
+      "downpayment": "دفعة مقدمة",
+      "installment": "قسط",
+      "deposit": "عربون"
+    },
+    "installmentNumber": "رقم القسط",
+    "installmentPercentage": "النسبة المئوية",
+    "installmentPeriodMonths": "الأشهر من البداية",
+    "add": "إضافة قسط",
+    "remove": "إزالة",
+    "removeRow": "إزالة {{row}}",
+    "save": "حفظ خطة السداد",
+    "total": "الإجمالي المُدخل: {{total}}",
+    "empty": "أضف قسطًا واحدًا على الأقل.",
+    "invalidName": "اختر اسم القسط.",
+    "invalidNumber": "أدخل عددًا صحيحًا من ١ إلى ٢٬١٤٧٬٤٨٣٬٦٤٧.",
+    "duplicateNumber": "استخدم رقمًا مختلفًا لكل قسط.",
+    "invalidPercentage": "أدخل نسبة أكبر من ٠ وحتى ١٠٠، بأربع منازل عشرية على الأكثر.",
+    "invalidMonths": "أدخل عددًا صحيحًا من ٠ إلى ٢٬١٤٧٬٤٨٣٬٦٤٧.",
+    "invalidTotal": "يجب أن يكون مجموع نسب الأقساط ١٠٠٪. الإجمالي المُدخل هو {{total}}."
+  },
   "operations": {
     "loading": "جارٍ تحميل سجلات العمليات",
     "loadFailed": "السجلات غير متاحة",

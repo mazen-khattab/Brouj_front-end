@@ -11,12 +11,12 @@ async function detailsServer(context: BrowserContext) {
   const calls: URL[] = [];
   const state = { failUnits: false, failNextBatch: false, planFailure: 0, unitCount: 27 };
   const plan: TimePlanDto = { id: 'plan', projectId: ids.project, name: 'Published schedule', deliveryDate: '2027-12-01T12:00:00Z', stages: [
-    { id: 'stage-1', name: 'Structure', sortOrder: 1, percentage: 40, deliveryDate: '2027-06-01T12:00:00Z', items: [0, 1, 3, 4, 6].map((count, index) => ({
+    { id: 'stage-1', name: 'Structure', sortOrder: 1, percentage: 40, price: null, pricingDate: null, deliveryDate: '2027-06-01T12:00:00Z', items: [0, 1, 3, 4, 6].map((count, index) => ({
       id: `item-${index}`, name: `Work ${count}`, status: index === 0 ? 99 as 0 : index === 1 ? 0 : index === 2 ? 1 : 2, sortOrder: index,
       dueDate: '2027-05-01T12:00:00Z', confirmedDate: index ? '2027-04-01T12:00:00Z' : null,
       images: Array.from({ length: count }, (_, image) => ({ id: `image-${count}-${image}`, imagePath: `C:\\PRIVATE-PROGRESS\\image-${image}.webp`, sortOrder: image, description: `Progress note ${image + 1}` })),
     })) },
-    { id: 'stage-2', name: 'Finishes', sortOrder: 2, percentage: 60, deliveryDate: '2027-11-01T12:00:00Z', items: [] },
+    { id: 'stage-2', name: 'Finishes', sortOrder: 2, percentage: 60, price: null, pricingDate: null, deliveryDate: '2027-11-01T12:00:00Z', items: [] },
   ] };
   await context.route(/https:\/\/localhost:7249\/api\/v1\/projects\/[^/]+\/(units|time-plan)(?:\?|$)/, async (route) => {
     const url = new URL(route.request().url()); calls.push(url);

@@ -1,4 +1,18 @@
 {
+  "paymentPlan": {
+    "amount": "المبلغ",
+    "pricingUnavailable": "السعر غير متاح",
+    "title": "خطة السداد",
+    "number": "رقم القسط",
+    "percentage": "النسبة المئوية",
+    "timing": "الموعد",
+    "months_zero": "عند البداية ({{months}} شهر)",
+    "months_one": "شهر واحد من البداية",
+    "months_two": "شهران من البداية",
+    "months_few": "{{months}} أشهر من البداية",
+    "months_many": "{{months}} شهرًا من البداية",
+    "months_other": "{{months}} شهر من البداية"
+  },
   "booking": {
     "reserveNow": "احجز الآن",
     "registrationConflict": "يوجد حساب مسجل بهذه البيانات. سجّل الدخول بحسابك الحالي للمتابعة.",

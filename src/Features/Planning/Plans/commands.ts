@@ -7,6 +7,7 @@ import { approvedStageDraft, approvedStageUpdate } from "../Stages/mapping";
 import type {
   TimePlanDto,
   TimePlanInput,
+  StageUpdateInput,
   PlanStageItemInput,
   StageDraftInput,
   ReorderItemInput,
@@ -17,7 +18,7 @@ export type PlanCommand =
   | { kind: "createPlan" | "updatePlan"; input: TimePlanInput }
   | { kind: "deletePlan" }
   | { kind: "addStage"; input: StageDraftInput }
-  | { kind: "updateStage"; stageId: string; input: TimePlanInput }
+  | { kind: "updateStage"; stageId: string; input: StageUpdateInput }
   | { kind: "deleteStage"; stageId: string }
   | { kind: "orderStages"; items: ReorderItemInput[] }
   | { kind: "addItem"; stageId: string; input: PlanStageItemInput }
@@ -56,9 +57,11 @@ export async function executePlan(command: PlanCommand, projectId: string, plan:
       return plans.deleteTimePlan({ id: plan.id }, { signal });
     case "addStage": {
       const body = approvedStageDraft(command.input);
-      return body.stageTemplateId
-        ? plans.addStageFromTemplate({ timePlanId: plan.id, body }, { signal })
-        : plans.addTimePlanStage({ timePlanId: plan.id, body }, { signal });
+      if (body.stageTemplateId) {
+        const { stageTemplateId, name, deliveryDate, percentage, items } = body;
+        return plans.addStageFromTemplate({ timePlanId: plan.id, body: { stageTemplateId, name, deliveryDate, percentage, items } }, { signal });
+      }
+      return plans.addTimePlanStage({ timePlanId: plan.id, body }, { signal });
     }
     case "updateStage":
       return plans.updateTimePlanStage({ timePlanId: plan.id, id: stage!.id, body: approvedStageUpdate(command.input) }, { signal });

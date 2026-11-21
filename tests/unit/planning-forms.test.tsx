@@ -14,7 +14,7 @@ test("stage creation explicitly validates percentage and focuses its own control
   const save = vi.fn().mockResolvedValue(planningIds.stage);
   const view = renderUi(
     <GuardContext value={guard}>
-      <TimePlanStageForm id="stage" title="Create stage" mode="create" initial={{ name: "Stage", deliveryDate: date, percentage: "" }} disabled={false} pending={false} onSave={save} />
+      <TimePlanStageForm id="stage" title="Create stage" mode="create" initial={{ name: "Stage", deliveryDate: date, percentage: "", price: "", pricingDate: "" }} disabled={false} pending={false} onSave={save} />
     </GuardContext>,
   );
   fireEvent.submit(view.getByRole("form", { name: "Create stage" }));
@@ -24,13 +24,13 @@ test("stage creation explicitly validates percentage and focuses its own control
   expect(percentage).toHaveAttribute("aria-invalid", "true");
   fireEvent.change(percentage, { target: { value: "0" } });
   fireEvent.submit(view.getByRole("form", { name: "Create stage" }));
-  await waitFor(() => expect(save).toHaveBeenCalledWith({ name: "Stage", deliveryDate: date, percentage: "0" }));
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ name: "Stage", deliveryDate: date, percentage: "0", price: "", pricingDate: "" }));
 });
 
 test("stage editing retains a dirty draft during refresh and resets to the current response", async () => {
   let refresh!: () => void;
   function Editor() {
-    const [source, setSource] = useState({ name: "Original", deliveryDate: date, percentage: "25" });
+    const [source, setSource] = useState({ name: "Original", deliveryDate: date, percentage: "25", price: "", pricingDate: "" });
     refresh = () => setSource({ ...source, name: "Server update" });
     return <TimePlanStageForm id="stage" title="Edit stage" mode="edit" initial={source} disabled={false} pending={false} onSave={vi.fn()} />;
   }

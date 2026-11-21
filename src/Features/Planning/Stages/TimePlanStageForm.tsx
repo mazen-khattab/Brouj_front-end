@@ -10,14 +10,14 @@ import type { TimePlanStageDraft, TimePlanStageFormProps } from "./types";
 
 export function TimePlanStageForm({
   id, title, initial, disabled, pending, failure, onSave, onSaved, onReset,
-  mode, nameReadOnly = false, submitLabel, resetOnSave = false, children,
+  mode, nameReadOnly = false, showPricing = true, submitLabel, resetOnSave = false, children,
 }: TimePlanStageFormProps) {
   const { t } = useTranslation("timePlans");
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof TimePlanStageDraft)[]>([]);
-  const fields: readonly (keyof TimePlanStageDraft)[] = mode === "create"
-    ? ["name", "deliveryDate", "percentage"]
-    : ["name", "deliveryDate"];
+  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate"];
+  if (mode === "create") fields.push("percentage");
+  if (showPricing) fields.push("price", "pricingDate");
   const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof TimePlanStageDraft, value: string) {
@@ -30,7 +30,7 @@ export function TimePlanStageForm({
   }
 
   async function submit() {
-    const issues = validateStage(draft.value, mode);
+    const issues = validateStage(draft.value, mode, showPricing);
     setInvalid(issues);
     if (issues.length) {
       document.getElementById(`${id}-${issues[0]}`)?.focus();
@@ -86,6 +86,30 @@ export function TimePlanStageForm({
             hint={t("percentageHint")}
             required
           />
+        )}
+        {showPricing && (
+          <>
+            <Input
+              id={`${id}-price`}
+              label={t("fields.price")}
+              value={draft.value.price}
+              error={error("price")}
+              onChange={event => change("price", event.target.value)}
+              dir="ltr"
+              inputMode="decimal"
+              hint={t("priceHint")}
+            />
+            <Input
+              id={`${id}-pricingDate`}
+              label={t("fields.pricingDate")}
+              value={draft.value.pricingDate}
+              error={error("pricingDate")}
+              onChange={event => change("pricingDate", event.target.value)}
+              dir="ltr"
+              maxLength={40}
+              hint={t("dateHint")}
+            />
+          </>
         )}
       </fieldset>
       {children}

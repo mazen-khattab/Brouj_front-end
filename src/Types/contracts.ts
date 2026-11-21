@@ -4,18 +4,8 @@
 export type Guid = string;
 export type OffsetDateTime = string;
 
-export interface ApiResponse<T> {
-  success: true;
-  data: T;
-  message: string | null;
-}
-export interface PaginationResult<T> {
-  items: ReadonlyArray<T>;
-  pageNumber: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
-}
+export interface ApiResponse<T> { success: true; data: T; message: string | null }
+export interface PaginationResult<T> { items: ReadonlyArray<T>; pageNumber: number; pageSize: number; totalCount: number; totalPages: number }
 
 export const ActivityAction = {
   Created: 0,
@@ -51,6 +41,13 @@ export const ReservationStatus = {
   Confirmed: 2,
 } as const;
 export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus];
+
+export const TimePlanStageStatus = {
+  Pending: 0,
+  Processing: 1,
+  Completed: 2,
+} as const;
+export type TimePlanStageStatus = (typeof TimePlanStageStatus)[keyof typeof TimePlanStageStatus];
 
 export const UserRole = {
   SuperAdmin: 0,
@@ -108,12 +105,7 @@ export const FeatureErrorCode = {
 } as const;
 export type FeatureErrorCode = (typeof FeatureErrorCode)[keyof typeof FeatureErrorCode];
 
-export interface ApiErrorResponse {
-  success: false;
-  code: FeatureErrorCode;
-  message: string;
-  errors: Readonly<Record<string, ReadonlyArray<string>>> | null;
-}
+export interface ApiErrorResponse { success: false; code: FeatureErrorCode; message: string; errors: Readonly<Record<string, ReadonlyArray<string>>> | null }
 
 /** src/Brouj.Application/Features/ActivityLogs/DTOs/ActivityLogDto.cs */
 export interface ActivityLogDto {
@@ -195,16 +187,32 @@ export interface CityInput {
   name: string;
 }
 
+/** src/Brouj.Application/Features/ContactSubmissions/DTOs/ContactSubmissionDto.cs */
+export interface ContactSubmissionDto {
+  id: Guid;
+  name: string;
+  phone: string;
+  inquiry: string;
+  createdAt: OffsetDateTime;
+}
+
+/** src/Brouj.Application/Features/ContactSubmissions/DTOs/ContactSubmissionInput.cs */
+export interface ContactSubmissionInput {
+  name: string;
+  phone: string;
+  inquiry: string;
+}
+
 /** src/Brouj.API/Requests/CreateReservationRequest.cs */
 export interface CreateReservationRequest {
   unitId: Guid;
   fullName: string;
-  ageGroup: string;
-  identityNumber: string;
   phone: string;
-  placeOfResidence: string;
-  preferredFinancialBracket: number;
-  preferredRepaymentPeriod: number;
+  ageGroup: string | null;
+  identityNumber: string | null;
+  placeOfResidence: string | null;
+  preferredFinancialBracket: number | null;
+  preferredRepaymentPeriod: number | null;
 }
 
 /** src/Brouj.Application/Features/Terms/DTOs/CreateTermsVersionInput.cs */
@@ -219,6 +227,16 @@ export interface CreateTermsVersionInput {
 export interface CreateTimePlanRequest {
   input: TimePlanInput;
   stages: ReadonlyArray<StageDraftInput>;
+}
+
+/** src/Brouj.Application/Features/Units/DTOs/CreateUnitInput.cs */
+export interface CreateUnitInput {
+  number: string;
+  meterPrice: number;
+  floorNumber: number;
+  size: number;
+  neighborMeterPrice: number | null;
+  paymentPlan?: ReadonlyArray<UnitPaymentInstallmentInput> | null;
 }
 
 /** src/Brouj.Application/Features/Users/DTOs/CreateUserInput.cs */
@@ -413,6 +431,14 @@ export interface ImageMetadataDto {
   altText: string | null;
 }
 
+/** src/Brouj.Application/Features/Units/DTOs/InitiativeStagePaymentDto.cs */
+export interface InitiativeStagePaymentDto {
+  stageId: Guid;
+  stageName: string;
+  unitPercentage: number;
+  stageCost: number | null;
+}
+
 /** src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateDto.cs */
 export interface ItemTemplateDto {
   id: Guid;
@@ -458,6 +484,12 @@ export interface OrderDto {
   status: OrderStatus;
   totalPrice: number;
   completedAt: OffsetDateTime | null;
+}
+
+/** src/Brouj.API/Requests/PaginationParameters.cs */
+export interface PaginationParameters {
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 /** src/Brouj.Application/Common/DTOs/PasswordChangeInput.cs */
@@ -614,6 +646,8 @@ export interface StageDraftInput {
   percentage: number;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
+  price?: number;
+  pricingDate?: OffsetDateTime;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInput.cs */
@@ -670,6 +704,23 @@ export interface StageTemplateListDto {
   isActive: boolean;
 }
 
+/** src/Brouj.Application/Features/TimePlans/DTOs/StageUpdateInput.cs */
+export interface StageUpdateInput {
+  name: string;
+  deliveryDate: OffsetDateTime | null;
+  price?: number;
+  pricingDate?: OffsetDateTime;
+}
+
+/** src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInput.cs */
+export interface TemplateStageDraftInput {
+  stageTemplateId: Guid | null;
+  name: string;
+  percentage: number;
+  deliveryDate: OffsetDateTime | null;
+  items: ReadonlyArray<StageItemDraftInput>;
+}
+
 /** src/Brouj.Application/Features/Terms/DTOs/TermsDto.cs */
 export interface TermsDto {
   id: Guid;
@@ -711,6 +762,8 @@ export interface TimePlanStageDto {
   sortOrder: number;
   deliveryDate: OffsetDateTime;
   percentage: number;
+  price: number | null;
+  pricingDate: OffsetDateTime | null;
   items: ReadonlyArray<PlanStageItemDto>;
 }
 
@@ -730,6 +783,7 @@ export interface UnitDto {
   garagePrice: number;
   amenities: ReadonlyArray<AmenityDto>;
   images: ReadonlyArray<ImageMetadataDto>;
+  paymentPlan: ReadonlyArray<UnitPaymentPlanRowDto>;
 }
 
 /** src/Brouj.Application/Features/Units/DTOs/UnitInput.cs */
@@ -756,6 +810,30 @@ export interface UnitListDto {
   isGarage: boolean;
   garagePrice: number;
 }
+
+/** src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentDto.cs */
+export interface UnitPaymentInstallmentDto {
+  installmentName: string;
+  installmentNumber: number;
+  installmentPercentage: number;
+  installmentPeriodMonths: number;
+}
+
+/** src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentInput.cs */
+export interface UnitPaymentInstallmentInput {
+  installmentName: string;
+  installmentNumber: number;
+  installmentPercentage: number;
+  installmentPeriodMonths: number | null;
+}
+
+/** src/Brouj.Application/Features/Units/DTOs/UnitPaymentPlanInput.cs */
+export interface UnitPaymentPlanInput {
+  paymentPlan: ReadonlyArray<UnitPaymentInstallmentInput> | null;
+}
+
+/** Payment plan rows contain regular installments or initiative stage payments. */
+export type UnitPaymentPlanRowDto = UnitPaymentInstallmentDto | InitiativeStagePaymentDto;
 
 /** src/Brouj.API/Requests/UpdateProjectImageRequest.cs */
 export interface UpdateProjectImageRequest {

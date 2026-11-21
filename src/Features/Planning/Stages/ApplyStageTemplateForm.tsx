@@ -52,7 +52,8 @@ export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemp
         id="template"
         title={t("applyTemplate")}
         mode="create"
-        initial={{ name: source.name, deliveryDate: "", percentage: "" }}
+        initial={{ name: source.name, deliveryDate: "", percentage: "", price: "", pricingDate: "" }}
+        showPricing={false}
         nameReadOnly
         resetOnSave
         submitLabel={t("applyTemplate")}

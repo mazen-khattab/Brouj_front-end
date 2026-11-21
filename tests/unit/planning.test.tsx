@@ -99,11 +99,15 @@ test("feature validation explicitly covers plan, stage, item, status, image and 
   expect(validateItemStatus({ status: "2", confirmedDate: date })).toEqual([]);
   expect(validateItemStatus({ status: "3", confirmedDate: "" })).toEqual(["status"]);
   expect(validateImageDescription({ description: "x".repeat(20001) })).toEqual(["description"]);
-  for (const percentage of ["50", "0", "100"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage }, "create")).toEqual([]);
-  for (const percentage of ["100.1", "-1", "abc", "", "Infinity"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage }, "create")).toEqual(["percentage"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "" }, "edit")).toEqual([]);
+  const pricing = { price: "", pricingDate: "" };
+  for (const percentage of ["50", "0", "100"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage, ...pricing }, "create")).toEqual([]);
+  for (const percentage of ["100.1", "-1", "abc", "", "Infinity"]) expect(validateStage({ name: "Stage", deliveryDate: date, percentage, ...pricing }, "create")).toEqual(["percentage"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "", ...pricing }, "edit")).toEqual([]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "", price: "0", pricingDate: date }, "edit")).toEqual([]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "", price: "1", pricingDate: "" }, "edit")).toEqual(["pricingDate"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, percentage: "", price: "1.23456", pricingDate: date }, "edit")).toEqual(["price"]);
   // Unknown fields cannot accidentally acquire date validation; the feature owns its explicit rules.
-  const extended = { name: "Stage", deliveryDate: date, percentage: "25", notes: "A regular text field" };
+  const extended = { name: "Stage", deliveryDate: date, percentage: "25", ...pricing, notes: "A regular text field" };
   expect(validateStage(extended, "create")).toEqual([]);
   expect(serverFieldErrors(new ApiError("transport", { fieldErrors: { "Input.Name": ["Untrusted text"] } }), ["name", "code"])).toEqual(["name"]);
 });
@@ -147,7 +151,7 @@ test("ordering preserves input arrays and checks the complete unique sibling set
 
 test("template drafts carry source references, explicit dates and reject inactive/incomplete sources", () => {
   const rows = template.items.map((row) => ({ itemTemplateId: row.itemTemplateId, dueDate: date, confirmedDate: "" }));
-  const values = { name: "Ignored manual name", deliveryDate: date, percentage: "25" };
+  const values = { name: "Ignored manual name", deliveryDate: date, percentage: "25", price: "", pricingDate: "" };
   const input = stageFromTemplateInput(template, values, rows);
   expect(input.stageTemplateId).toBe(ids.stageTemplate);
   expect(input.percentage).toBe(25);

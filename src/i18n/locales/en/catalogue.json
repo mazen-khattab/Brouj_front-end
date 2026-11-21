@@ -1,4 +1,18 @@
 {
+  "paymentPlan": {
+    "amount": "Amount",
+    "pricingUnavailable": "Pricing unavailable",
+    "title": "Payment plan",
+    "number": "Installment number",
+    "percentage": "Percentage",
+    "timing": "Timing",
+    "months_zero": "At the start ({{months}} months)",
+    "months_one": "{{months}} month from start",
+    "months_two": "{{months}} months from start",
+    "months_few": "{{months}} months from start",
+    "months_many": "{{months}} months from start",
+    "months_other": "{{months}} months from start"
+  },
   "booking": {
     "reserveNow": "Reserve now",
     "registrationConflict": "An account already uses these details. Sign in with your existing account to continue.",

@@ -1,5 +1,5 @@
 import { ProjectSelector } from "./ProjectSelector";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Input } from "../../../Components/Fields";
@@ -10,9 +10,12 @@ import { draftFrom, unitInput } from "./mapping";
 import { invalidFields } from "./validation";
 import type { UnitDraft, UnitRecord } from "./types";
 import { useUnitEditor } from "./EditorContext";
-import { getProjectById } from "../../../Services/Projects";
-import { useResourceRead } from "../../../Hooks/useResourceRead";
 import { ErrorPanel, ValidationSummary } from "../../../Components/Feedback";
+import { ProjectType } from "../../../Types/contracts";
+import { PaymentPlanEditor } from "./PaymentPlanEditor";
+import { paymentPlanDraft, type PaymentPlanRow } from "./paymentPlan";
+import { usePaymentPlanValidation } from "./usePaymentPlanValidation";
+import { useUnitProject } from "./useUnitProject";
 
 export default function UnitForm({
   data,
@@ -20,36 +23,55 @@ export default function UnitForm({
   refresh,
   readPending = false,
   onCreated,
+  parentRead,
 }: {
   data?: UnitRecord;
   projectId?: string;
   refresh: () => Promise<unknown>;
   readPending?: boolean;
   onCreated?: () => void;
+  parentRead?: ReturnType<typeof useUnitProject>;
 }) {
   const { t } = useTranslation("admin");
   const action = useUnitEditor();
   const navigate = useNavigate();
   const [draft, setDraft] = useState<UnitDraft>(() => ({ ...draftFrom(data), projectId: data?.projectId ?? projectId }));
   const [invalid, setInvalid] = useState<string[]>([]);
-  const [baseline, setBaseline] = useState(() => JSON.stringify({ ...draftFrom(data), projectId: data?.projectId ?? projectId }));
+  const [plan, setPlan] = useState(paymentPlanDraft);
+  const [planSubmitted, setPlanSubmitted] = useState(false);
+  const [baseline, setBaseline] = useState(() => JSON.stringify({ draft, plan }));
   const formKey = `record:unit:${data?.id ?? "new"}`;
-  const loadProject = useCallback((signal: AbortSignal) => getProjectById({ id: draft.projectId }, { signal }), [draft.projectId]);
-  const parent = useResourceRead(`${action.scope}:parent:${draft.projectId}`, loadProject, Boolean(draft.projectId));
+  const ownParent = useUnitProject(action.scope, parentRead ? "" : draft.projectId);
+  const parent = parentRead ?? ownParent;
   const project = parent.result.status === "success" ? parent.result.data : undefined;
+  const needsPlan = !data && project?.projectType === ProjectType.Regular;
+  const validation = usePaymentPlanValidation(plan, planSubmitted);
   const disabled = action.pending || action.blocked || readPending || !project;
 
   function change(key: keyof UnitDraft, value: string) {
     const next = { ...draft, [key]: value };
-    if (key === "projectId") next.neighborMeterPrice = "";
+    let nextPlan = plan;
+    if (key === "projectId" && value !== draft.projectId) {
+      next.neighborMeterPrice = "";
+      nextPlan = paymentPlanDraft();
+      setPlan(nextPlan);
+      setPlanSubmitted(false);
+    }
     setDraft(next);
-    action.markDirty(formKey, JSON.stringify(next) !== baseline);
+    action.markDirty(formKey, JSON.stringify({ draft: next, plan: nextPlan }) !== baseline);
+  }
+
+  function changePlan(next: PaymentPlanRow[]) {
+    setPlan(next);
+    action.markDirty(formKey, JSON.stringify({ draft, plan: next }) !== baseline);
   }
 
   async function submit() {
     const errors = invalidFields(draft, project);
     setInvalid(errors);
-    if (errors.length || disabled) {
+    setPlanSubmitted(needsPlan);
+    const paymentPlan = needsPlan ? validation.paymentPlan : undefined;
+    if (errors.length || disabled || (needsPlan && !paymentPlan)) {
       return;
     }
     let createdId = "";
@@ -60,7 +82,7 @@ export default function UnitForm({
         const body = unitInput(draft);
         createdId = data
           ? await updateUnit({ id: data.id, query: { projectId: data.projectId }, body }, { signal })
-          : await createUnit({ projectId: draft.projectId, body }, { signal });
+          : await createUnit({ projectId: draft.projectId, body: { ...body, ...(paymentPlan && { paymentPlan }) } }, { signal });
         return createdId;
       },
       data
@@ -73,7 +95,7 @@ export default function UnitForm({
     );
     if (result) {
       action.markDirty(formKey, false);
-      setBaseline(JSON.stringify(draft));
+      setBaseline(JSON.stringify({ draft, plan }));
       if (!data) {
         onCreated?.();
         navigate(routePaths.admin.unit(draft.projectId, result));
@@ -100,14 +122,17 @@ export default function UnitForm({
       <p className="text-sm leading-7 text-muted">{t("formHint")}</p>
       {project && (
         <p className="break-words font-medium">
-          {project.name} · {t(project.projectType === 1 ? "initiative" : "regular")}
+          {project.name} · {t(project.projectType === ProjectType.Initiative ? "initiative" : "regular")}
         </p>
       )}
       {parent.result.status === "error" && <ErrorPanel title={t("parentUnavailable")} onRetry={parent.reload} />}
       <ValidationSummary
-        items={["projectId", "number", "meterPrice", "floorNumber", "size", "neighborMeterPrice"]
-          .filter((key) => error(key))
-          .map((key) => ({ fieldId: `field-${key}`, message: `${t(`fields.${key}`)}: ${t("invalid")}` }))}
+        items={[
+          ...["projectId", "number", "meterPrice", "floorNumber", "size", "neighborMeterPrice"]
+            .filter((key) => error(key))
+            .map((key) => ({ fieldId: `field-${key}`, message: `${t(`fields.${key}`)}: ${t("invalid")}` })),
+          ...(needsPlan ? validation.summary : []),
+        ]}
       />
       <div className="grid min-w-0 gap-5 xl:grid-cols-2">
         <ProjectSelector
@@ -116,6 +141,7 @@ export default function UnitForm({
           error={error("projectId")}
           disabled={action.pending || action.blocked || readPending || Boolean(data)}
           hint={data ? t("unitProjectFixed") : undefined}
+          parentRead={parent}
         />
         <Input
           id="field-number"
@@ -158,12 +184,13 @@ export default function UnitForm({
           label={t("fields.neighborMeterPrice")}
           value={draft.neighborMeterPrice}
           error={error("neighborMeterPrice")}
-          disabled={disabled || project?.projectType === 0}
+          disabled={disabled || project?.projectType === ProjectType.Regular}
           inputMode="decimal"
-          hint={t(project?.projectType === 1 ? "initiativeUnitHint" : "nullable")}
+          hint={t(project?.projectType === ProjectType.Initiative ? "initiativeUnitHint" : "nullable")}
           onChange={(event) => change("neighborMeterPrice", event.target.value)}
         />
       </div>
+      {needsPlan && <PaymentPlanEditor rows={plan} validation={validation} disabled={disabled} onChange={changePlan} />}
       <div className="flex flex-wrap gap-3">
         <Button type="submit" pending={action.pending} disabled={disabled}>
           {t("save")}
