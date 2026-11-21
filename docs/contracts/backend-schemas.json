@@ -3771,7 +3771,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInputValidator.cs",
-      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        Include(new TemplateStageDraftInputValidator());\n        RuleFor(input => input).Custom((input, context) =>\n        {\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure);\n            if (input.StageTemplateId.HasValue && input.Price.HasValue)\n                context.AddFailure(nameof(input.Price), \"Apply pricing to a copied stage after creation.\");\n        });\n    }\n}"
+      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        Include(new TemplateStageDraftInputValidator());\n\n        RuleFor(input => input).Custom((input, context) =>\n        {\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure);\n\n            if (input.StageTemplateId.HasValue && input.Price.HasValue)\n            {\n                context.AddFailure(nameof(input.Price), \"Apply pricing to a copied stage after creation.\");\n            }\n        });\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInputValidator.cs",

@@ -643,11 +643,10 @@ export interface SetStageTemplateItemsRequest {
 export interface StageDraftInput {
   stageTemplateId: Guid | null;
   name: string;
-  percentage: number;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
-  price?: number;
-  pricingDate?: OffsetDateTime;
+  price: number;
+  pricingDate: OffsetDateTime;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInput.cs */
@@ -716,9 +715,10 @@ export interface StageUpdateInput {
 export interface TemplateStageDraftInput {
   stageTemplateId: Guid | null;
   name: string;
-  percentage: number;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
+  price: number;
+  pricingDate: OffsetDateTime;
 }
 
 /** src/Brouj.Application/Features/Terms/DTOs/TermsDto.cs */

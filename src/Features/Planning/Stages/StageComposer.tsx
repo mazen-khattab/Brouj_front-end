@@ -4,7 +4,7 @@ import { useTimePlan } from "../Plans/TimePlanContext";
 import { useStaffRead } from "../../../Hooks/useStaffRead";
 import { getStageTemplateById } from "../../../Services/Templates";
 import { useEditorGuard } from "../../../Forms/editorDraft";
-import { stageFrom, stageInput, stagePricingInput } from "./mapping";
+import { stageFrom, stageInput } from "./mapping";
 import { TimePlanStageForm } from "./TimePlanStageForm";
 import { ApplyStageTemplateForm } from "./ApplyStageTemplateForm";
 import type { StageTemplateDto } from "../../../Types/contracts";
@@ -82,7 +82,7 @@ export function StageComposer({ disabled }: { disabled: boolean }) {
             disabled={disabled}
             pending={action.pending && lastAction === "add-stage"}
             failure={lastAction === "add-stage" ? action.failure : undefined}
-            onSave={(value) => run("add-stage", { kind: "addStage", input: { stageTemplateId: null, ...stageInput(value), ...stagePricingInput(value), items: [] } })}
+            onSave={(value) => run("add-stage", { kind: "addStage", input: { stageTemplateId: null, ...stageInput(value), items: [] } })}
           />
         )}
       </div>

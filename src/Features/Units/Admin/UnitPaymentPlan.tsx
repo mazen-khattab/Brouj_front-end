@@ -15,7 +15,7 @@ export function UnitPaymentPlan({ unit, refresh, readPending }: { unit: UnitDto;
   const formKey = `plan:unit:${unit.id}`;
   const [draft, setDraft] = useState<PaymentPlanRow[]>();
   const [submitted, setSubmitted] = useState(false);
-  const baseline = paymentPlanDraft(unit.paymentPlan.filter((row): row is UnitPaymentInstallmentDto => "installmentNumber" in row));
+  const baseline = paymentPlanDraft(unit.paymentPlan?.filter((row): row is UnitPaymentInstallmentDto => "installmentNumber" in row));
   const rows = draft ?? baseline;
   const validation = usePaymentPlanValidation(rows, submitted);
   const disabled = action.pending || action.blocked || readPending;

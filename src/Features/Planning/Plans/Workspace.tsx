@@ -84,6 +84,7 @@ function Workspace() {
   const [selectedStage, setSelectedStage] = useState("");
   const [selectedItem, setSelectedItem] = useState("");
   const [planReset, setPlanReset] = useState(0);
+  const [stageReset, setStageReset] = useState(0);
   const [announcement, setAnnouncement] = useState<{ name: string; position: number }>();
   const plan = snapshot?.plan;
   const stages = ordered(plan?.stages ?? []);
@@ -198,8 +199,8 @@ function Workspace() {
                       ),
                     },
                     { id: "delivery", header: t("fields.deliveryDate"), render: (row) => <bdi>{formatDateTime(row.deliveryDate, locale)}</bdi> },
-                    { id: "percentage", header: t("fields.percentage"), render: (row) => row.price == null ? <bdi dir="ltr">{row.percentage}%</bdi> : "—" },
                     { id: "price", header: t("fields.price"), render: (row) => row.price == null ? "—" : <bdi>{formatCurrency(row.price, locale)}</bdi> },
+                    { id: "pricingDate", header: t("fields.pricingDate"), render: (row) => row.pricingDate ? <bdi>{formatDateTime(row.pricingDate, locale)}</bdi> : "—" },
                     {
                       id: "order",
                       header: t("order"),
@@ -224,7 +225,7 @@ function Workspace() {
                     {stage.name}
                   </h2>
                   <TimePlanStageForm
-                    key={`${stage.id}:${guard.epoch}`}
+                    key={`${stage.id}:${guard.epoch}:${stageReset}`}
                     id="stage"
                     title={t("editStage")}
                     mode="edit"
@@ -233,6 +234,7 @@ function Workspace() {
                     pending={action.pending && lastAction === "stage"}
                     failure={lastAction === "stage" ? action.failure : undefined}
                     onSave={(value) => run("stage", { kind: "updateStage", stageId: stage.id, input: stageUpdateInput(value) })}
+                    onSaved={() => setStageReset((value) => value + 1)}
                   />
                   <ConfirmButton
                     title={t("deleteStage")}

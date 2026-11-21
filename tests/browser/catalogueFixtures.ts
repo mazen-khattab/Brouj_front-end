@@ -1,6 +1,6 @@
 import type { BrowserContext } from '@playwright/test';
 import { sessionCors } from './sessionFixtures';
-import { ProjectType, type ProjectDto, type ProjectListDto, type UnitDto, type UnitPaymentInstallmentDto } from '../../src/Types/contracts';
+import { ProjectType, type InitiativeStagePaymentDto, type ProjectDto, type ProjectListDto, type UnitDto, type UnitPaymentInstallmentDto } from '../../src/Types/contracts';
 
 export const catalogueIds = {
   city: '10000000-0000-4000-8000-000000000001', city2: '10000000-0000-4000-8000-000000000002',
@@ -26,10 +26,11 @@ export const cataloguePaymentPlan: UnitPaymentInstallmentDto[] = [
   { installmentName: 'Down payment', installmentNumber: 1, installmentPercentage: 33.3333, installmentPeriodMonths: 0 },
   { installmentName: 'القسط الثاني B', installmentNumber: 3, installmentPercentage: 66.6667, installmentPeriodMonths: 6 },
 ];
-export const initiativePaymentPlan = [
-  { stageId: 'foundation', stageName: 'Foundations', unitPercentage: 10.1234, stageCost: 10000 },
-  { stageId: 'finish', stageName: 'Finishing', unitPercentage: 10.1234, stageCost: null },
-  { stageId: 'handover', stageName: 'Handover', unitPercentage: 10.1234, stageCost: 0 },
+export const initiativePaymentPlan: readonly InitiativeStagePaymentDto[] = [
+  { stageId: '81ee47ee-35b8-4c35-bf38-43892311cd65', stageName: 'Foundations', unitPercentage: 10, stageCost: 10000 },
+  { stageId: '6934bedc-2157-4729-acc3-b397bcd61647', stageName: 'التشطيبات B', unitPercentage: 10, stageCost: 1.2346 },
+  { stageId: 'a1bb5aba-b5df-4df0-821e-68e7bc6ad951', stageName: 'Finishing', unitPercentage: 10, stageCost: null },
+  { stageId: '1fd2ff9d-6d3a-45c3-94f8-4f5bd63b5652', stageName: 'Handover', unitPercentage: 10, stageCost: 0 },
 ];
 export const cataloguePattern = /https:\/\/localhost:7249\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(?:\/|\?|$)/;
 
@@ -86,6 +87,7 @@ export async function catalogueServer(context: BrowserContext) {
     if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(state.unitPaymentPlan ? { ...catalogueProject, projectType: ProjectType.Regular } : catalogueProject);
     if (path.startsWith('/units/')) return state.missingUnit || query.get('projectId') !== catalogueIds.project ? fail(404) : ok({
       ...catalogueUnit, isAvailable: state.unitAvailable,
+      ...(state.initiativePaymentPlan && { percentage: 10 }),
       paymentPlan: state.unitPaymentPlan ? cataloguePaymentPlan : state.initiativePaymentPlan ? initiativePaymentPlan : catalogueUnit.paymentPlan,
     });
     if (path === '/terms-and-conditions/current') return state.failTerms ? fail(503) : ok({ id: 'terms', title: 'Published terms', content: 'Supplied legal text.\n<b>This stays plain text.</b>', versionNumber: '3', effectiveDate: '2026-10-01T00:00:00Z', isActive: true });

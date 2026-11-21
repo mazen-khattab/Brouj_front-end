@@ -58,8 +58,8 @@ export async function executePlan(command: PlanCommand, projectId: string, plan:
     case "addStage": {
       const body = approvedStageDraft(command.input);
       if (body.stageTemplateId) {
-        const { stageTemplateId, name, deliveryDate, percentage, items } = body;
-        return plans.addStageFromTemplate({ timePlanId: plan.id, body: { stageTemplateId, name, deliveryDate, percentage, items } }, { signal });
+        const { stageTemplateId, name, deliveryDate, price, pricingDate, items } = body;
+        return plans.addStageFromTemplate({ timePlanId: plan.id, body: { stageTemplateId, name, deliveryDate, price, pricingDate, items } }, { signal });
       }
       return plans.addTimePlanStage({ timePlanId: plan.id, body }, { signal });
     }

@@ -6,20 +6,22 @@ export function stageFrom(source?: TimePlanStageDto): TimePlanStageDraft {
   return {
     name: source?.name ?? "",
     deliveryDate: source?.deliveryDate ?? "",
-    percentage: source ? String(source.percentage) : "",
     price: source?.price == null ? "" : String(source.price),
     pricingDate: source?.pricingDate ?? "",
   };
 }
 
-export function stageInput(values: TimePlanStageDraft): Pick<StageDraftInput, "name" | "deliveryDate" | "percentage"> {
-  return { name: values.name, deliveryDate: values.deliveryDate || null, percentage: Number(values.percentage) };
+export function stageInput(values: TimePlanStageDraft): Pick<StageDraftInput, "name" | "deliveryDate" | "price" | "pricingDate"> {
+  return {
+    name: values.name,
+    deliveryDate: values.deliveryDate || null,
+    price: Number(values.price),
+    pricingDate: values.pricingDate.trim(),
+  };
 }
 
 export function stagePricingInput(values: TimePlanStageDraft): Pick<StageUpdateInput, "price" | "pricingDate"> {
-  return values.price.trim() && values.pricingDate.trim()
-    ? { price: Number(values.price), pricingDate: values.pricingDate.trim() }
-    : {};
+  return values.price.trim() && values.pricingDate.trim() ? { price: Number(values.price), pricingDate: values.pricingDate.trim() } : {};
 }
 
 export function stageUpdateInput(values: TimePlanStageDraft): StageUpdateInput {
@@ -28,7 +30,8 @@ export function stageUpdateInput(values: TimePlanStageDraft): StageUpdateInput {
 
 export function approvedStageUpdate({ name, deliveryDate, price, pricingDate }: StageUpdateInput): StageUpdateInput {
   return {
-    name, deliveryDate,
+    name,
+    deliveryDate,
     ...(price !== undefined && { price }),
     ...(pricingDate !== undefined && { pricingDate }),
   };
@@ -36,9 +39,17 @@ export function approvedStageUpdate({ name, deliveryDate, price, pricingDate }: 
 
 export function approvedStageDraft(input: StageDraftInput): StageDraftInput {
   return {
-    ...approvedStageUpdate(input),
-    stageTemplateId: input.stageTemplateId, percentage: input.percentage,
-    items: input.items.map(row => ({ itemTemplateId: row.itemTemplateId, name: row.name, dueDate: row.dueDate, confirmedDate: row.confirmedDate })),
+    stageTemplateId: input.stageTemplateId,
+    name: input.name,
+    deliveryDate: input.deliveryDate,
+    price: input.price,
+    pricingDate: input.pricingDate,
+    items: input.items.map((row) => ({
+      itemTemplateId: row.itemTemplateId,
+      name: row.name,
+      dueDate: row.dueDate,
+      confirmedDate: row.confirmedDate,
+    })),
   };
 }
 

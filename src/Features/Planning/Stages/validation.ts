@@ -1,18 +1,27 @@
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
 import { validDateTime } from "../../../Validation/dateTime";
 
-export function validateStage(values: TimePlanStageDraft, mode: "create" | "edit", showPricing = true): (keyof TimePlanStageDraft)[] {
+export function validateStage(values: TimePlanStageDraft, _mode?: "create" | "edit", showPricing = true): (keyof TimePlanStageDraft)[] {
   const errors: (keyof TimePlanStageDraft)[] = [];
   if (!values.name.trim() || values.name.length > 100) errors.push("name");
   if (!validDateTime(values.deliveryDate)) errors.push("deliveryDate");
-  if (mode === "create" && (!values.percentage.trim() || !Number.isFinite(Number(values.percentage)) || Number(values.percentage) < 0 || Number(values.percentage) > 100)) errors.push("percentage");
-  const price = values.price.trim();
-  const pricingDate = values.pricingDate.trim();
-  if (showPricing && (price || pricingDate)) {
-    const normalized = price.replace(/^0+(?=\d)/, "").replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
-    if (!/^\d{1,15}(?:\.\d{1,4})?$/.test(price) || String(Number(price)) !== normalized) errors.push("price");
-    if (!validDateTime(pricingDate)) errors.push("pricingDate");
+
+  if (showPricing) {
+    const price = values.price.trim();
+    const normalized = price
+      .replace(/^0+(?=\d)/, "")
+      .replace(/(\.\d*?)0+$/, "$1")
+      .replace(/\.$/, "");
+    if (!price || !/^\d{1,15}(?:\.\d{1,4})?$/.test(price) || String(Number(price)) !== normalized) {
+      errors.push("price");
+    }
+
+    const pricingDate = values.pricingDate.trim();
+    if (!pricingDate || !validDateTime(pricingDate)) {
+      errors.push("pricingDate");
+    }
   }
+
   return errors;
 }
 

@@ -52,12 +52,12 @@ The verified inventory contains 107 operations. 104 have implemented feature con
 | PATCH /api/v1/admin/projects/{id}/images/{imageId} | AdminOnly | Admin / projects and media / UpdateProjectImage | src/Features/Projects/Admin/Images.tsx:52 |
 | DELETE /api/v1/admin/projects/{id}/images/{imageId} | AdminOnly | Admin / projects and media / DeleteProjectImage | src/Features/Projects/Admin/Images.tsx:62 |
 | POST /api/v1/admin/projects/{projectId}/units | AdminOnly | Admin / units and media / CreateUnit | src/Features/Units/Admin/UnitForm.tsx:85 |
-| POST /api/v1/admin/projects/{projectId}/time-plan | AdminOnly | Admin / time plans, stages, items and images / CreateTimePlan | src/Features/Planning/Plans/commands.ts:36 |
+| POST /api/v1/admin/projects/{projectId}/time-plan | AdminOnly | Admin / time plans, stages, items and images / CreateTimePlan | src/Features/Planning/Plans/commands.ts:37 |
 | GET /api/v1/units/{id} | Anonymous | Website / units; shared Admin catalogue reads / GetUnitById | src/Features/Units/Admin/UnitForm.tsx:92<br>src/Features/Units/Admin/useRecord.ts:26<br>src/Features/Units/Public/DetailProvider.tsx:13 |
 | PATCH /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / UpdateUnit | src/Features/Units/Admin/UnitForm.tsx:84 |
 | DELETE /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / DeleteUnit | src/Features/Units/Admin/UnitPage.tsx:46 |
 | PUT /api/v1/admin/units/{id}/amenities | AdminOnly | Admin / units and media / ReplaceUnitAmenities | src/Features/Units/Admin/Amenities.tsx:38 |
-| PUT /api/v1/admin/units/{id}/payment-plan | AdminOnly | Admin / units and media / ReplaceUnitPaymentPlan | src/Features/Units/Admin/UnitPaymentPlan.tsx:38 |
+| PUT /api/v1/admin/units/{id}/payment-plan | AdminOnly | Admin / units and media / ReplaceUnitPaymentPlan | src/Features/Units/Admin/UnitPaymentPlan.tsx:33 |
 | POST /api/v1/admin/units/{id}/images | AdminOnly | Admin / units and media / AddUnitImage | src/Features/Units/Admin/Images.tsx:129 |
 | PATCH /api/v1/admin/units/{id}/images/{imageId} | AdminOnly | Admin / units and media / UpdateUnitImage | src/Features/Units/Admin/Images.tsx:52 |
 | DELETE /api/v1/admin/units/{id}/images/{imageId} | AdminOnly | Admin / units and media / DeleteUnitImage | src/Features/Units/Admin/Images.tsx:62 |
@@ -72,22 +72,22 @@ The verified inventory contains 107 operations. 104 have implemented feature con
 | GET /api/v1/admin/orders | AdminOnly | Admin / orders / GetOrders | src/Features/Orders/Admin/OrdersAdminProvider.tsx:28 |
 | GET /api/v1/admin/orders/{id} | MemberOnly | Customer account / order detail; Admin / order detail / GetOrderById | src/Features/Orders/Admin/OrdersAdminProvider.tsx:26<br>src/Features/Orders/Admin/OrdersAdminProvider.tsx:41<br>src/Features/Orders/Customer/DataProvider.tsx:41<br>src/Features/Reservations/Admin/ReservationsAdminProvider.tsx:60 |
 | POST /api/v1/admin/orders/{id}/complete | AdminOnly | Admin / orders / CompleteInitiativeOrder | src/Features/Orders/Admin/OrdersAdminProvider.tsx:58 |
-| PATCH /api/v1/admin/time-plans/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdateTimePlan | src/Features/Planning/Plans/commands.ts:54 |
-| DELETE /api/v1/admin/time-plans/{id} | AdminOnly | Admin / time plans, stages, items and images / DeleteTimePlan | src/Features/Planning/Plans/commands.ts:56 |
-| POST /api/v1/admin/time-plans/{timePlanId}/stages | AdminOnly | Admin / time plans, stages, items and images / AddTimePlanStage | src/Features/Planning/Plans/commands.ts:61 |
-| POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template | AdminOnly | Admin / time plans, stages, items and images / AddStageFromTemplate | src/Features/Planning/Plans/commands.ts:60 |
-| PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdateTimePlanStage | src/Features/Planning/Plans/commands.ts:64 |
-| DELETE /api/v1/admin/time-plans/{timePlanId}/stages/{id} | AdminOnly | Admin / time plans, stages, items and images / DeleteTimePlanStage | src/Features/Planning/Plans/commands.ts:66 |
-| PUT /api/v1/admin/time-plans/{timePlanId}/stages/order | AdminOnly | Admin / time plans, stages, items and images / ReorderTimePlanStages | src/Features/Planning/Plans/commands.ts:69 |
-| POST /api/v1/admin/time-plan-stages/{stageId}/items | AdminOnly | Admin / time plans, stages, items and images / AddPlanStageItem | src/Features/Planning/Plans/commands.ts:71 |
-| PATCH /api/v1/admin/time-plan-stages/{stageId}/items/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdatePlanStageItem | src/Features/Planning/Plans/commands.ts:73 |
-| DELETE /api/v1/admin/time-plan-stages/{stageId}/items/{id} | AdminOnly | Admin / time plans, stages, items and images / DeletePlanStageItem | src/Features/Planning/Plans/commands.ts:75 |
-| POST /api/v1/admin/time-plan-stages/{stageId}/items/{id}/status | AdminOnly | Admin / time plans, stages, items and images / ChangePlanStageItemStatus | src/Features/Planning/Plans/commands.ts:77 |
-| PUT /api/v1/admin/time-plan-stages/{stageId}/items/order | AdminOnly | Admin / time plans, stages, items and images / ReorderPlanStageItems | src/Features/Planning/Plans/commands.ts:83 |
-| POST /api/v1/admin/time-plan-items/{itemId}/images | AdminOnly | Admin / time plans, stages, items and images / AddStageItemImage | src/Features/Planning/Plans/commands.ts:85 |
-| PATCH /api/v1/admin/time-plan-items/{itemId}/images/{imageId} | AdminOnly | Admin / time plans, stages, items and images / UpdateStageItemImage | src/Features/Planning/Plans/commands.ts:87 |
-| DELETE /api/v1/admin/time-plan-items/{itemId}/images/{imageId} | AdminOnly | Admin / time plans, stages, items and images / DeleteStageItemImage | src/Features/Planning/Plans/commands.ts:89 |
-| PUT /api/v1/admin/time-plan-items/{itemId}/images/order | AdminOnly | Admin / time plans, stages, items and images / ReorderStageItemImages | src/Features/Planning/Plans/commands.ts:92 |
+| PATCH /api/v1/admin/time-plans/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdateTimePlan | src/Features/Planning/Plans/commands.ts:55 |
+| DELETE /api/v1/admin/time-plans/{id} | AdminOnly | Admin / time plans, stages, items and images / DeleteTimePlan | src/Features/Planning/Plans/commands.ts:57 |
+| POST /api/v1/admin/time-plans/{timePlanId}/stages | AdminOnly | Admin / time plans, stages, items and images / AddTimePlanStage | src/Features/Planning/Plans/commands.ts:64 |
+| POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template | AdminOnly | Admin / time plans, stages, items and images / AddStageFromTemplate | src/Features/Planning/Plans/commands.ts:62 |
+| PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdateTimePlanStage | src/Features/Planning/Plans/commands.ts:67 |
+| DELETE /api/v1/admin/time-plans/{timePlanId}/stages/{id} | AdminOnly | Admin / time plans, stages, items and images / DeleteTimePlanStage | src/Features/Planning/Plans/commands.ts:69 |
+| PUT /api/v1/admin/time-plans/{timePlanId}/stages/order | AdminOnly | Admin / time plans, stages, items and images / ReorderTimePlanStages | src/Features/Planning/Plans/commands.ts:72 |
+| POST /api/v1/admin/time-plan-stages/{stageId}/items | AdminOnly | Admin / time plans, stages, items and images / AddPlanStageItem | src/Features/Planning/Plans/commands.ts:74 |
+| PATCH /api/v1/admin/time-plan-stages/{stageId}/items/{id} | AdminOnly | Admin / time plans, stages, items and images / UpdatePlanStageItem | src/Features/Planning/Plans/commands.ts:76 |
+| DELETE /api/v1/admin/time-plan-stages/{stageId}/items/{id} | AdminOnly | Admin / time plans, stages, items and images / DeletePlanStageItem | src/Features/Planning/Plans/commands.ts:78 |
+| POST /api/v1/admin/time-plan-stages/{stageId}/items/{id}/status | AdminOnly | Admin / time plans, stages, items and images / ChangePlanStageItemStatus | src/Features/Planning/Plans/commands.ts:80 |
+| PUT /api/v1/admin/time-plan-stages/{stageId}/items/order | AdminOnly | Admin / time plans, stages, items and images / ReorderPlanStageItems | src/Features/Planning/Plans/commands.ts:86 |
+| POST /api/v1/admin/time-plan-items/{itemId}/images | AdminOnly | Admin / time plans, stages, items and images / AddStageItemImage | src/Features/Planning/Plans/commands.ts:88 |
+| PATCH /api/v1/admin/time-plan-items/{itemId}/images/{imageId} | AdminOnly | Admin / time plans, stages, items and images / UpdateStageItemImage | src/Features/Planning/Plans/commands.ts:90 |
+| DELETE /api/v1/admin/time-plan-items/{itemId}/images/{imageId} | AdminOnly | Admin / time plans, stages, items and images / DeleteStageItemImage | src/Features/Planning/Plans/commands.ts:92 |
+| PUT /api/v1/admin/time-plan-items/{itemId}/images/order | AdminOnly | Admin / time plans, stages, items and images / ReorderStageItemImages | src/Features/Planning/Plans/commands.ts:95 |
 | GET /api/v1/admin/stage-templates | AdminOnly | Admin / stage templates / GetStageTemplates | src/Features/Planning/SourcePicker.tsx:55<br>src/Features/Planning/Templates/TemplatesProvider.tsx:56 |
 | GET /api/v1/admin/stage-templates/{id} | AdminOnly | Admin / stage templates / GetStageTemplateById | src/Features/Planning/Stages/StageComposer.tsx:27<br>src/Features/Planning/Templates/TemplatesProvider.tsx:70<br>src/Features/Planning/Templates/TemplatesProvider.tsx:106 |
 | POST /api/v1/admin/stage-templates | AdminOnly | Admin / stage templates / CreateStageTemplate | src/Features/Planning/Templates/commands.ts:18 |

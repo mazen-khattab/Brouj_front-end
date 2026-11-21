@@ -54,9 +54,19 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await page.getByText(en.addStage, { exact: true }).click();
   await page.locator("#add-stage-name").fill("New manual stage");
   await page.locator("#add-stage-deliveryDate").fill(planningDate);
-  await page.locator("#add-stage-percentage").fill("25");
   await page.locator("#add-stage-price").fill("100000.1234");
+  const manualSave = page.getByRole("form", { name: en.manualStage }).getByRole("button", { name: en.save, exact: true });
+  const stageCreates = () => server.calls.filter((call) => call.method === "POST" && call.url.pathname.endsWith("/stages"));
+  await manualSave.click();
+  await expect(page.locator("#add-stage-pricingDate")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#add-stage-price")).toHaveValue("100000.1234");
+  expect(stageCreates()).toHaveLength(0);
   await page.locator("#add-stage-pricingDate").fill(planningDate);
+  await page.locator("#add-stage-price").fill("100000.12345");
+  await manualSave.click();
+  await expect(page.locator("#add-stage-price")).toHaveAttribute("aria-invalid", "true");
+  expect(stageCreates()).toHaveLength(0);
+  await page.locator("#add-stage-price").fill("100000.1234");
   await saveForm(page, en.manualStage);
   expect(server.calls.findLast((call) => call.method === "POST")!.body).toMatchObject({ price: 100000.1234, pricingDate: planningDate });
   const stage = server.state.plan!.stages[0]!;
@@ -69,6 +79,13 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({
     name: "Updated manual stage", deliveryDate: planningDate, price: 0, pricingDate: planningDate,
   });
+  await page.locator("#stage-price").fill("");
+  await page.locator("#stage-pricingDate").fill("");
+  await page.locator("#stage-name").fill("Renamed stage");
+  await saveForm(page, en.editStage);
+  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({ name: "Renamed stage", deliveryDate: planningDate });
+  await expect(page.locator("#stage-price")).toHaveValue("0");
+  await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
   await page.locator("summary").filter({ hasText: en.addItem }).click();
   await page.locator("#add-item-name").fill("New work item");
   await page.locator("#add-item-dueDate").fill(planningDate);
@@ -209,7 +226,8 @@ test("server template application supplies every mapped item date and also suppo
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.locator("#template-deliveryDate")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-percentage").fill("25");
+  await page.locator("#template-price").fill("2500");
+  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
@@ -218,17 +236,31 @@ test("server template application supplies every mapped item date and also suppo
   expect(server.calls.findLast((call) => call.method === "POST")!.body).toEqual({
     stageTemplateId: ids.stageTemplate,
     name: "Reusable construction stage",
-    percentage: 25,
+    price: 2500,
+    pricingDate: planningDate,
     deliveryDate: planningDate,
     items: [
       { itemTemplateId: ids.itemTemplate, name: "Survey", dueDate: planningDate, confirmedDate: null },
       { itemTemplateId: ids.itemTemplate2, name: "Approval", dueDate: planningDate, confirmedDate: null },
     ],
   });
+  await expect(page.locator("#template-price")).toHaveCount(0);
+  await expect(page.locator("#template-pricingDate")).toHaveCount(0);
+  await page.getByRole("region", { name: en.stages, exact: true }).getByRole("button", { name: "Reusable construction stage", exact: true }).click();
+  await expect(page.locator("#stage-price")).toHaveValue("");
+  await expect(page.locator("#stage-pricingDate")).toHaveValue("");
+  await page.locator("#stage-price").fill("100000");
+  await page.locator("#stage-pricingDate").fill(planningDate);
+  await saveForm(page, en.editStage);
+  const copiedStage = server.state.plan!.stages.find((stage) => stage.name === "Reusable construction stage")!;
+  const patch = server.calls.findLast((call) => call.method === "PATCH")!;
+  expect(patch.url.pathname).toBe(`/api/v1/admin/time-plans/${ids.plan}/stages/${copiedStage.id}`);
+  expect(patch.body).toEqual({ name: copiedStage.name, deliveryDate: planningDate, price: 100000, pricingDate: planningDate });
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.emptyTemplate);
   await expect(page.getByText(en.emptyTemplate, { exact: true })).toBeVisible();
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-percentage").fill("25");
+  await page.locator("#template-price").fill("2500");
+  await page.locator("#template-pricingDate").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect.poll(() => server.state.plan!.stages.length).toBe(4);
   expect(server.calls.findLast((call) => call.method === "POST")!.body.items).toEqual([]);
@@ -248,7 +280,8 @@ test("inactive mapped templates cannot be applied and a newly stale template rep
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-percentage").fill("25");
+  await page.locator("#template-price").fill("2500");
+  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.state.failNext = 409;
@@ -314,7 +347,8 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-percentage").fill("25");
+  await page.locator("#template-price").fill("2500");
+  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.stages.set(ids.stageTemplate, { ...server.stages.get(ids.stageTemplate)!, items: [server.stages.get(ids.stageTemplate)!.items[1]!] });
@@ -327,7 +361,8 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await expect(page.locator("#template-due-1")).toHaveCount(0);
   await expect(page.locator("#template-due-0")).toHaveValue("");
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-percentage").fill("25");
+  await page.locator("#template-price").fill("2500");
+  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
