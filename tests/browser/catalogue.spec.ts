@@ -168,17 +168,28 @@ for (const language of ['ar', 'en'] as const) {
     server.state.initiativePaymentPlan = true;
     await seedRouting(page, 'anonymous', language);
     await page.goto(`/projects/${ids.project}/units/${ids.unit}`);
-    const labels = language === 'ar' ? arCatalogue.paymentPlan : enCatalogue.paymentPlan;
+    const catalogue = language === 'ar' ? arCatalogue : enCatalogue;
+    const labels = catalogue.paymentPlan;
     const plan = page.getByRole('region', { name: labels.title, exact: true });
+    const details = page.getByRole('region', { name: catalogue.unitDetails, exact: true });
+    await expect(details.locator('xpath=following-sibling::*[1]').and(plan)).toBeVisible();
     await expect(plan.getByRole('heading', { level: 3 })).toHaveText(initiativePaymentPlan.map((row) => row.stageName));
     const percentage = new Intl.NumberFormat(language, { style: 'percent', maximumFractionDigits: 4 });
     const currency = loadEnv('development', process.cwd(), 'VITE_').VITE_BUSINESS_CURRENCY;
     const amount = new Intl.NumberFormat(language, { maximumFractionDigits: 4, ...(currency && { style: 'currency', currency }) });
     for (const [index, row] of initiativePaymentPlan.entries()) {
       const item = plan.getByRole('listitem').nth(index);
+      await expect(item.locator('h3 bdi')).toHaveAttribute('dir', 'auto');
       await expect(item.getByText(percentage.format(row.unitPercentage / 100), { exact: true })).toBeVisible();
       await expect(item.getByText(row.stageCost === null ? labels.pricingUnavailable : amount.format(row.stageCost), { exact: true })).toBeVisible();
     }
+    const unitReads = server.calls.filter((url) => url.pathname === '/api/v1/units/' + ids.unit);
+    expect(unitReads.map((url) => url.searchParams.get('projectId'))).toEqual([ids.project]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    server.state.initiativePaymentPlan = false;
+    await page.reload();
+    await expect(details).toBeVisible();
+    await expect(plan).toHaveCount(0);
     expect(server.calls.some((url) => url.pathname.endsWith('/time-plan'))).toBe(false);
   });
 

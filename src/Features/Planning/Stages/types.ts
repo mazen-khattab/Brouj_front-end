@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 export interface TimePlanStageDraft {
   name: string;
   deliveryDate: string;
-  percentage: string;
   price: string;
   pricingDate: string;
 }

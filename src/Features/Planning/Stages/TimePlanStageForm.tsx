@@ -9,20 +9,31 @@ import { validateStage } from "./validation";
 import type { TimePlanStageDraft, TimePlanStageFormProps } from "./types";
 
 export function TimePlanStageForm({
-  id, title, initial, disabled, pending, failure, onSave, onSaved, onReset,
-  mode, nameReadOnly = false, showPricing = true, submitLabel, resetOnSave = false, children,
+  id,
+  title,
+  initial,
+  disabled,
+  pending,
+  failure,
+  onSave,
+  onSaved,
+  onReset,
+  mode,
+  nameReadOnly = false,
+  showPricing = true,
+  submitLabel,
+  resetOnSave = false,
+  children,
 }: TimePlanStageFormProps) {
   const { t } = useTranslation("timePlans");
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof TimePlanStageDraft)[]>([]);
-  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate"];
-  if (mode === "create") fields.push("percentage");
-  if (showPricing) fields.push("price", "pricingDate");
+  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate", "price", "pricingDate"];
   const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof TimePlanStageDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });
-    setInvalid(previous => previous.filter(key => key !== field));
+    setInvalid((previous) => previous.filter((key) => key !== field));
   }
 
   function error(field: keyof TimePlanStageDraft) {
@@ -45,19 +56,26 @@ export function TimePlanStageForm({
   }
 
   return (
-    <form noValidate aria-label={title} className="grid min-w-0 gap-5" onSubmit={event => {
-      event.preventDefault();
-      if (!disabled) void submit();
-    }}>
+    <form
+      noValidate
+      aria-label={title}
+      className="grid min-w-0 gap-5"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!disabled) void submit();
+      }}
+    >
       <h3 className="text-xl font-medium">{title}</h3>
-      <ValidationSummary items={errors.map(field => ({ fieldId: `${id}-${field}`, message: t("invalidField", { field: t(`fields.${field}`) }) }))} />
+      <ValidationSummary
+        items={errors.map((field) => ({ fieldId: `${id}-${field}`, message: t("invalidField", { field: t(`fields.${field}`) }) }))}
+      />
       <fieldset disabled={disabled} className="grid min-w-0 gap-5 md:grid-cols-2">
         <Input
           id={`${id}-name`}
           label={t("fields.name")}
           value={draft.value.name}
           error={error("name")}
-          onChange={event => change("name", event.target.value)}
+          onChange={(event) => change("name", event.target.value)}
           dir="auto"
           maxLength={100}
           required
@@ -68,25 +86,12 @@ export function TimePlanStageForm({
           label={t("fields.deliveryDate")}
           value={draft.value.deliveryDate}
           error={error("deliveryDate")}
-          onChange={event => change("deliveryDate", event.target.value)}
+          onChange={(event) => change("deliveryDate", event.target.value)}
           dir="ltr"
           maxLength={40}
           hint={t("dateHint")}
           required
         />
-        {mode === "create" && (
-          <Input
-            id={`${id}-percentage`}
-            label={t("fields.percentage")}
-            value={draft.value.percentage}
-            error={error("percentage")}
-            onChange={event => change("percentage", event.target.value)}
-            dir="ltr"
-            inputMode="decimal"
-            hint={t("percentageHint")}
-            required
-          />
-        )}
         {showPricing && (
           <>
             <Input
@@ -94,20 +99,22 @@ export function TimePlanStageForm({
               label={t("fields.price")}
               value={draft.value.price}
               error={error("price")}
-              onChange={event => change("price", event.target.value)}
+              onChange={(event) => change("price", event.target.value)}
               dir="ltr"
               inputMode="decimal"
               hint={t("priceHint")}
+              required
             />
             <Input
               id={`${id}-pricingDate`}
               label={t("fields.pricingDate")}
               value={draft.value.pricingDate}
               error={error("pricingDate")}
-              onChange={event => change("pricingDate", event.target.value)}
+              onChange={(event) => change("pricingDate", event.target.value)}
               dir="ltr"
               maxLength={40}
               hint={t("dateHint")}
+              required
             />
           </>
         )}
@@ -117,7 +124,16 @@ export function TimePlanStageForm({
         <Button type="submit" disabled={disabled} pending={pending} pendingLabel={t("working")}>
           {submitLabel ?? t("save")}
         </Button>
-        <Button type="button" variant="secondary" disabled={disabled} onClick={() => { draft.reset(); setInvalid([]); onReset?.(); }}>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={disabled}
+          onClick={() => {
+            draft.reset();
+            setInvalid([]);
+            onReset?.();
+          }}
+        >
           {t("reset")}
         </Button>
       </div>

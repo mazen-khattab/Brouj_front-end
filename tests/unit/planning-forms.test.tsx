@@ -10,27 +10,33 @@ import { planningDate as date, planningIds } from "../browser/planningFixtures";
 
 const guard = { epoch: 0, mark: vi.fn(), transition: (next: () => void) => next() };
 
-test("stage creation explicitly validates percentage and focuses its own control", async () => {
+test("stage creation explicitly validates price and pricingDate and focuses its own control", async () => {
   const save = vi.fn().mockResolvedValue(planningIds.stage);
   const view = renderUi(
     <GuardContext value={guard}>
-      <TimePlanStageForm id="stage" title="Create stage" mode="create" initial={{ name: "Stage", deliveryDate: date, percentage: "", price: "", pricingDate: "" }} disabled={false} pending={false} onSave={save} />
+      <TimePlanStageForm id="stage" title="Create stage" mode="create" initial={{ name: "Stage", deliveryDate: date, price: "", pricingDate: "" }} disabled={false} pending={false} onSave={save} />
     </GuardContext>,
   );
   fireEvent.submit(view.getByRole("form", { name: "Create stage" }));
   expect(save).not.toHaveBeenCalled();
-  const percentage = view.container.querySelector<HTMLInputElement>("#stage-percentage")!;
-  expect(percentage).toHaveFocus();
-  expect(percentage).toHaveAttribute("aria-invalid", "true");
-  fireEvent.change(percentage, { target: { value: "0" } });
+  const price = view.container.querySelector<HTMLInputElement>("#stage-price")!;
+  expect(price).toHaveFocus();
+  expect(price).toHaveAttribute("aria-invalid", "true");
+  fireEvent.change(price, { target: { value: "1000" } });
   fireEvent.submit(view.getByRole("form", { name: "Create stage" }));
-  await waitFor(() => expect(save).toHaveBeenCalledWith({ name: "Stage", deliveryDate: date, percentage: "0", price: "", pricingDate: "" }));
+  expect(save).not.toHaveBeenCalled();
+  const pricingDate = view.container.querySelector<HTMLInputElement>("#stage-pricingDate")!;
+  expect(pricingDate).toHaveFocus();
+  expect(pricingDate).toHaveAttribute("aria-invalid", "true");
+  fireEvent.change(pricingDate, { target: { value: date } });
+  fireEvent.submit(view.getByRole("form", { name: "Create stage" }));
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ name: "Stage", deliveryDate: date, price: "1000", pricingDate: date }));
 });
 
 test("stage editing retains a dirty draft during refresh and resets to the current response", async () => {
   let refresh!: () => void;
   function Editor() {
-    const [source, setSource] = useState({ name: "Original", deliveryDate: date, percentage: "25", price: "", pricingDate: "" });
+    const [source, setSource] = useState({ name: "Original", deliveryDate: date, price: "500", pricingDate: date });
     refresh = () => setSource({ ...source, name: "Server update" });
     return <TimePlanStageForm id="stage" title="Edit stage" mode="edit" initial={source} disabled={false} pending={false} onSave={vi.fn()} />;
   }
