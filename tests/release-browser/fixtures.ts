@@ -46,7 +46,7 @@ export async function releaseServer(context: BrowserContext) {
       return ok(area);
     }
     if (path.endsWith('/time-plan')) {
-      return state.actor === 'anonymous' ? fail(401) : ok(planningPlan);
+      return ok(planningPlan);
     }
     if (path.endsWith('/units')) {
       return page([catalogueUnit]);

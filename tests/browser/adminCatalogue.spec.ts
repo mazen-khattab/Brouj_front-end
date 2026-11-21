@@ -3,7 +3,8 @@ import type { Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import { adminCatalogueServer, imageId } from "./adminCatalogueFixtures";
 import { seedRouting } from "./routingFixtures";
-import { catalogueIds, catalogueProject } from "./catalogueFixtures";
+import { catalogueIds, cataloguePaymentPlan, catalogueProject } from "./catalogueFixtures";
+import { ProjectType } from "../../src/Types/contracts";
 import en from "../../src/i18n/locales/en/admin.json" with { type: "json" };
 import ar from "../../src/i18n/locales/ar/admin.json" with { type: "json" };
 
@@ -85,6 +86,10 @@ test("standalone unit creation requires a project and preserves it through editi
   }
   await save(page).click();
   await expect(page).toHaveURL(/\/admin\/units\/[0-9a-f-]+\?projectId=/);
+  await expect(page.getByText(en.paymentPlan.title, { exact: true })).toHaveCount(0);
+  expect(server.calls.filter((call) => call.method === "POST").map((call) => call.body)).toEqual([
+    { number: "Standalone", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: 60 },
+  ]);
   await expect(page.locator("#field-projectId")).toHaveValue(catalogueIds.project);
   await expect(page.locator("#field-projectId")).toBeDisabled();
   await expect(page.getByText(en.unitProjectFixed, { exact: true })).toBeVisible();
@@ -94,6 +99,75 @@ test("standalone unit creation requires a project and preserves it through editi
   const patch = server.calls.findLast((call) => call.method === "PATCH")!;
   expect(patch.url.searchParams.get("projectId")).toBe(catalogueIds.project);
   expect(patch.body).not.toHaveProperty("projectId");
+  expect(patch.body).not.toHaveProperty("paymentPlan");
+});
+
+test("legacy regular units add and replace payment plans independently of the record draft", async ({ page, context }) => {
+  const server = await adminCatalogueServer(context);
+  server.projects.set(catalogueIds.project, { ...catalogueProject, projectType: ProjectType.Regular });
+  await seedRouting(page, "admin");
+  await page.goto(unitPath);
+  const plan = page.getByRole("form", { name: en.paymentPlan.title });
+  const name = plan.getByLabel(en.paymentPlan.installmentName, { exact: true });
+  const percent = plan.getByLabel(en.paymentPlan.installmentPercentage, { exact: true });
+  const number = plan.getByLabel(en.paymentPlan.installmentNumber, { exact: true });
+  const savePlan = plan.getByRole("button", { name: en.paymentPlan.save });
+  const writes = () => server.calls.filter((call) => call.method === "PUT" && call.url.pathname.endsWith("/payment-plan"));
+  await expect(number).toHaveValue("1");
+  await expect(plan.getByLabel(en.paymentPlan.installmentPeriodMonths, { exact: true })).toHaveValue("0");
+  expect(server.calls.filter((call) => call.url.pathname === `/api/v1/projects/${catalogueIds.project}`)).toHaveLength(1);
+
+  await field(page, "number", "Unsaved record number");
+  await name.selectOption("Downpayment");
+  await percent.fill("100");
+  await savePlan.click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  expect(writes()).toHaveLength(1);
+  expect(writes()[0]?.body).toEqual({ paymentPlan: [
+    { installmentName: "Downpayment", installmentNumber: 1, installmentPercentage: 100, installmentPeriodMonths: 0 },
+  ] });
+  await expect(page.locator("#field-number")).toHaveValue("Unsaved record number");
+
+  await name.selectOption("Deposit");
+  await percent.fill("٣٣٫٣٣٣٣");
+  await plan.getByRole("button", { name: en.paymentPlan.add }).click();
+  await name.nth(1).selectOption("Installment");
+  await number.nth(1).fill("3");
+  await percent.nth(1).fill("٦٦٫٦٦٦٧");
+  await plan.getByLabel(en.paymentPlan.installmentPeriodMonths, { exact: true }).nth(1).fill("٦");
+  server.state.failNext = 409;
+  await savePlan.click();
+  await expect(page.getByText(en.conflict, { exact: true })).toBeVisible();
+  expect(writes()).toHaveLength(2);
+  await expect(percent.nth(0)).toHaveValue("٣٣٫٣٣٣٣");
+  await expect(name.nth(1)).toHaveValue("Installment");
+  await savePlan.click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  expect(writes()).toHaveLength(3);
+  expect(writes()[2]).toMatchObject({ body: { paymentPlan: [
+    { installmentName: "Deposit", installmentNumber: 1, installmentPercentage: 33.3333, installmentPeriodMonths: 0 },
+    { installmentName: "Installment", installmentNumber: 3, installmentPercentage: 66.6667, installmentPeriodMonths: 6 },
+  ] } });
+  expect(writes()[2]?.url.search).toBe("");
+  await expect(percent.nth(0)).toHaveValue("33.3333");
+  await expect(page.locator("#field-number")).toHaveValue("Unsaved record number");
+  expect(server.calls.some((call) => call.method === "PATCH")).toBe(false);
+});
+
+test("installment name options are localized and saved custom names remain selected", async ({ page, context }) => {
+  const server = await adminCatalogueServer(context);
+  server.projects.set(catalogueIds.project, { ...catalogueProject, projectType: ProjectType.Regular });
+  const unit = server.units.get(catalogueIds.unit)!;
+  server.units.set(unit.id, { ...unit, paymentPlan: cataloguePaymentPlan });
+  await seedRouting(page, "admin", "ar");
+  await page.goto(unitPath);
+  const selects = page.getByRole("combobox", { name: ar.paymentPlan.installmentName, exact: true });
+  await expect(selects.nth(1)).toHaveValue(cataloguePaymentPlan[1]!.installmentName);
+  await page.getByRole("button", { name: ar.paymentPlan.add, exact: true }).click();
+  await expect(selects.nth(2)).toHaveValue("");
+  await expect(selects.nth(2).locator("option:not([disabled])")).toHaveText([
+    ar.paymentPlan.names.downpayment, ar.paymentPlan.names.installment, ar.paymentPlan.names.deposit,
+  ]);
 });
 
 test("area editing owns its required city selection and maps the new relationship", async ({ page, context }) => {
@@ -147,8 +221,22 @@ test("create, edit and delete a complete hierarchy with selected parents and ful
   for (const [key, value] of Object.entries({ number: "N-1", meterPrice: "50", floorNumber: "1", size: "90" })) {
     await field(page, key, value);
   }
+  const planName = page.getByLabel(en.paymentPlan.installmentName, { exact: true });
+  await expect(planName.locator("option:not([disabled])")).toHaveText(["Downpayment", "Installment", "Deposit"]);
+  await planName.selectOption("Downpayment");
+  const percentage = page.getByLabel(en.paymentPlan.installmentPercentage, { exact: true });
+  await percentage.fill("95");
+  await save(page).click();
+  await expect(page.getByRole("alert").getByText("Installment percentages must total 100%. The entered total is 95%.")).toBeVisible();
+  const createCalls = () => server.calls.filter((call) => call.method === "POST" && call.url.pathname.endsWith("/units"));
+  expect(createCalls()).toHaveLength(0);
+  await percentage.fill("100");
   await save(page).click();
   await expect(page).toHaveURL(/\/units\/[0-9a-f-]+\?projectId=/);
+  expect(createCalls().map((call) => call.body)).toEqual([{
+    number: "N-1", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: null,
+    paymentPlan: [{ installmentName: "Downpayment", installmentNumber: 1, installmentPercentage: 100, installmentPeriodMonths: 0 }],
+  }]);
   const unitId = new URL(page.url()).pathname.split("/").at(-1)!;
   await field(page, "number", "N-2");
   await save(page).click();

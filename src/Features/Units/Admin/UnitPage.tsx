@@ -17,6 +17,9 @@ import { ApiError } from "../../../Types/failures";
 import UnitAmenities from "./Amenities";
 import UnitImages from "./Images";
 import { UnitFacts } from "./Facts";
+import { ProjectType } from "../../../Types/contracts";
+import { UnitPaymentPlan } from "./UnitPaymentPlan";
+import { useUnitProject } from "./useUnitProject";
 
 const panel = "grid min-w-0 gap-6 rounded-ui border border-accent/50 bg-surface p-5 shadow-panel sm:p-7";
 
@@ -25,6 +28,9 @@ function UnitDetail({ id, projectId }: { id: string; projectId: string }) {
   const auth = useAuth();
   const action = useUnitEditor();
   const read = useUnitRecord(id, projectId, auth.generation);
+  const parent = useUnitProject(action.scope, read.data?.projectId ?? "");
+  const isRegular = parent.result.status === "success" && parent.result.data.projectType === ProjectType.Regular;
+  const readPending = read.pending || Boolean(read.failure);
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState(false);
   const [deleted, setDeleted] = useState(false);
@@ -90,7 +96,7 @@ function UnitDetail({ id, projectId }: { id: string; projectId: string }) {
           <>
             <p className="break-words text-xl font-semibold">{read.data.number}</p>
             <UnitFacts unit={read.data} full />
-            <UnitForm data={read.data} projectId={projectId} refresh={read.reload} readPending={read.pending || Boolean(read.failure)} />
+            <UnitForm data={read.data} projectId={projectId} refresh={read.reload} readPending={readPending} parentRead={parent} />
             <Button
               variant="secondary"
               disabled={action.pending || action.blocked || read.pending || Boolean(read.failure)}
@@ -101,6 +107,11 @@ function UnitDetail({ id, projectId }: { id: string; projectId: string }) {
           </>
         )}
       </section>
+      {read.data && isRegular && (
+        <section className={panel} aria-label={t("paymentPlan.title")}>
+          <UnitPaymentPlan unit={read.data} refresh={read.reload} readPending={readPending} />
+        </section>
+      )}
       {read.data && (
         <section className={panel}>
           <UnitAmenities id={id} initial={read.data.amenities} refresh={read.reload} readPending={read.pending || Boolean(read.failure)} />

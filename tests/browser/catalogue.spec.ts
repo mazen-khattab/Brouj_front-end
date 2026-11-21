@@ -1,7 +1,10 @@
 import { expect, test } from './test';
-import { catalogueIds as ids, catalogueServer } from './catalogueFixtures';
+import { catalogueIds as ids, cataloguePaymentPlan, catalogueServer, initiativePaymentPlan } from './catalogueFixtures';
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openProjectFilters } from './projectFilterActions';
+import { loadEnv } from 'vite';
+import enCatalogue from '../../src/i18n/locales/en/catalogue.json' with { type: "json" };
+import arCatalogue from '../../src/i18n/locales/ar/catalogue.json' with { type: "json" };
 
 test('cities, areas, projects and units follow actual services with the required projectId', async ({ page, context }) => {
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
@@ -24,6 +27,7 @@ test('cities, areas, projects and units follow actual services with the required
   const secondPrice = await prices.nth(1).boundingBox();
   expect(Math.abs(firstPrice!.y - secondPrice!.y)).toBeLessThan(2);
   const details = page.getByRole('region', { name: 'Unit details', exact: true });
+  await expect(page.getByRole('region', { name: 'Payment plan', exact: true })).toHaveCount(0);
   await expect(details.getByText('A-204', { exact: true })).toBeVisible();
   await expect(details.getByText('Garden view', { exact: true })).toBeVisible();
   await expect(page.getByText('1,234,567.89', { exact: false })).toBeVisible();
@@ -139,6 +143,45 @@ test('reservation CTA returns a customer to the selected unit and never submits 
 });
 
 for (const language of ['ar', 'en'] as const) {
+  test(`regular unit payment plans preserve installment order and show localized percentages in ${language}`, async ({ page, context }) => {
+    await routingServer(context);
+    const server = await catalogueServer(context);
+    server.state.unitPaymentPlan = true;
+    await seedRouting(page, 'anonymous', language);
+    await page.goto(`/projects/${ids.project}/units/${ids.unit}`);
+    const plan = page.getByRole('region', { name: language === 'ar' ? 'خطة السداد' : 'Payment plan', exact: true });
+    const details = page.getByRole('region', { name: language === 'ar' ? 'تفاصيل الوحدة' : 'Unit details', exact: true });
+    await expect(details.locator('xpath=following-sibling::*[1]').and(plan)).toBeVisible();
+    await expect(plan.getByRole('heading', { level: 3 })).toHaveText(cataloguePaymentPlan.map((row) => row.installmentName));
+    const formatter = new Intl.NumberFormat(language, { style: 'percent', maximumFractionDigits: 4 });
+    for (const [index, row] of cataloguePaymentPlan.entries()) {
+      await expect(plan.getByRole('listitem').nth(index).getByText(formatter.format(row.installmentPercentage / 100), { exact: true })).toBeVisible();
+    }
+    await expect(plan.getByText(language === 'ar' ? 'عند البداية' : 'At the start', { exact: false })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(server.calls.find((url) => url.pathname === '/api/v1/units/' + ids.unit)?.searchParams.get('projectId')).toBe(ids.project);
+  });
+
+  test(`initiative payment plans show stage costs and unpriced stages in ${language}`, async ({ page, context }) => {
+    await routingServer(context);
+    const server = await catalogueServer(context);
+    server.state.initiativePaymentPlan = true;
+    await seedRouting(page, 'anonymous', language);
+    await page.goto(`/projects/${ids.project}/units/${ids.unit}`);
+    const labels = language === 'ar' ? arCatalogue.paymentPlan : enCatalogue.paymentPlan;
+    const plan = page.getByRole('region', { name: labels.title, exact: true });
+    await expect(plan.getByRole('heading', { level: 3 })).toHaveText(initiativePaymentPlan.map((row) => row.stageName));
+    const percentage = new Intl.NumberFormat(language, { style: 'percent', maximumFractionDigits: 4 });
+    const currency = loadEnv('development', process.cwd(), 'VITE_').VITE_BUSINESS_CURRENCY;
+    const amount = new Intl.NumberFormat(language, { maximumFractionDigits: 4, ...(currency && { style: 'currency', currency }) });
+    for (const [index, row] of initiativePaymentPlan.entries()) {
+      const item = plan.getByRole('listitem').nth(index);
+      await expect(item.getByText(percentage.format(row.unitPercentage / 100), { exact: true })).toBeVisible();
+      await expect(item.getByText(row.stageCost === null ? labels.pricingUnavailable : amount.format(row.stageCost), { exact: true })).toBeVisible();
+    }
+    expect(server.calls.some((url) => url.pathname.endsWith('/time-plan'))).toBe(false);
+  });
+
   test(`cards, detail, gallery and terms review in ${language}`, async ({ page, context }, info) => {
     test.setTimeout(60_000);
     await routingServer(context); await catalogueServer(context); await seedRouting(page, 'anonymous', language);

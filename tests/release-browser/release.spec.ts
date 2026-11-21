@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { expect, test } from '../browser/test';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { routeDefinitions } from '../../src/Router/routeDefinitions';
 import { catalogueIds } from '../browser/catalogueFixtures';
@@ -43,7 +43,8 @@ for (const locale of ['ar', 'en'] as const) {
           sessionStorage.clear();
         });
       }
-      const path = route.path.replace(/:([A-Za-z]+)/g, (_match, key: string) => values[key]!);
+      const path = route.path.replace(/:([A-Za-z]+)/g, (_match, key: string) => values[key]!)
+        + (route.path.startsWith('/admin/units') ? `?projectId=${catalogueIds.project}` : '');
       const started = Date.now();
       const response = await page.goto(path);
       expect(response?.status()).toBe(200);
@@ -63,15 +64,14 @@ for (const locale of ['ar', 'en'] as const) {
       review.push({ route: route.path, title: route.title, durationMs: Date.now() - started, passed: true });
       await page.screenshot({ path: info.outputPath(`${locale}-${route.title}-${review.length}.png`), scale: 'css', animations: 'disabled', mask: [page.locator('input'), page.getByText(/Synthetic colleague|colleague@example.test|fixture-customer@example.test/)] });
       if (['/projects', '/account', '/admin/terms', '/admin/projects'].includes(route.path)) {
-        await page.screenshot({ path: `docs/evidence/part_13/${locale}-${info.project.name.includes('mobile') ? '375' : '1440'}-${route.path === '/projects' ? 'public' : route.path === '/account' ? 'account' : route.path.includes('catalogue') ? 'catalogue' : 'terms'}.png`, fullPage: true, scale: 'css', animations: 'disabled', mask: [page.locator('input'), page.getByText(/Synthetic colleague|colleague@example.test|fixture-customer@example.test/)] });
+        await page.screenshot({ path: info.outputPath(`${locale}-${route.title}-${review.length}-full.png`), fullPage: true, scale: 'css', animations: 'disabled', mask: [page.locator('input'), page.getByText(/Synthetic colleague|colleague@example.test|fixture-customer@example.test/)] });
       }
       await page.keyboard.press('Tab');
       expect(await page.evaluate(() => document.activeElement?.tagName === 'BODY')).toBe(false);
     }
     expect(server.unknown).toEqual([]);
     expect(errors).toEqual([]);
-    mkdirSync('docs/evidence/part_13', { recursive: true });
-    writeFileSync(`docs/evidence/part_13/review-${locale}-${info.project.name}.json`, JSON.stringify({
+    writeFileSync(info.outputPath('review.json'), JSON.stringify({
       environment: 'Windows, headless Chromium, mobile emulation where configured, local trusted HTTPS artifact, synthetic API, no throttling',
       browserVersion: context.browser()?.version(), cache: 'HTTP cache disabled by Playwright request routing',
       locale, viewport: page.viewportSize(), artifact: pointer.directory, review,

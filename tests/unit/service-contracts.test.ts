@@ -8,6 +8,7 @@ import type { RequestOptions } from '../../src/Types/transport';
 import { approvedQuery } from '../../src/Services/query';
 import { isRecord } from '../../src/Types/failures';
 import { getCitiesLookup, getAreasLookup } from '../../src/Services/LocationLookups';
+import { createUnit, replaceUnitPaymentPlan } from '../../src/Services/Units';
 
 const modules = import.meta.glob('../../src/Services/*.ts');
 const guid = '00000000-0000-0000-0000-000000000001';
@@ -106,9 +107,23 @@ test('metadata uploads omit nullable text and never send unapproved fields', asy
 });
 
 test('all operation identifiers and source properties have explicit mappings', () => {
-  expect(matrix.operations).toHaveLength(104);
-  expect(new Set(matrix.operations.map((operation) => operation.service + '.' + operation.action)).size).toBe(104);
+  expect(matrix.operations).toHaveLength(107);
+  expect(new Set(matrix.operations.map((operation) => operation.service + '.' + operation.action)).size).toBe(107);
   expect(isRecord(apiPaths)).toBe(true);
+});
+
+test('unit clients keep inherited create fields, omit an initiative plan, and send numeric replacement rows', async () => {
+  result = guid;
+  const signal = new AbortController().signal;
+  const body = { number: 'A-204', meterPrice: 28000, floorNumber: 2, size: 120, neighborMeterPrice: 31000 };
+  const paymentPlan = [{ installmentName: 'دفعة A', installmentNumber: 1, installmentPercentage: 100, installmentPeriodMonths: 0 }];
+  expect(await createUnit({ projectId: guid, body }, { signal })).toBe(guid);
+  expect(await createUnit({ projectId: guid, body: { ...body, neighborMeterPrice: null, paymentPlan } }, { signal })).toBe(guid);
+  expect(await replaceUnitPaymentPlan({ id: guid, body: { paymentPlan } }, { signal })).toBe(guid);
+  const writes = calls.filter((call) => !call.url?.endsWith('/csrf'));
+  expect(writes.map((call) => JSON.parse(call.data as string))).toEqual([body, { ...body, neighborMeterPrice: null, paymentPlan }, { paymentPlan }]);
+  expect(writes[2]).toMatchObject({ method: 'put', url: `/api/v1/admin/units/${guid}/payment-plan`, signal });
+  expect(writes[2]?.params).toBeUndefined();
 });
 
 test.each([

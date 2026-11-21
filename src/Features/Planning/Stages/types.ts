@@ -5,6 +5,8 @@ export interface TimePlanStageDraft {
   name: string;
   deliveryDate: string;
   percentage: string;
+  price: string;
+  pricingDate: string;
 }
 
 export interface TimePlanStageFormProps {
@@ -19,6 +21,7 @@ export interface TimePlanStageFormProps {
   onReset?: () => void;
   mode: "create" | "edit";
   nameReadOnly?: boolean;
+  showPricing?: boolean;
   submitLabel?: string;
   resetOnSave?: boolean;
   children?: ReactNode;

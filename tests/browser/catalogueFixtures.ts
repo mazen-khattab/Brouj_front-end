@@ -1,6 +1,6 @@
 import type { BrowserContext } from '@playwright/test';
 import { sessionCors } from './sessionFixtures';
-import type { ProjectDto, ProjectListDto, UnitDto } from '../../src/Types/contracts';
+import { ProjectType, type ProjectDto, type ProjectListDto, type UnitDto, type UnitPaymentInstallmentDto } from '../../src/Types/contracts';
 
 export const catalogueIds = {
   city: '10000000-0000-4000-8000-000000000001', city2: '10000000-0000-4000-8000-000000000002',
@@ -20,11 +20,21 @@ export const catalogueUnit: UnitDto = {
   size: 100, neighborMeterPrice: 1250, totalPrice: 1234567.89, percentage: 9.876543,
   isAvailable: true, isGarage: false, garagePrice: 0,
   amenities: [{ name: 'Balcony', value: 'Garden view' }], images: catalogueProject.images,
+  paymentPlan: [],
 };
+export const cataloguePaymentPlan: UnitPaymentInstallmentDto[] = [
+  { installmentName: 'Down payment', installmentNumber: 1, installmentPercentage: 33.3333, installmentPeriodMonths: 0 },
+  { installmentName: 'القسط الثاني B', installmentNumber: 3, installmentPercentage: 66.6667, installmentPeriodMonths: 6 },
+];
+export const initiativePaymentPlan = [
+  { stageId: 'foundation', stageName: 'Foundations', unitPercentage: 10.1234, stageCost: 10000 },
+  { stageId: 'finish', stageName: 'Finishing', unitPercentage: 10.1234, stageCost: null },
+  { stageId: 'handover', stageName: 'Handover', unitPercentage: 10.1234, stageCost: 0 },
+];
 export const cataloguePattern = /https:\/\/localhost:7249\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(?:\/|\?|$)/;
 
 export async function catalogueServer(context: BrowserContext) {
-  const state = { failProjects: false, failTerms: false, missingProject: false, missingUnit: false, unitAvailable: true, projectCount: 25, failCitiesLookup: false, failAreasLookup: false };
+  const state = { failProjects: false, failTerms: false, missingProject: false, missingUnit: false, unitAvailable: true, projectCount: 25, failCitiesLookup: false, failAreasLookup: false, unitPaymentPlan: false, initiativePaymentPlan: false };
   const calls: URL[] = []; const completed: string[] = [];
   await context.route(cataloguePattern, async (route) => {
     const url = new URL(route.request().url()); calls.push(url);
@@ -73,8 +83,11 @@ export async function catalogueServer(context: BrowserContext) {
     }
     if (path.startsWith('/projects/') && path.endsWith('/units')) return page([catalogueUnit].filter((item) => item.number.toLowerCase().includes(search)));
     if (path.endsWith('/time-plan')) return ok({ id: '70000000-0000-4000-8000-000000000001', projectId: catalogueIds.project, name: 'Published schedule', deliveryDate: '2027-12-01T12:00:00Z', stages: [] });
-    if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(catalogueProject);
-    if (path.startsWith('/units/')) return state.missingUnit || query.get('projectId') !== catalogueIds.project ? fail(404) : ok({ ...catalogueUnit, isAvailable: state.unitAvailable });
+    if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(state.unitPaymentPlan ? { ...catalogueProject, projectType: ProjectType.Regular } : catalogueProject);
+    if (path.startsWith('/units/')) return state.missingUnit || query.get('projectId') !== catalogueIds.project ? fail(404) : ok({
+      ...catalogueUnit, isAvailable: state.unitAvailable,
+      paymentPlan: state.unitPaymentPlan ? cataloguePaymentPlan : state.initiativePaymentPlan ? initiativePaymentPlan : catalogueUnit.paymentPlan,
+    });
     if (path === '/terms-and-conditions/current') return state.failTerms ? fail(503) : ok({ id: 'terms', title: 'Published terms', content: 'Supplied legal text.\n<b>This stays plain text.</b>', versionNumber: '3', effectiveDate: '2026-10-01T00:00:00Z', isActive: true });
     return fail(404);
   });

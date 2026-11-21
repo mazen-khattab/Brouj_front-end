@@ -1,12 +1,42 @@
 {
-  "businessOperationCount": 104,
+  "businessOperationCount": 107,
   "exclusions": [
     {
       "action": "GetProjectsLookup",
       "reason": "Generated and service-tested; project-lookup UI is outside the approved redesign scope (docs/project-details-redesign-plan.md)."
+    },
+    {
+      "action": "GetContactSubmissions",
+      "reason": "Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md)."
+    },
+    {
+      "action": "SubmitContactSubmission",
+      "reason": "Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md)."
     }
   ],
   "operations": [
+    {
+      "action": "SubmitContactSubmission",
+      "method": "POST",
+      "route": "/api/v1/contact-submissions",
+      "policy": "Anonymous",
+      "screen": "Website / contact submission",
+      "phase": "Deferred",
+      "service": "Services/ContactSubmissions.ts",
+      "consumers": [],
+      "exclusion": "Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md)."
+    },
+    {
+      "action": "GetContactSubmissions",
+      "method": "GET",
+      "route": "/api/v1/admin/contact-submissions",
+      "policy": "AdminOnly",
+      "screen": "Admin / contact submissions",
+      "phase": "Deferred",
+      "service": "Services/ContactSubmissions.ts",
+      "consumers": [],
+      "exclusion": "Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md)."
+    },
     {
       "action": "RegisterCustomer",
       "method": "POST",
@@ -484,7 +514,7 @@
         "src/Features/Projects/Admin/ProjectPage.tsx:44",
         "src/Features/Projects/Admin/ProjectPage.tsx:60",
         "src/Features/Projects/Public/ListProvider.tsx:28",
-        "src/Features/Units/Admin/ProjectSelector.tsx:42"
+        "src/Features/Units/Admin/ProjectSelector.tsx:45"
       ],
       "exclusion": null
     },
@@ -501,8 +531,7 @@
         "src/Features/Projects/Admin/ProjectForm.tsx:65",
         "src/Features/Projects/Admin/useRecord.ts:26",
         "src/Features/Projects/Public/DetailProvider.tsx:13",
-        "src/Features/Units/Admin/ProjectSelector.tsx:47",
-        "src/Features/Units/Admin/UnitForm.tsx:37"
+        "src/Features/Units/Admin/useUnitProject.ts:6"
       ],
       "exclusion": null
     },
@@ -516,8 +545,8 @@
       "service": "Services/Units.ts",
       "consumers": [
         "src/Features/Units/Admin/List.tsx:43",
-        "src/Features/Units/Admin/UnitPage.tsx:44",
-        "src/Features/Units/Admin/UnitPage.tsx:60",
+        "src/Features/Units/Admin/UnitPage.tsx:50",
+        "src/Features/Units/Admin/UnitPage.tsx:66",
         "src/Features/Units/Public/UnitCarousel.tsx:40"
       ],
       "exclusion": null
@@ -636,7 +665,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Admin/UnitForm.tsx:63"
+        "src/Features/Units/Admin/UnitForm.tsx:85"
       ],
       "exclusion": null
     },
@@ -662,7 +691,7 @@
       "phase": "06",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Admin/UnitForm.tsx:70",
+        "src/Features/Units/Admin/UnitForm.tsx:92",
         "src/Features/Units/Admin/useRecord.ts:26",
         "src/Features/Units/Public/DetailProvider.tsx:13"
       ],
@@ -677,7 +706,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Admin/UnitForm.tsx:62"
+        "src/Features/Units/Admin/UnitForm.tsx:84"
       ],
       "exclusion": null
     },
@@ -690,7 +719,7 @@
       "phase": "08",
       "service": "Services/Units.ts",
       "consumers": [
-        "src/Features/Units/Admin/UnitPage.tsx:40"
+        "src/Features/Units/Admin/UnitPage.tsx:46"
       ],
       "exclusion": null
     },
@@ -704,6 +733,19 @@
       "service": "Services/Units.ts",
       "consumers": [
         "src/Features/Units/Admin/Amenities.tsx:38"
+      ],
+      "exclusion": null
+    },
+    {
+      "action": "ReplaceUnitPaymentPlan",
+      "method": "PUT",
+      "route": "/api/v1/admin/units/{id}/payment-plan",
+      "policy": "AdminOnly",
+      "screen": "Admin / units and media",
+      "phase": "08",
+      "service": "Services/Units.ts",
+      "consumers": [
+        "src/Features/Units/Admin/UnitPaymentPlan.tsx:38"
       ],
       "exclusion": null
     },

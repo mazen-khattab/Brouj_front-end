@@ -50,9 +50,11 @@ export const planningPlan: TimePlanDto = {
       deliveryDate: planningDate,
       sortOrder: 1,
       percentage: 40,
+      price: null,
+      pricingDate: null,
       items: [planningItem, { ...planningItem, id: planningIds.item2, name: "Concrete work", sortOrder: 2, images: [] }],
     },
-    { id: planningIds.stage2, name: "Finishing", deliveryDate: planningDate, sortOrder: 2, percentage: 60, items: [] },
+    { id: planningIds.stage2, name: "Finishing", deliveryDate: planningDate, sortOrder: 2, percentage: 60, price: null, pricingDate: null, items: [] },
   ],
 };
 export const planningTemplate: StageTemplateDto = {
@@ -177,7 +179,7 @@ export async function planningServer(context: BrowserContext, actor: "admin" | "
         if (state.staleOrder && state.plan) {
           state.plan = {
             ...state.plan,
-            stages: [...state.plan.stages, { id: id(), name: "Concurrent stage", deliveryDate: planningDate, sortOrder: 3, percentage: 0, items: [] }],
+            stages: [...state.plan.stages, { id: id(), name: "Concurrent stage", deliveryDate: planningDate, sortOrder: 3, percentage: 0, price: null, pricingDate: null, items: [] }],
           };
         }
         return fail(rejected);
@@ -302,7 +304,9 @@ export async function planningServer(context: BrowserContext, actor: "admin" | "
           id: created,
           name: source?.name ?? String(body.name),
           deliveryDate: String(body.deliveryDate),
-          percentage: Number(body.percentage ?? 0),
+          percentage: Number(body.price ?? body.percentage ?? 0),
+          price: typeof body.price === "number" ? body.price : null,
+          pricingDate: typeof body.pricingDate === "string" ? body.pricingDate : null,
           sortOrder: plan.stages.length + 1,
           items: drafts.map((entry, index) => ({
             id: id(),
@@ -326,7 +330,7 @@ export async function planningServer(context: BrowserContext, actor: "admin" | "
       }
       if (collection === "time-plans") {
         if (method === "PATCH") {
-          replaceStage({ ...stage, ...(body as unknown as { name: string; deliveryDate: string }) });
+          replaceStage({ ...stage, ...body, ...(typeof body.price === "number" && { percentage: body.price }) });
         }
         if (method === "DELETE") {
           state.plan = { ...plan, stages: plan.stages.filter((row) => row.id !== stage.id).map((row, index) => ({ ...row, sortOrder: index + 1 })) };

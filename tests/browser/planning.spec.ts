@@ -55,11 +55,20 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await page.locator("#add-stage-name").fill("New manual stage");
   await page.locator("#add-stage-deliveryDate").fill(planningDate);
   await page.locator("#add-stage-percentage").fill("25");
+  await page.locator("#add-stage-price").fill("100000.1234");
+  await page.locator("#add-stage-pricingDate").fill(planningDate);
   await saveForm(page, en.manualStage);
+  expect(server.calls.findLast((call) => call.method === "POST")!.body).toMatchObject({ price: 100000.1234, pricingDate: planningDate });
   const stage = server.state.plan!.stages[0]!;
   await page.getByRole("button", { name: stage.name, exact: true }).click();
+  await expect(page.locator("#stage-price")).toHaveValue("100000.1234");
+  await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
   await page.locator("#stage-name").fill("Updated manual stage");
+  await page.locator("#stage-price").fill("0");
   await saveForm(page, en.editStage);
+  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({
+    name: "Updated manual stage", deliveryDate: planningDate, price: 0, pricingDate: planningDate,
+  });
   await page.locator("summary").filter({ hasText: en.addItem }).click();
   await page.locator("#add-item-name").fill("New work item");
   await page.locator("#add-item-dueDate").fill(planningDate);

@@ -1,9 +1,11 @@
 # Final API/UI source coverage
 
-The verified inventory contains 104 operations. 103 have implemented feature consumers; the project lookup has a generated, service-tested client and an explicit UI exclusion required by the approved project-details redesign. CSRF is separately exercised through API.tsx. These are source references, not live-backend verification.
+The verified inventory contains 107 operations. 104 have implemented feature consumers. Explicit UI exclusions cover project lookup and contact submissions. CSRF is separately exercised through API.tsx. These are source references, not live-backend verification.
 
 | Operation | Policy | Screen/action | Implemented source consumers |
 |---|---|---|---|
+| POST /api/v1/contact-submissions | Anonymous | Website / contact submission / SubmitContactSubmission | Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md). |
+| GET /api/v1/admin/contact-submissions | AdminOnly | Admin / contact submissions / GetContactSubmissions | Generated and service-tested; contact submissions UI is deferred (docs/contracts/unit-payment-plans.md). |
 | POST /api/v1/auth/customers/register | Anonymous | Customer authentication and session lifecycle / RegisterCustomer | src/Services/session.ts:16 |
 | POST /api/v1/auth/customers/login | Anonymous | Customer authentication and session lifecycle / LoginCustomer | src/Services/session.ts:15 |
 | POST /api/v1/auth/customers/refresh | Anonymous | Customer authentication and session lifecycle / RefreshCustomerSession | src/Services/session.ts:18 |
@@ -38,9 +40,9 @@ The verified inventory contains 104 operations. 103 have implemented feature con
 | PATCH /api/v1/admin/areas/{id} | AdminOnly | Admin / areas and media / UpdateArea | src/Features/Areas/Admin/AreaForm.tsx:52 |
 | DELETE /api/v1/admin/areas/{id} | AdminOnly | Admin / areas and media / DeleteArea | src/Features/Areas/Admin/AreaPage.tsx:38 |
 | PUT /api/v1/admin/areas/{id}/amenities | AdminOnly | Admin / areas and media / ReplaceAreaAmenities | src/Features/Areas/Admin/Amenities.tsx:38 |
-| GET /api/v1/projects | Anonymous | Website / projects; shared Admin catalogue reads / GetProjects | src/Features/Home/HomeProvider.tsx:13<br>src/Features/Planning/SourcePicker.tsx:52<br>src/Features/Projects/Admin/List.tsx:42<br>src/Features/Projects/Admin/ProjectPage.tsx:44<br>src/Features/Projects/Admin/ProjectPage.tsx:60<br>src/Features/Projects/Public/ListProvider.tsx:28<br>src/Features/Units/Admin/ProjectSelector.tsx:42 |
-| GET /api/v1/projects/{id} | Anonymous | Website / projects; shared Admin catalogue reads / GetProjectById | src/Features/Planning/Plans/TimePlanProvider.tsx:28<br>src/Features/Projects/Admin/ProjectForm.tsx:65<br>src/Features/Projects/Admin/useRecord.ts:26<br>src/Features/Projects/Public/DetailProvider.tsx:13<br>src/Features/Units/Admin/ProjectSelector.tsx:47<br>src/Features/Units/Admin/UnitForm.tsx:37 |
-| GET /api/v1/projects/{projectId}/units | Anonymous | Website / units; shared Admin catalogue reads / GetUnitsByProject | src/Features/Units/Admin/List.tsx:43<br>src/Features/Units/Admin/UnitPage.tsx:44<br>src/Features/Units/Admin/UnitPage.tsx:60<br>src/Features/Units/Public/UnitCarousel.tsx:40 |
+| GET /api/v1/projects | Anonymous | Website / projects; shared Admin catalogue reads / GetProjects | src/Features/Home/HomeProvider.tsx:13<br>src/Features/Planning/SourcePicker.tsx:52<br>src/Features/Projects/Admin/List.tsx:42<br>src/Features/Projects/Admin/ProjectPage.tsx:44<br>src/Features/Projects/Admin/ProjectPage.tsx:60<br>src/Features/Projects/Public/ListProvider.tsx:28<br>src/Features/Units/Admin/ProjectSelector.tsx:45 |
+| GET /api/v1/projects/{id} | Anonymous | Website / projects; shared Admin catalogue reads / GetProjectById | src/Features/Planning/Plans/TimePlanProvider.tsx:28<br>src/Features/Projects/Admin/ProjectForm.tsx:65<br>src/Features/Projects/Admin/useRecord.ts:26<br>src/Features/Projects/Public/DetailProvider.tsx:13<br>src/Features/Units/Admin/useUnitProject.ts:6 |
+| GET /api/v1/projects/{projectId}/units | Anonymous | Website / units; shared Admin catalogue reads / GetUnitsByProject | src/Features/Units/Admin/List.tsx:43<br>src/Features/Units/Admin/UnitPage.tsx:50<br>src/Features/Units/Admin/UnitPage.tsx:66<br>src/Features/Units/Public/UnitCarousel.tsx:40 |
 | GET /api/v1/projects/{projectId}/time-plan | Anonymous | Website / project schedule; Admin time plans / GetProjectTimePlan | src/Features/Planning/Plans/TimePlanProvider.tsx:39<br>src/Features/Planning/Public/useTimePlan.ts:14 |
 | POST /api/v1/admin/projects | AdminOnly | Admin / projects and media / CreateProject | src/Features/Projects/Admin/ProjectForm.tsx:58 |
 | PATCH /api/v1/admin/projects/{id} | AdminOnly | Admin / projects and media / UpdateProject | src/Features/Projects/Admin/ProjectForm.tsx:58 |
@@ -49,12 +51,13 @@ The verified inventory contains 104 operations. 103 have implemented feature con
 | POST /api/v1/admin/projects/{id}/images | AdminOnly | Admin / projects and media / AddProjectImage | src/Features/Projects/Admin/Images.tsx:129 |
 | PATCH /api/v1/admin/projects/{id}/images/{imageId} | AdminOnly | Admin / projects and media / UpdateProjectImage | src/Features/Projects/Admin/Images.tsx:52 |
 | DELETE /api/v1/admin/projects/{id}/images/{imageId} | AdminOnly | Admin / projects and media / DeleteProjectImage | src/Features/Projects/Admin/Images.tsx:62 |
-| POST /api/v1/admin/projects/{projectId}/units | AdminOnly | Admin / units and media / CreateUnit | src/Features/Units/Admin/UnitForm.tsx:63 |
+| POST /api/v1/admin/projects/{projectId}/units | AdminOnly | Admin / units and media / CreateUnit | src/Features/Units/Admin/UnitForm.tsx:85 |
 | POST /api/v1/admin/projects/{projectId}/time-plan | AdminOnly | Admin / time plans, stages, items and images / CreateTimePlan | src/Features/Planning/Plans/commands.ts:36 |
-| GET /api/v1/units/{id} | Anonymous | Website / units; shared Admin catalogue reads / GetUnitById | src/Features/Units/Admin/UnitForm.tsx:70<br>src/Features/Units/Admin/useRecord.ts:26<br>src/Features/Units/Public/DetailProvider.tsx:13 |
-| PATCH /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / UpdateUnit | src/Features/Units/Admin/UnitForm.tsx:62 |
-| DELETE /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / DeleteUnit | src/Features/Units/Admin/UnitPage.tsx:40 |
+| GET /api/v1/units/{id} | Anonymous | Website / units; shared Admin catalogue reads / GetUnitById | src/Features/Units/Admin/UnitForm.tsx:92<br>src/Features/Units/Admin/useRecord.ts:26<br>src/Features/Units/Public/DetailProvider.tsx:13 |
+| PATCH /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / UpdateUnit | src/Features/Units/Admin/UnitForm.tsx:84 |
+| DELETE /api/v1/admin/units/{id} | AdminOnly | Admin / units and media / DeleteUnit | src/Features/Units/Admin/UnitPage.tsx:46 |
 | PUT /api/v1/admin/units/{id}/amenities | AdminOnly | Admin / units and media / ReplaceUnitAmenities | src/Features/Units/Admin/Amenities.tsx:38 |
+| PUT /api/v1/admin/units/{id}/payment-plan | AdminOnly | Admin / units and media / ReplaceUnitPaymentPlan | src/Features/Units/Admin/UnitPaymentPlan.tsx:38 |
 | POST /api/v1/admin/units/{id}/images | AdminOnly | Admin / units and media / AddUnitImage | src/Features/Units/Admin/Images.tsx:129 |
 | PATCH /api/v1/admin/units/{id}/images/{imageId} | AdminOnly | Admin / units and media / UpdateUnitImage | src/Features/Units/Admin/Images.tsx:52 |
 | DELETE /api/v1/admin/units/{id}/images/{imageId} | AdminOnly | Admin / units and media / DeleteUnitImage | src/Features/Units/Admin/Images.tsx:62 |

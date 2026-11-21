@@ -85,18 +85,18 @@ source("docs/Brouj.Docs/Part8.ApiConfiguration.md");
 source("docs/Brouj.Docs/Part12.FinalVerification.md");
 assert.equal(
   inventory.length,
-  104,
+  107,
   "Reconcile a changed approved business-operation count before updating.",
 );
 assert.equal(
   controllerEndpoints.length,
-  104,
-  "Controller extraction must account for all 104 approved operations, including the three lookups.",
+  107,
+  "Controller extraction must account for all 107 approved operations, including payment plans and contact submissions.",
 );
 assert.equal(
   new Set(controllerEndpoints.map((item) => `${item.method} ${item.route}`))
     .size,
-  104,
+  107,
 );
 
 const applicationFiles = files("src/Brouj.Application").filter((path) =>
@@ -161,6 +161,9 @@ function ownership(endpoint) {
     screen = administration
       ? "Admin / terms versions and activation"
       : "Website / current terms";
+  } else if (family === "ContactSubmissions") {
+    phase = "Deferred";
+    screen = admin ? "Admin / contact submissions" : "Website / contact submission";
   } else if (family === "ActivityLogs") {
     phase = "11";
     screen = "Admin / staff activity log";
@@ -262,19 +265,20 @@ for (const path of schemaFiles) {
     });
     continue;
   }
-  const declaration = content.match(/public (?:sealed )?class ([\w<>]+)(?:\s*:\s*(\w+))?/);
+  const declaration = content.match(/public (?:(?:sealed|abstract) )?class ([\w<>]+)(?:\s*:\s*(\w+))?/);
   const name = declaration?.[1];
   assert(name, `Unrecognized public schema: ${path}`);
   const properties = [
     ...content.matchAll(
-      /public (required )?([A-Za-z0-9_<>,?[\] ]+?) (\w+) \{ get;[^}]*\}(?:\s*= ([^;]+);)?/g,
+      /((?:\[[^\]\r\n]+\]\s*)*)public (required )?([A-Za-z0-9_<>,?[\] ]+?) (\w+)\s*\{\s*get;[^}]*\}(?:\s*= ([^;]+);)?/g,
     ),
   ].map((match) => ({
-    name: match[3][0].toLowerCase() + match[3].slice(1),
-    csharpType: match[2],
-    nullable: match[2].endsWith("?"),
-    requiredMember: Boolean(match[1]),
-    defaultExpression: match[4] ?? null,
+    name: match[4][0].toLowerCase() + match[4].slice(1),
+    csharpType: match[3],
+    nullable: match[3].endsWith("?"),
+    requiredMember: Boolean(match[2]),
+    defaultExpression: match[5] ?? null,
+    ...(match[1].includes("JsonIgnoreCondition.WhenWritingNull") ? { omitWhenNull: true } : {}),
   }));
   for (const computed of content.matchAll(
     /public (\w+) (\w+) => (true|false);/g,
@@ -288,8 +292,9 @@ for (const path of schemaFiles) {
       constant: computed[3] === "true",
     });
   }
-  assert(properties.length > 0 || declaration[2], `No properties extracted: ${path}`);
-  schemas.push({ name, source: path, properties, ...(declaration[2] ? { base: declaration[2] } : {}) });
+  const variants = [...content.matchAll(/\[JsonDerivedType\(typeof\((\w+)\)\)\]/g)].map((match) => match[1]);
+  assert(properties.length > 0 || declaration[2] || variants.length, `No properties extracted: ${path}`);
+  schemas.push({ name, source: path, properties, ...(variants.length ? { variants } : {}), ...(declaration[2] ? { base: declaration[2] } : {}) });
 }
 
 // HTTP paging parameters now share base classes. Flatten their actual inherited fields
@@ -303,7 +308,7 @@ function inheritedProperties(schema, ancestors = new Set()) {
   assert(schema.properties.every((field) => !fields.some((inherited) => inherited.name === field.name)), `Review shadowed properties: ${schema.name}`);
   return [...fields, ...schema.properties];
 }
-const flattened = schemas.map((schema) => ({ name: schema.name, source: schema.source, properties: inheritedProperties(schema) }));
+const flattened = schemas.map((schema) => ({ name: schema.name, source: schema.source, properties: inheritedProperties(schema), ...(schema.variants ? { variants: schema.variants } : {}) }));
 
 const enums = [
   ...files("src/Brouj.Domain/Enums"),
@@ -358,8 +363,11 @@ assert(serializer.includes("JsonUnmappedMemberHandling.Disallow"));
 const enumConverters = files("src")
   .filter((path) => path.endsWith(".cs") && !path.includes("/Migrations/"))
   .filter((path) =>
-    /JsonStringEnumConverter|JsonConverter\s*\(/.test(read(path)),
+    /JsonStringEnumConverter|JsonConverter\s*\(/.test(read(path)
+      .replace(/\[JsonConverter\(typeof\(Stage(?:Price|PricingDate)JsonConverter\)\)\]/g, "")),
   );
+for (const name of ["StagePriceJsonConverter", "StagePricingDateJsonConverter"])
+  source(`src/Brouj.Application/Features/TimePlans/Serialization/${name}.cs`);
 assert.deepEqual(
   enumConverters,
   [],

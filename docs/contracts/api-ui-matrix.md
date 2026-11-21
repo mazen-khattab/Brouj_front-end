@@ -1,11 +1,13 @@
 # API/UI contract matrix
 
-Verified against backend commit `760db374f169316dcfe1b48432bb11abf785241c`.
+Verified against backend commit `d26edbe74465de0fd144ceeef22c67ef0c70dfb9`.
 
-104 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.
+107 business operations; CSRF is separate. All feature services are implemented in Part 03; the phase column assigns primary UI work, including shared uses. Service/context names below are planned ownership, not implementations in Part 01. Full properties, nullable types, defaults and validators are in [backend-schemas.json](backend-schemas.json); exact controller, handler, status, rate and ownership evidence is in [api-ui-matrix.json](api-ui-matrix.json). See [wire-contracts.md](wire-contracts.md) for transport and integration constraints.
 
 | Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |
 |---|---|---|---|---|---|---|---|---|
+| POST /api/v1/contact-submissions | body: ContactSubmissionInput; query: none | ApiResponse<Guid> | Services/ContactSubmissions | ContactSubmissionsContext | Website / contact submission / SubmitContactSubmission | Anonymous | Deferred | 429 rate budget exhausted |
+| GET /api/v1/admin/contact-submissions | body: none; query: PaginationParameters | ApiResponse<PaginationResult<ContactSubmissionDto>> | Services/ContactSubmissions | ContactSubmissionsContext | Admin / contact submissions / GetContactSubmissions | AdminOnly | Deferred | 401 unauthenticated / 403 actor policy |
 | POST /api/v1/auth/customers/register | body: RegisterCustomerInput; query: none | ApiResponse<AuthSessionDto> | Services/CustomerAuth | SessionContext | Customer authentication and session lifecycle / RegisterCustomer | Anonymous | 04 | CustomerErrors.Conflict |
 | POST /api/v1/auth/customers/login | body: LoginInput; query: none | ApiResponse<AuthSessionDto> | Services/CustomerAuth | SessionContext | Customer authentication and session lifecycle / LoginCustomer | Anonymous | 04 | ApplicationErrors.InvalidCredentials |
 | POST /api/v1/auth/customers/refresh | body: none; query: none | ApiResponse<AuthSessionDto> | Services/CustomerAuth | SessionContext | Customer authentication and session lifecycle / RefreshCustomerSession | Anonymous | 04 | ApplicationErrors.InvalidCredentials |
@@ -51,12 +53,13 @@ Verified against backend commit `760db374f169316dcfe1b48432bb11abf785241c`.
 | POST /api/v1/admin/projects/{id}/images | body: AddProjectImageRequest; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / AddProjectImage | AdminOnly | 08 | ProjectErrors.NotFound |
 | PATCH /api/v1/admin/projects/{id}/images/{imageId} | body: UpdateProjectImageRequest; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / UpdateProjectImage | AdminOnly | 08 | ProjectErrors.NotFound |
 | DELETE /api/v1/admin/projects/{id}/images/{imageId} | body: none; query: none | ApiResponse<Guid> | Services/Projects | CatalogueAdminContext | Admin / projects and media / DeleteProjectImage | AdminOnly | 08 | ProjectErrors.NotFound |
-| POST /api/v1/admin/projects/{projectId}/units | body: UnitInput; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / CreateUnit | AdminOnly | 08 | UnitErrors.Conflict |
+| POST /api/v1/admin/projects/{projectId}/units | body: CreateUnitInput; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / CreateUnit | AdminOnly | 08 | UnitErrors.Conflict |
 | POST /api/v1/admin/projects/{projectId}/time-plan | body: CreateTimePlanRequest; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / CreateTimePlan | AdminOnly | 10 | TimePlanErrors.Conflict |
 | GET /api/v1/units/{id} | body: none; query: GetUnitByIdParameters | ApiResponse<UnitDto> | Services/Units | CatalogueContext / CatalogueAdminContext | Website / units; shared Admin catalogue reads / GetUnitById | Anonymous | 06 | UnitErrors.NotFound |
 | PATCH /api/v1/admin/units/{id} | body: UnitInput; query: UpdateUnitParameters | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / UpdateUnit | AdminOnly | 08 | UnitErrors.Conflict |
 | DELETE /api/v1/admin/units/{id} | body: none; query: DeleteUnitParameters | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / DeleteUnit | AdminOnly | 08 | UnitErrors.NotFound |
 | PUT /api/v1/admin/units/{id}/amenities | body: ReplaceUnitAmenitiesRequest; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / ReplaceUnitAmenities | AdminOnly | 08 | UnitErrors.NotFound |
+| PUT /api/v1/admin/units/{id}/payment-plan | body: UnitPaymentPlanInput; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / ReplaceUnitPaymentPlan | AdminOnly | 08 | UnitErrors.NotFound |
 | POST /api/v1/admin/units/{id}/images | body: AddUnitImageRequest; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / AddUnitImage | AdminOnly | 08 | UnitErrors.NotFound |
 | PATCH /api/v1/admin/units/{id}/images/{imageId} | body: UpdateUnitImageRequest; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / UpdateUnitImage | AdminOnly | 08 | UnitErrors.NotFound |
 | DELETE /api/v1/admin/units/{id}/images/{imageId} | body: none; query: none | ApiResponse<Guid> | Services/Units | CatalogueAdminContext | Admin / units and media / DeleteUnitImage | AdminOnly | 08 | UnitErrors.NotFound |
@@ -74,8 +77,8 @@ Verified against backend commit `760db374f169316dcfe1b48432bb11abf785241c`.
 | PATCH /api/v1/admin/time-plans/{id} | body: TimePlanInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / UpdateTimePlan | AdminOnly | 10 | TimePlanErrors.NotFound |
 | DELETE /api/v1/admin/time-plans/{id} | body: none; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / DeleteTimePlan | AdminOnly | 10 | TimePlanErrors.NotFound |
 | POST /api/v1/admin/time-plans/{timePlanId}/stages | body: StageDraftInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / AddTimePlanStage | AdminOnly | 10 | TimePlanErrors.NotFound |
-| POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template | body: StageDraftInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / AddStageFromTemplate | AdminOnly | 10 | TimePlanErrors.NotFound |
-| PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id} | body: TimePlanInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / UpdateTimePlanStage | AdminOnly | 10 | TimePlanErrors.NotFound |
+| POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template | body: TemplateStageDraftInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / AddStageFromTemplate | AdminOnly | 10 | TimePlanErrors.NotFound |
+| PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id} | body: StageUpdateInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / UpdateTimePlanStage | AdminOnly | 10 | TimePlanErrors.NotFound |
 | DELETE /api/v1/admin/time-plans/{timePlanId}/stages/{id} | body: none; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / DeleteTimePlanStage | AdminOnly | 10 | TimePlanErrors.NotFound |
 | PUT /api/v1/admin/time-plans/{timePlanId}/stages/order | body: ReorderTimePlanStagesRequest; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / ReorderTimePlanStages | AdminOnly | 10 | TimePlanErrors.NotFound |
 | POST /api/v1/admin/time-plan-stages/{stageId}/items | body: PlanStageItemInput; query: none | ApiResponse<Guid> | Services/TimePlans | TimePlansContext | Admin / time plans, stages, items and images / AddPlanStageItem | AdminOnly | 10 | TimePlanErrors.NotFound |
@@ -111,7 +114,7 @@ Verified against backend commit `760db374f169316dcfe1b48432bb11abf785241c`.
 | GET /api/v1/areas/lookup | body: none; query: GetAreasLookupParameters | ApiResponse<IEnumerable<LookupDto>> | Services/Areas | CatalogueContext / CatalogueAdminContext | Website / areas; shared Admin catalogue reads / GetAreasLookup | Anonymous | 06 | 429 rate budget exhausted |
 | GET /api/v1/projects/lookup | body: none; query: GetProjectsLookupParameters | ApiResponse<IEnumerable<LookupDto>> | Services/Projects | CatalogueContext / CatalogueAdminContext | Website / projects; shared Admin catalogue reads / GetProjectsLookup | Anonymous | 06 | 429 rate budget exhausted |
 
-## Supporting transport (not counted in the 104)
+## Supporting transport (not counted in the 107)
 
 | Operation | Request | Response envelope | Feature service | Context | Screen / action | Actor policy | UI phase | Representative failure |
 |---|---|---|---|---|---|---|---|---|

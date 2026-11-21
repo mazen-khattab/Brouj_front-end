@@ -15,7 +15,7 @@ import { itemFrom, itemInput, itemStatusFrom, itemStatusInput } from "../Items/m
 import type { PlanStageItemDto, TimePlanStageDto } from "../../../Types/contracts";
 import { routePaths } from "../../../Router/routePaths";
 import { useLocale } from "../../../Hooks/useLocale";
-import { formatDateTime, formatNumber } from "../../../i18n/format";
+import { formatCurrency, formatDateTime, formatNumber } from "../../../i18n/format";
 import { Button } from "../../../Components/Button";
 import { DataTable } from "../../../Components/DataTable";
 import { ConfirmButton, MoveControls, PlanningFeedback, PlanningRead } from "../Shared/Feedback";
@@ -198,7 +198,8 @@ function Workspace() {
                       ),
                     },
                     { id: "delivery", header: t("fields.deliveryDate"), render: (row) => <bdi>{formatDateTime(row.deliveryDate, locale)}</bdi> },
-                    { id: "percentage", header: t("fields.percentage"), render: (row) => <bdi dir="ltr">{row.percentage}%</bdi> },
+                    { id: "percentage", header: t("fields.percentage"), render: (row) => row.price == null ? <bdi dir="ltr">{row.percentage}%</bdi> : "—" },
+                    { id: "price", header: t("fields.price"), render: (row) => row.price == null ? "—" : <bdi>{formatCurrency(row.price, locale)}</bdi> },
                     {
                       id: "order",
                       header: t("order"),

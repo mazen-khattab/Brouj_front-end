@@ -99,20 +99,6 @@
           "defaultExpression": "string.Empty"
         },
         {
-          "name": "ageGroup",
-          "csharpType": "string",
-          "nullable": false,
-          "requiredMember": false,
-          "defaultExpression": "string.Empty"
-        },
-        {
-          "name": "identityNumber",
-          "csharpType": "string",
-          "nullable": false,
-          "requiredMember": false,
-          "defaultExpression": "string.Empty"
-        },
-        {
           "name": "phone",
           "csharpType": "string",
           "nullable": false,
@@ -120,23 +106,37 @@
           "defaultExpression": "string.Empty"
         },
         {
-          "name": "placeOfResidence",
-          "csharpType": "string",
-          "nullable": false,
+          "name": "ageGroup",
+          "csharpType": "string?",
+          "nullable": true,
           "requiredMember": false,
-          "defaultExpression": "string.Empty"
+          "defaultExpression": null
+        },
+        {
+          "name": "identityNumber",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "placeOfResidence",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
         },
         {
           "name": "preferredFinancialBracket",
-          "csharpType": "int",
-          "nullable": false,
+          "csharpType": "int?",
+          "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
         },
         {
           "name": "preferredRepaymentPeriod",
-          "csharpType": "int",
-          "nullable": false,
+          "csharpType": "int?",
+          "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
         }
@@ -1283,6 +1283,74 @@
       ]
     },
     {
+      "name": "ContactSubmissionDto",
+      "source": "src/Brouj.Application/Features/ContactSubmissions/DTOs/ContactSubmissionDto.cs",
+      "properties": [
+        {
+          "name": "id",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "inquiry",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "createdAt",
+          "csharpType": "DateTimeOffset",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "ContactSubmissionInput",
+      "source": "src/Brouj.Application/Features/ContactSubmissions/DTOs/ContactSubmissionInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "phone",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "inquiry",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        }
+      ]
+    },
+    {
       "name": "CurrentCustomerDto",
       "source": "src/Brouj.Application/Features/Customers/DTOs/CurrentCustomerDto.cs",
       "properties": [
@@ -2389,6 +2457,22 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": "[]"
+        },
+        {
+          "name": "price",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
         }
       ]
     },
@@ -2457,6 +2541,83 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "StageUpdateInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageUpdateInput.cs",
+      "properties": [
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "price",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
+        }
+      ]
+    },
+    {
+      "name": "TemplateStageDraftInput",
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInput.cs",
+      "properties": [
+        {
+          "name": "stageTemplateId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "name",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "percentage",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "deliveryDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "items",
+          "csharpType": "IReadOnlyList<StageItemDraftInput>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
         }
       ]
     },
@@ -2561,11 +2722,107 @@
           "defaultExpression": null
         },
         {
+          "name": "price",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "items",
           "csharpType": "IReadOnlyList<PlanStageItemDto>",
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": "[]"
+        }
+      ]
+    },
+    {
+      "name": "CreateUnitInput",
+      "source": "src/Brouj.Application/Features/Units/DTOs/CreateUnitInput.cs",
+      "properties": [
+        {
+          "name": "number",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "meterPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "floorNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "size",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "neighborMeterPrice",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "paymentPlan",
+          "csharpType": "IReadOnlyList<UnitPaymentInstallmentInput>?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "InitiativeStagePaymentDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/InitiativeStagePaymentDto.cs",
+      "properties": [
+        {
+          "name": "stageId",
+          "csharpType": "Guid",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "stageName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "unitPercentage",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "stageCost",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
         }
       ]
     },
@@ -2667,6 +2924,13 @@
         {
           "name": "images",
           "csharpType": "IReadOnlyList<ImageMetadataDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        },
+        {
+          "name": "paymentPlan",
+          "csharpType": "IReadOnlyList<UnitPaymentPlanRowDto>",
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": "[]"
@@ -2802,6 +3066,96 @@
           "requiredMember": false,
           "defaultExpression": "0m"
         }
+      ]
+    },
+    {
+      "name": "UnitPaymentInstallmentDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentDto.cs",
+      "properties": [
+        {
+          "name": "installmentName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "installmentNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "installmentPercentage",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "installmentPeriodMonths",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UnitPaymentInstallmentInput",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentInput.cs",
+      "properties": [
+        {
+          "name": "installmentName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "installmentNumber",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "installmentPercentage",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "installmentPeriodMonths",
+          "csharpType": "int?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UnitPaymentPlanInput",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentPlanInput.cs",
+      "properties": [
+        {
+          "name": "paymentPlan",
+          "csharpType": "IReadOnlyList<UnitPaymentInstallmentInput>?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
+      "name": "UnitPaymentPlanRowDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentPlanRowDto.cs",
+      "properties": [],
+      "variants": [
+        "UnitPaymentInstallmentDto",
+        "InitiativeStagePaymentDto"
       ]
     },
     {
@@ -3129,6 +3483,25 @@
       ]
     },
     {
+      "name": "TimePlanStageStatus",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/TimePlanStageStatus.cs",
+      "members": [
+        {
+          "name": "Pending",
+          "value": 0
+        },
+        {
+          "name": "Processing",
+          "value": 1
+        },
+        {
+          "name": "Completed",
+          "value": 2
+        }
+      ]
+    },
+    {
       "name": "UserRole",
       "wireType": "number",
       "source": "src/Brouj.Domain/Enums/UserRole.cs",
@@ -3398,11 +3771,19 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInputValidator.cs",
-      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Percentage).InclusiveBetween(0, 100);\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
+      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        Include(new TemplateStageDraftInputValidator());\n        RuleFor(input => input).Custom((input, context) =>\n        {\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure);\n            if (input.StageTemplateId.HasValue && input.Price.HasValue)\n                context.AddFailure(nameof(input.Price), \"Apply pricing to a copied stage after creation.\");\n        });\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInputValidator.cs",
       "rules": "public sealed class StageItemDraftInputValidator : AbstractValidator<StageItemDraftInput>\n{\n    public StageItemDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.ItemTemplateId is null);\n        RuleFor(input => input.DueDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.ItemTemplateId).NotEmpty().When(input => input.ItemTemplateId is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageUpdateInputValidator.cs",
+      "rules": "public sealed class StageUpdateInputValidator : AbstractValidator<StageUpdateInput>\n{\n    public StageUpdateInputValidator()\n    {\n        Include(new TimePlanInputValidator());\n        RuleFor(input => input).Custom((input, context) =>\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure));\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInputValidator.cs",
+      "rules": "public sealed class TemplateStageDraftInputValidator : AbstractValidator<TemplateStageDraftInput>\n{\n    public TemplateStageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Percentage).InclusiveBetween(0, 100);\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanInputValidator.cs",
@@ -3411,6 +3792,14 @@
     {
       "source": "src/Brouj.Application/Features/Units/DTOs/UnitInputValidator.cs",
       "rules": "public sealed class UnitInputValidator : AbstractValidator<UnitInput>\n{\n    public UnitInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input).Must(input => Pricing.IsValidTotal(input.Size, input.MeterPrice))\n            .WithMessage(\"The calculated total exceeds the supported amount.\");\n\n        RuleFor(input => input.Number).NotEmpty().MaximumLength(64);\n        RuleFor(input => input.MeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.Size).GreaterThan(0).PrecisionScale(18, 4, false);\n        RuleFor(input => input.FloorNumber).GreaterThanOrEqualTo(0);\n        RuleFor(input => input.NeighborMeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentInputValidator.cs",
+      "rules": "public sealed class UnitPaymentInstallmentInputValidator : AbstractValidator<UnitPaymentInstallmentInput>\n{\n    public UnitPaymentInstallmentInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.InstallmentName).NotEmpty()\n            .Must(name => name.Trim().Length <= 100)\n            .WithMessage(\"Installment name must be at most 100 characters after trimming.\");\n        RuleFor(input => input.InstallmentNumber).GreaterThan(0);\n        RuleFor(input => input.InstallmentPercentage).GreaterThan(0).LessThanOrEqualTo(100)\n            .PrecisionScale(7, 4, ignoreTrailingZeros: true)\n            .WithMessage(\"Installment percentage may have at most four decimal places.\");\n        RuleFor(input => input.InstallmentPeriodMonths).NotNull().GreaterThanOrEqualTo(0);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentPlanInputValidator.cs",
+      "rules": "public sealed class UnitPaymentPlanInputValidator : AbstractValidator<UnitPaymentPlanInput>\n{\n    public UnitPaymentPlanInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.PaymentPlan)\n            .NotEmpty()\n            .WithMessage(\"A regular unit requires at least one payment installment.\");\n\n        RuleForEach(input => input.PaymentPlan)\n            .NotNull()\n            .WithMessage(\"Each installment must be an object.\")\n            .SetValidator(new UnitPaymentInstallmentInputValidator());\n\n        RuleFor(input => input.PaymentPlan).Custom((plan, context) =>\n        {\n            var numbers = new HashSet<int>();\n            var total = 0m;\n\n            foreach (var installment in plan!)\n            {\n                if (!numbers.Add(installment.InstallmentNumber))\n                {\n                    context.AddFailure(FormattableString.Invariant($\"Installment number {installment.InstallmentNumber} is used more than once.\"));\n                    return;\n                }\n\n                total += installment.InstallmentPercentage;\n            }\n\n            if (total != 100m)\n            {\n                context.AddFailure(FormattableString.Invariant($\"Installment percentages must total 100%. The submitted total is {total:0.####}%.\"));\n            }\n        });\n    }\n\n    public static Error? GetError(UnitPaymentPlanInput input)\n    {\n        var failure = new UnitPaymentPlanInputValidator().Validate(input).Errors.FirstOrDefault();\n\n        if (failure is null)\n        {\n            return null;\n        }\n\n        var message = failure.PropertyName.StartsWith(\"PaymentPlan[\", StringComparison.Ordinal)\n            ? $\"{failure.PropertyName}: {failure.ErrorMessage}\"\n            : failure.ErrorMessage;\n\n        return UnitErrors.Validation(message);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Users/DTOs/CreateUserInputValidator.cs",
@@ -3483,6 +3872,14 @@
     {
       "source": "src/Brouj.Application/Features/Cities/Queries/GetLookup/GetCitiesLookupQueryValidator.cs",
       "rules": "public sealed class GetCitiesLookupQueryValidator : AbstractValidator<GetCitiesLookupQuery>\n{\n    public GetCitiesLookupQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Search)\n            .MaximumLength(100);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ContactSubmissions/Commands/Submit/SubmitContactSubmissionCommandValidator.cs",
+      "rules": "public sealed class SubmitContactSubmissionCommandValidator : AbstractValidator<SubmitContactSubmissionCommand>\n{\n    public SubmitContactSubmissionCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.Input).NotNull().DependentRules(() =>\n        {\n            RuleFor(request => request.Input.Name).NotEmpty().MaximumLength(150);\n            RuleFor(request => request.Input.Phone).EgyptianPhone()\n                .WithMessage(\"Enter an 11-digit Egyptian mobile number starting with 010, 011, 012, or 015.\");\n            RuleFor(request => request.Input.Inquiry).NotEmpty().MaximumLength(2000);\n        });\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/ContactSubmissions/Queries/GetAll/GetContactSubmissionsQueryValidator.cs",
+      "rules": "public sealed class GetContactSubmissionsQueryValidator : AbstractValidator<GetContactSubmissionsQuery>\n{\n    public GetContactSubmissionsQueryValidator()\n    {\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Customers/Commands/ChangePassword/ChangeCustomerPasswordCommandValidator.cs",
@@ -3618,7 +4015,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/Reservations/Commands/Create/CreateReservationCommandValidator.cs",
-      "rules": "public sealed class CreateReservationCommandValidator : AbstractValidator<CreateReservationCommand>\n{\n    public CreateReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n\n        RuleFor(request => request.FullName)\n            .NotEmpty()\n            .MaximumLength(100);\n\n        RuleFor(request => request.IdentityNumber)\n            .NationalId();\n\n        RuleFor(request => request.Phone)\n            .EgyptianPhone();\n\n        RuleFor(request => request.AgeGroup)\n            .NotEmpty()\n            .MaximumLength(16);\n\n        RuleFor(request => request.PlaceOfResidence)\n            .NotEmpty()\n            .MaximumLength(100);\n\n        RuleFor(request => request.PreferredFinancialBracket)\n            .GreaterThan(0);\n\n        RuleFor(request => request.PreferredRepaymentPeriod)\n            .GreaterThan(0);\n    }\n}"
+      "rules": "public sealed class CreateReservationCommandValidator : AbstractValidator<CreateReservationCommand>\n{\n    public CreateReservationCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n\n        RuleFor(request => request.FullName)\n            .NotEmpty()\n            .MaximumLength(100);\n\n        RuleFor(request => request.Phone)\n            .NotEmpty()\n            .EgyptianPhone();\n\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Reservations/Queries/GetAll/GetReservationsQueryValidator.cs",
@@ -3635,6 +4032,10 @@
     {
       "source": "src/Brouj.Application/Features/Reservations/Queries/GetMine/GetMyReservationsQueryValidator.cs",
       "rules": "public sealed class GetMyReservationsQueryValidator : AbstractValidator<GetMyReservationsQuery>\n{\n    public GetMyReservationsQueryValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.PageNumber).GreaterThan(0);\n        RuleFor(request => request.PageSize).InclusiveBetween(1, 100);\n        RuleFor(request => request.Status).IsInEnum().When(request => request.Status is not null);\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Reservations/Strategies/InitiativeReservationProfileValidator.cs",
+      "rules": "public sealed class InitiativeReservationProfileValidator : AbstractValidator<InitiativeReservation>\n{\n    public InitiativeReservationProfileValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        RuleFor(profile => profile.IdentityNumber).NationalId();\n        RuleFor(profile => profile.AgeGroup).NotEmpty().MaximumLength(16);\n        RuleFor(profile => profile.PlaceOfResidence).NotEmpty().MaximumLength(100);\n        RuleFor(profile => profile.FinancialBracket).GreaterThan(0);\n        RuleFor(profile => profile.RepaymentPeriod).GreaterThan(0);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/StageTemplates/Commands/Create/CreateStageTemplateCommandValidator.cs",
@@ -3690,7 +4091,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStageFromTemplate/AddStageFromTemplateCommandValidator.cs",
-      "rules": "public sealed class AddStageFromTemplateCommandValidator : AbstractValidator<AddStageFromTemplateCommand>\n{\n    public AddStageFromTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageDraftInputValidator());\n        RuleFor(request => request.Input.StageTemplateId).NotNull().NotEmpty();\n    }\n}"
+      "rules": "public sealed class AddStageFromTemplateCommandValidator : AbstractValidator<AddStageFromTemplateCommand>\n{\n    public AddStageFromTemplateCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new TemplateStageDraftInputValidator());\n        RuleFor(request => request.Input.StageTemplateId).NotNull().NotEmpty();\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/Commands/AddStageItem/AddPlanStageItemCommandValidator.cs",
@@ -3742,7 +4143,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/Commands/UpdateStage/UpdateTimePlanStageCommandValidator.cs",
-      "rules": "public sealed class UpdateTimePlanStageCommandValidator : AbstractValidator<UpdateTimePlanStageCommand>\n{\n    public UpdateTimePlanStageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new TimePlanInputValidator());\n    }\n}"
+      "rules": "public sealed class UpdateTimePlanStageCommandValidator : AbstractValidator<UpdateTimePlanStageCommand>\n{\n    public UpdateTimePlanStageCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.TimePlanId).NotEmpty();\n        RuleFor(request => request.Id).NotEmpty();\n        RuleFor(request => request.Input).NotNull().SetValidator(new StageUpdateInputValidator());\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/Commands/UpdateStageItem/UpdatePlanStageItemCommandValidator.cs",
@@ -3775,6 +4176,10 @@
     {
       "source": "src/Brouj.Application/Features/Units/Commands/ReplaceAmenities/ReplaceUnitAmenitiesCommandValidator.cs",
       "rules": "public sealed class ReplaceUnitAmenitiesCommandValidator : AbstractValidator<ReplaceUnitAmenitiesCommand>\n{\n    public ReplaceUnitAmenitiesCommandValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.Amenities).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(request => request.Amenities).NotNull().SetValidator(new AmenityDtoValidator());\n    }\n}"
+    },
+    {
+      "source": "src/Brouj.Application/Features/Units/Commands/ReplacePaymentPlan/ReplaceUnitPaymentPlanCommandValidator.cs",
+      "rules": "public sealed class ReplaceUnitPaymentPlanCommandValidator : AbstractValidator<ReplaceUnitPaymentPlanCommand>\n{\n    public ReplaceUnitPaymentPlanCommandValidator()\n    {\n        RuleFor(request => request.UnitId).NotEmpty();\n        RuleFor(request => request.Input).NotNull();\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Units/Commands/Update/UpdateUnitCommandValidator.cs",

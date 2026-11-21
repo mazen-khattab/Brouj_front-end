@@ -1,6 +1,6 @@
 import type { UnitDraft, UnitProject } from "./types";
 import { isGuid } from "../../../Services/identifiers";
-import type { AmenityDto } from "../../../Types/contracts";
+import { ProjectType, type AmenityDto } from "../../../Types/contracts";
 
 function decimal(value: string, precision: number, scale: number) {
   const match = /^\+?(\d+)(?:\.(\d+))?$/.exec(value);
@@ -31,10 +31,10 @@ export function invalidFields(d: UnitDraft, project?: UnitProject): string[] {
   if (!decimal(d.size, 18, 4) || Number(d.size) <= 0) invalid.add("size");
   if (d.neighborMeterPrice !== "" && !decimal(d.neighborMeterPrice, 19, 4)) invalid.add("neighborMeterPrice");
   if (!unitTotalFits(d.size, d.meterPrice)) invalid.add("meterPrice");
-  if (project?.projectType === 1 && (!d.neighborMeterPrice || Number(d.size) * Number(d.meterPrice) > project.price)) {
+  if (project?.projectType === ProjectType.Initiative && (!d.neighborMeterPrice || Number(d.size) * Number(d.meterPrice) > project.price)) {
     invalid.add("neighborMeterPrice");
   }
-  if (project?.projectType === 0 && d.neighborMeterPrice) invalid.add("neighborMeterPrice");
+  if (project?.projectType === ProjectType.Regular && d.neighborMeterPrice) invalid.add("neighborMeterPrice");
   return [...invalid];
 }
 

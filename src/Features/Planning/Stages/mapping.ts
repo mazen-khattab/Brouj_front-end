@@ -1,27 +1,43 @@
 import { ApiError } from "../../../Types/failures";
-import type { StageDraftInput, StageTemplateDto, TimePlanInput, TimePlanStageDto } from "../../../Types/contracts";
+import type { StageDraftInput, StageTemplateDto, StageUpdateInput, TemplateStageDraftInput, TimePlanStageDto } from "../../../Types/contracts";
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
 
 export function stageFrom(source?: TimePlanStageDto): TimePlanStageDraft {
-  return { name: source?.name ?? "", deliveryDate: source?.deliveryDate ?? "", percentage: source ? String(source.percentage) : "" };
+  return {
+    name: source?.name ?? "",
+    deliveryDate: source?.deliveryDate ?? "",
+    percentage: source ? String(source.percentage) : "",
+    price: source?.price == null ? "" : String(source.price),
+    pricingDate: source?.pricingDate ?? "",
+  };
 }
 
 export function stageInput(values: TimePlanStageDraft): Pick<StageDraftInput, "name" | "deliveryDate" | "percentage"> {
   return { name: values.name, deliveryDate: values.deliveryDate || null, percentage: Number(values.percentage) };
 }
 
-/** The current update contract intentionally excludes percentage. */
-export function stageUpdateInput(values: TimePlanStageDraft): TimePlanInput {
-  return { name: values.name, deliveryDate: values.deliveryDate || null };
+export function stagePricingInput(values: TimePlanStageDraft): Pick<StageUpdateInput, "price" | "pricingDate"> {
+  return values.price.trim() && values.pricingDate.trim()
+    ? { price: Number(values.price), pricingDate: values.pricingDate.trim() }
+    : {};
 }
 
-export function approvedStageUpdate(input: TimePlanInput): TimePlanInput {
-  return { name: input.name, deliveryDate: input.deliveryDate };
+export function stageUpdateInput(values: TimePlanStageDraft): StageUpdateInput {
+  return { name: values.name, deliveryDate: values.deliveryDate || null, ...stagePricingInput(values) };
+}
+
+export function approvedStageUpdate({ name, deliveryDate, price, pricingDate }: StageUpdateInput): StageUpdateInput {
+  return {
+    name, deliveryDate,
+    ...(price !== undefined && { price }),
+    ...(pricingDate !== undefined && { pricingDate }),
+  };
 }
 
 export function approvedStageDraft(input: StageDraftInput): StageDraftInput {
   return {
-    stageTemplateId: input.stageTemplateId, name: input.name, deliveryDate: input.deliveryDate, percentage: input.percentage,
+    ...approvedStageUpdate(input),
+    stageTemplateId: input.stageTemplateId, percentage: input.percentage,
     items: input.items.map(row => ({ itemTemplateId: row.itemTemplateId, name: row.name, dueDate: row.dueDate, confirmedDate: row.confirmedDate })),
   };
 }
@@ -30,7 +46,7 @@ export function stageFromTemplateInput(
   source: StageTemplateDto,
   values: TimePlanStageDraft,
   rows: readonly TemplateApplicationItemDraft[],
-): StageDraftInput {
+): TemplateStageDraftInput {
   if (
     !source.isActive ||
     source.items.some((item) => !item.isActive) ||

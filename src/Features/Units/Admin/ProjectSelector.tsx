@@ -7,6 +7,7 @@ import { useResourceRead } from "../../../Hooks/useResourceRead";
 import { useUnitEditor } from "./EditorContext";
 import * as service from "../../../Services/Projects";
 import { apiFailureMessage } from "../../../i18n/apiFailures";
+import { useUnitProject } from "./useUnitProject";
 
 /** Search and page parents instead of downloading an unbounded catalogue or accepting raw IDs. */
 export function ProjectSelector({
@@ -16,6 +17,7 @@ export function ProjectSelector({
   disabled,
   label,
   hint,
+  parentRead,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -23,6 +25,7 @@ export function ProjectSelector({
   disabled: boolean;
   label?: string;
   hint?: string | undefined;
+  parentRead?: ReturnType<typeof useUnitProject>;
 }) {
   const { t } = useTranslation("admin");
   const { scope } = useUnitEditor();
@@ -44,8 +47,8 @@ export function ProjectSelector({
     [page, query],
   );
   const read = useResourceRead(`${scope}:project:${page}:${query}`, load);
-  const selectedLoad = useCallback((signal: AbortSignal) => service.getProjectById({ id: value }, { signal }), [value]);
-  const selected = useResourceRead(`${scope}:project:${value}`, selectedLoad, Boolean(value));
+  const ownParent = useUnitProject(scope, parentRead ? "" : value);
+  const selected = parentRead ?? ownParent;
   const rows = read.result.status === "success" ? read.result.data.items : [];
   const selectedRecord = selected.result.status === "success" ? selected.result.data : undefined;
   const missingSelection = value && !rows.some((row) => row.id === value);
@@ -87,7 +90,7 @@ export function ProjectSelector({
           </Button>
         </div>
       )}
-      {selected.result.status === "error" && <p role="alert">{t("parentUnavailable")}</p>}
+      {!parentRead && selected.result.status === "error" && <p role="alert">{t("parentUnavailable")}</p>}
       {read.result.status === "success" && (
         <Pagination page={page} totalPages={read.result.data.totalPages} pending={disabled} onPageChange={setPage} />
       )}

@@ -2,7 +2,7 @@ import type { BrowserContext } from "@playwright/test";
 import { routingServer } from "./routingFixtures";
 import { sessionCors } from "./sessionFixtures";
 import { catalogueIds, catalogueProject, catalogueUnit } from "./catalogueFixtures";
-import type { AreaDto, CityDto, ImageMetadataDto, ProjectDto, UnitDto } from "../../src/Types/contracts";
+import { ProjectType, type AreaDto, type CityDto, type ImageMetadataDto, type ProjectDto, type UnitDto, type UnitPaymentInstallmentDto } from "../../src/Types/contracts";
 
 export const imageId = "60000000-0000-4000-8000-000000000001";
 
@@ -124,9 +124,19 @@ export async function adminCatalogueServer(context: BrowserContext) {
     }
     const nextId = () => `90000000-0000-4000-8000-${String(sequence++).padStart(12, "0")}`;
     if (collection === "projects" && path[2] === "units" && method === "POST") {
+      const paymentPlan = (body.paymentPlan ?? []) as UnitDto["paymentPlan"];
+      if ((projects.get(id)?.projectType === ProjectType.Regular) !== Boolean(paymentPlan.length)) return fail(400);
       const created = nextId();
-      units.set(created, { ...catalogueUnit, ...body, id: created, projectId: id, images: [], amenities: [] });
+      units.set(created, { ...catalogueUnit, ...body, id: created, projectId: id, images: [], amenities: [], paymentPlan });
       return ok(created);
+    }
+    if (collection === "units" && path[2] === "payment-plan" && method === "PUT") {
+      const unit = units.get(id);
+      if (!unit) return fail(404);
+      if (url.search || projects.get(unit.projectId)?.projectType !== ProjectType.Regular) return fail(400);
+      const paymentPlan = (body.paymentPlan as UnitPaymentInstallmentDto[]).toSorted((a, b) => a.installmentNumber - b.installmentNumber);
+      units.set(id, { ...unit, paymentPlan });
+      return ok(id);
     }
     if (path[2] === "amenities") {
       if (collection === "areas") {

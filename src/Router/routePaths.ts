@@ -11,6 +11,10 @@ function segment(value: string): string {
 
 export const apiPaths = {
   Security: { csrf: '/api/v1/auth/csrf' },
+  ContactSubmissions: {
+    submitContactSubmission: '/api/v1/contact-submissions',
+    getContactSubmissions: '/api/v1/admin/contact-submissions',
+  },
   CustomerAuth: {
     registerCustomer: '/api/v1/auth/customers/register',
     loginCustomer: '/api/v1/auth/customers/login',
@@ -82,6 +86,7 @@ export const apiPaths = {
     updateUnit: (id: string) => `/api/v1/admin/units/${segment(id)}`,
     deleteUnit: (id: string) => `/api/v1/admin/units/${segment(id)}`,
     replaceUnitAmenities: (id: string) => `/api/v1/admin/units/${segment(id)}/amenities`,
+    replaceUnitPaymentPlan: (id: string) => `/api/v1/admin/units/${segment(id)}/payment-plan`,
     addUnitImage: (id: string) => `/api/v1/admin/units/${segment(id)}/images`,
     updateUnitImage: (id: string, imageId: string) => `/api/v1/admin/units/${segment(id)}/images/${segment(imageId)}`,
     deleteUnitImage: (id: string, imageId: string) => `/api/v1/admin/units/${segment(id)}/images/${segment(imageId)}`,
