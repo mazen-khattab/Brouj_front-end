@@ -13,7 +13,7 @@ const schemas = new Map(inventory.schemas.map((schema) => [schema.name, schema])
 const enums = new Set(inventory.enums.map((item) => item.name));
 const queryNames = new Set(matrix.operations.map((operation) => operation.query).filter(Boolean));
 const selected = new Set();
-const primitive = { string: 'string', Guid: 'Guid', DateTimeOffset: 'OffsetDateTime', int: 'number', long: 'number', decimal: 'number', bool: 'boolean', IFormFile: 'File' };
+const primitive = { string: 'string', Guid: 'Guid', DateTimeOffset: 'OffsetDateTime', int: 'number', long: 'number', decimal: 'number', double: 'number', bool: 'boolean', IFormFile: 'File' };
 
 function typeOf(value) {
   if (value.endsWith('?')) return `${typeOf(value.slice(0, -1))} | null`;

@@ -17,7 +17,7 @@ const id = '30000000-0000-4000-8000-000000000001';
 const images = (count: number) => Array.from({ length: count }, (_, index) => ({ id: `image-${index}`, imagePath: `PRIVATE-STORAGE-${index}`, description: `Photo note ${index + 1}`, sortOrder: index }));
 const page = (number: number, total = 27): PaginationResult<UnitListDto> => ({
   pageNumber: number, pageSize: 12, totalCount: total, totalPages: Math.ceil(total / 12),
-  items: Array.from({ length: Math.min(12, total - (number - 1) * 12) }, (_, index) => ({ id: `${id}-${(number - 1) * 12 + index}`, projectId: id, number: `A-${(number - 1) * 12 + index + 1}`, totalPrice: 1230000, meterPrice: 10000, size: 123, floorNumber: 1, isAvailable: true, neighborMeterPrice: null, percentage: null, isGarage: false, garagePrice: 0 })),
+  items: Array.from({ length: Math.min(12, total - (number - 1) * 12) }, (_, index) => ({ id: `${id}-${(number - 1) * 12 + index}`, projectId: id, number: `A-${(number - 1) * 12 + index + 1}`, pricingDate: null, trend: "North", excellencePercentage: 5, unitSavingPercentage: null, finishingDate: null, stages: [], totalPrice: 1230000, meterPrice: 10000, size: 123, floorNumber: 1, isAvailable: true, neighborMeterPrice: null, percentage: null, isGarage: false, garagePrice: 0 })),
 });
 
 beforeEach(() => {
@@ -108,8 +108,8 @@ test('project change aborts a carousel read and rejects its late response', asyn
 
 test('public plan keeps server ordering, unknown status and missing-plan retry behavior', async () => {
   const plan: TimePlanDto = { id: 'plan', projectId: id, name: 'Published schedule', deliveryDate: '2027-01-01T00:00:00Z', stages: [
-    { id: 'z', name: 'First supplied stage', sortOrder: 2, percentage: 40, price: null, pricingDate: null, deliveryDate: '2027-01-01T00:00:00Z', items: [{ id: 'item', name: 'Work item', sortOrder: 1, status: 99 as 0, dueDate: '2026-12-01T00:00:00Z', confirmedDate: null, images: [] }] },
-    { id: 'a', name: 'Second supplied stage', sortOrder: 1, percentage: 60, price: null, pricingDate: null, deliveryDate: '2027-01-01T00:00:00Z', items: [] },
+    { id: 'z', name: 'First supplied stage', sortOrder: 2, status: 0, price: 0, pricingDate: null, deliveryDate: '2027-01-01T00:00:00Z', items: [{ id: 'item', name: 'Work item', sortOrder: 1, status: 99 as 0, dueDate: '2026-12-01T00:00:00Z', confirmedDate: null, images: [] }] },
+    { id: 'a', name: 'Second supplied stage', sortOrder: 1, status: 0, price: 0, pricingDate: null, deliveryDate: '2027-01-01T00:00:00Z', items: [] },
   ] };
   const read = vi.spyOn(Plans, 'getProjectTimePlan').mockRejectedValueOnce(new ApiError('transport', { status: 404 })).mockResolvedValueOnce(plan);
   const { container } = renderUi(<ProjectTimePlan projectId={id} />);

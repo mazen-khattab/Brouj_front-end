@@ -67,23 +67,30 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await expect(page.locator("#add-stage-price")).toHaveAttribute("aria-invalid", "true");
   expect(stageCreates()).toHaveLength(0);
   await page.locator("#add-stage-price").fill("100000.1234");
+  await expect(page.locator("#add-stage-status")).toHaveValue("0");
+  await page.locator("#add-stage-status").selectOption("1");
   await saveForm(page, en.manualStage);
-  expect(server.calls.findLast((call) => call.method === "POST")!.body).toMatchObject({ price: 100000.1234, pricingDate: planningDate });
+  expect(server.calls.findLast((call) => call.method === "POST")!.body).toMatchObject({ price: 100000.1234, pricingDate: planningDate, status: 1 });
   const stage = server.state.plan!.stages[0]!;
   await page.getByRole("button", { name: stage.name, exact: true }).click();
   await expect(page.locator("#stage-price")).toHaveValue("100000.1234");
   await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
+  await expect(page.locator("#stage-status")).toHaveValue("1");
+  await expect(page.getByRole("row").filter({ hasText: stage.name }).getByText(en.stageStatus[1], { exact: true })).toBeVisible();
+  await page.locator("#stage-status").selectOption("2");
   await page.locator("#stage-name").fill("Updated manual stage");
   await page.locator("#stage-price").fill("0");
   await saveForm(page, en.editStage);
   expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({
-    name: "Updated manual stage", deliveryDate: planningDate, price: 0, pricingDate: planningDate,
+    name: "Updated manual stage", deliveryDate: planningDate, price: 0, pricingDate: planningDate, status: 2,
   });
   await page.locator("#stage-price").fill("");
   await page.locator("#stage-pricingDate").fill("");
+  await expect(page.locator("#stage-status")).toHaveValue("2");
+  await page.locator("#stage-status").selectOption("0");
   await page.locator("#stage-name").fill("Renamed stage");
   await saveForm(page, en.editStage);
-  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({ name: "Renamed stage", deliveryDate: planningDate });
+  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({ name: "Renamed stage", deliveryDate: planningDate, status: 0 });
   await expect(page.locator("#stage-price")).toHaveValue("0");
   await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
   await page.locator("summary").filter({ hasText: en.addItem }).click();
@@ -226,8 +233,6 @@ test("server template application supplies every mapped item date and also suppo
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.locator("#template-deliveryDate")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-price").fill("2500");
-  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
@@ -236,31 +241,34 @@ test("server template application supplies every mapped item date and also suppo
   expect(server.calls.findLast((call) => call.method === "POST")!.body).toEqual({
     stageTemplateId: ids.stageTemplate,
     name: "Reusable construction stage",
-    price: 2500,
-    pricingDate: planningDate,
     deliveryDate: planningDate,
     items: [
       { itemTemplateId: ids.itemTemplate, name: "Survey", dueDate: planningDate, confirmedDate: null },
       { itemTemplateId: ids.itemTemplate2, name: "Approval", dueDate: planningDate, confirmedDate: null },
     ],
   });
+  await expect(page.locator("#template-status")).toHaveCount(0);
   await expect(page.locator("#template-price")).toHaveCount(0);
   await expect(page.locator("#template-pricingDate")).toHaveCount(0);
   await page.getByRole("region", { name: en.stages, exact: true }).getByRole("button", { name: "Reusable construction stage", exact: true }).click();
   await expect(page.locator("#stage-price")).toHaveValue("");
   await expect(page.locator("#stage-pricingDate")).toHaveValue("");
+  await expect(page.locator("#stage-status")).toHaveValue("0");
+  await page.locator("#stage-status").selectOption("2");
+  await saveForm(page, en.editStage);
+  expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({
+    name: "Reusable construction stage", deliveryDate: planningDate, status: 2,
+  });
   await page.locator("#stage-price").fill("100000");
   await page.locator("#stage-pricingDate").fill(planningDate);
   await saveForm(page, en.editStage);
   const copiedStage = server.state.plan!.stages.find((stage) => stage.name === "Reusable construction stage")!;
   const patch = server.calls.findLast((call) => call.method === "PATCH")!;
   expect(patch.url.pathname).toBe(`/api/v1/admin/time-plans/${ids.plan}/stages/${copiedStage.id}`);
-  expect(patch.body).toEqual({ name: copiedStage.name, deliveryDate: planningDate, price: 100000, pricingDate: planningDate });
+  expect(patch.body).toEqual({ name: copiedStage.name, deliveryDate: planningDate, price: 100000, pricingDate: planningDate, status: 2 });
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.emptyTemplate);
   await expect(page.getByText(en.emptyTemplate, { exact: true })).toBeVisible();
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-price").fill("2500");
-  await page.locator("#template-pricingDate").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect.poll(() => server.state.plan!.stages.length).toBe(4);
   expect(server.calls.findLast((call) => call.method === "POST")!.body.items).toEqual([]);
@@ -280,8 +288,6 @@ test("inactive mapped templates cannot be applied and a newly stale template rep
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-price").fill("2500");
-  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.state.failNext = 409;
@@ -347,8 +353,6 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-price").fill("2500");
-  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.locator("#template-due-1").fill(planningDate);
   server.stages.set(ids.stageTemplate, { ...server.stages.get(ids.stageTemplate)!, items: [server.stages.get(ids.stageTemplate)!.items[1]!] });
@@ -361,8 +365,6 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await expect(page.locator("#template-due-1")).toHaveCount(0);
   await expect(page.locator("#template-due-0")).toHaveValue("");
   await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-price").fill("2500");
-  await page.locator("#template-pricingDate").fill(planningDate);
   await page.locator("#template-due-0").fill(planningDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
@@ -553,6 +555,23 @@ for (const status of [403, 404]) {
 }
 
 for (const language of ["ar", "en"] as const) {
+  test(`stage status labels and saved selection in ${language}`, async ({ page, context }) => {
+    const server = await planningServer(context);
+    const labels = language === "ar" ? ar : en;
+    await seedRouting(page, "admin", language);
+    await page.goto(planPath);
+    await page.getByRole("button", { name: server.state.plan!.stages[0]!.name, exact: true }).click();
+    const editor = page.getByRole("form", { name: labels.editStage, exact: true });
+    const status = editor.getByRole("combobox", { name: labels.fields.stageStatus, exact: true });
+    await expect(status.getByRole("option")).toHaveText(Object.values(labels.stageStatus));
+    await status.selectOption("2");
+    await editor.getByRole("button", { name: labels.save, exact: true }).click();
+    await expect(page.getByText(labels.saved, { exact: true })).toBeVisible();
+    await expect(status).toHaveValue("2");
+    await expect(page.getByRole("row").filter({ hasText: server.state.plan!.stages[0]!.name }).getByText(labels.stageStatus[2], { exact: true })).toBeVisible();
+    expect(server.calls.findLast((call) => call.method === "PATCH")!.body.status).toBe(2);
+  });
+
   test(`${language} dates, hierarchy, keyboard order, long names and template dialogs have bilingual visual evidence`, async ({ page, context }) => {
     test.setTimeout(90000);
     const server = await planningServer(context, "superAdmin");

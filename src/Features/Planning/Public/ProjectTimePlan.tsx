@@ -7,12 +7,12 @@ import { ProgressGallery } from "./ProgressGallery";
 
 import { useTimePlan } from "./useTimePlan";
 
-function Plan({ plan }: { plan: TimePlanDto }) {
+function Plan({ plan, editorial }: { plan: TimePlanDto; editorial: boolean }) {
   const { t } = useTranslation("account");
   const { locale, direction } = useLocale();
   return (
-    <div className="grid min-w-0 gap-6 p-5 sm:p-8">
-      <header className="grid gap-2">
+    <div className={editorial ? "pd-plan" : "grid min-w-0 gap-6 p-5 sm:p-8"}>
+      <header className={editorial ? "pd-plan-heading" : "grid gap-2"}>
         <h3 dir="auto" className="text-2xl font-medium">
           {plan.name}
         </h3>
@@ -22,10 +22,10 @@ function Plan({ plan }: { plan: TimePlanDto }) {
           </p>
         )}
       </header>
-      <div className="grid min-w-0 gap-4 rounded-ui border border-accent/40 bg-surface p-3 sm:p-5">
+      <div className={editorial ? "pd-timeline" : "grid min-w-0 gap-4 rounded-ui border border-accent/40 bg-surface p-3 sm:p-5"}>
         {!plan.stages.length && <p className="p-2 text-muted">{t("noStages")}</p>}
         {plan.stages.map((stage, index) => (
-          <details key={stage.id} open={index === 0} className="group scroll-mt-32 overflow-hidden rounded-ui border border-accent/40 bg-ivory">
+          <details key={stage.id} open={index === 0} className={editorial ? "pd-stage" : "group scroll-mt-32 overflow-hidden rounded-ui border border-accent/40 bg-ivory"}>
             <summary className="cursor-pointer p-4 marker:text-accent sm:p-5">
               <h3 dir="auto" className="inline text-xl font-medium">
                 {stage.name}
@@ -36,22 +36,22 @@ function Plan({ plan }: { plan: TimePlanDto }) {
                 </span>
               )}
             </summary>
-            <div className="grid gap-3 border-t border-accent/40 p-3 sm:p-4">
+            <div className={editorial ? "pd-stage-body" : "grid gap-3 border-t border-accent/40 p-3 sm:p-4"}>
+              <div className={editorial ? "pd-stage-items" : "contents"}>
               {!stage.items.length && <p className="text-muted">{t("noItems")}</p>}
               {stage.items.map((item) => (
                 <article
                   key={item.id}
-                  dir="ltr"
-                  className="grid min-w-0 items-center gap-3 rounded-ui border border-accent/40 bg-white p-3 md:grid-cols-2 md:gap-0"
+                  dir={editorial ? direction : "ltr"}
+                  className={editorial ? "pd-stage-item" : "grid min-w-0 items-center gap-3 rounded-ui border border-accent/40 bg-white p-3 md:grid-cols-2 md:gap-0"}
                 >
-                  {/* Physical columns remain left/right in both languages; text keeps the user's direction. */}
-                  <div dir={direction} className="grid min-w-0 content-center gap-2 text-start md:pr-4">
+                  <div dir={direction} className={editorial ? "pd-item-copy" : "grid min-w-0 content-center gap-2 text-start md:pr-4"}>
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                       <h4 dir="auto" className="text-lg font-medium [overflow-wrap:anywhere]">
                         {item.name}
                       </h4>
                       <span
-                        className={`min-w-28 rounded-xl border px-4 py-1 text-center text-sm font-medium ${item.status === 2 ? "border-success/40 bg-success-surface text-success" : item.status === 1 ? "border-amber-400 bg-amber-100 text-amber-800" : "border-accent/50 bg-surface text-muted"}`}
+                        className={editorial ? `pd-status pd-status-${item.status}` : `min-w-28 rounded-xl border px-4 py-1 text-center text-sm font-medium ${item.status === 2 ? "border-success/40 bg-success-surface text-success" : item.status === 1 ? "border-amber-400 bg-amber-100 text-amber-800" : "border-accent/50 bg-surface text-muted"}`}
                       >
                         {t(item.status === 0 || item.status === 1 || item.status === 2 ? `itemStatus.${item.status}` : "unknownStatus")}
                       </span>
@@ -69,12 +69,13 @@ function Plan({ plan }: { plan: TimePlanDto }) {
                   </div>
                   <div
                     dir={direction}
-                    className="min-w-0 border-t border-accent/40 pt-3 md:self-stretch md:content-center md:border-t-0 md:border-l md:pt-0 md:pl-4"
+                    className={editorial ? "pd-progress-gallery" : "min-w-0 border-t border-accent/40 pt-3 md:self-stretch md:content-center md:border-t-0 md:border-l md:pt-0 md:pl-4"}
                   >
                     <ProgressGallery key={item.id} images={item.images} name={item.name} />
                   </div>
                 </article>
               ))}
+              </div>
             </div>
           </details>
         ))}
@@ -84,16 +85,16 @@ function Plan({ plan }: { plan: TimePlanDto }) {
 }
 
 /** Public read, isolated from the project and units so a missing plan cannot hide them. */
-export function ProjectTimePlan({ projectId }: { projectId: string }) {
+export function ProjectTimePlan({ projectId, editorial = false }: { projectId: string; editorial?: boolean }) {
   const { t } = useTranslation("catalogue");
   const { result, reload } = useTimePlan(projectId);
   return (
     <section
       id="project-time-plan"
       aria-labelledby="time-plan-title"
-      className="min-w-0 scroll-mt-32 overflow-hidden rounded-ui border border-accent/40 bg-ivory text-primary shadow-panel"
+      className={editorial ? "pd-time-plan" : "min-w-0 scroll-mt-32 overflow-hidden rounded-ui border border-accent/40 bg-ivory text-primary shadow-panel"}
     >
-      <h2 id="time-plan-title" className="px-5 pt-5 text-3xl font-medium sm:px-8 sm:pt-8">
+      <h2 id="time-plan-title" className={editorial ? "pd-section-title" : "px-5 pt-5 text-3xl font-medium sm:px-8 sm:pt-8"}>
         {t("timePlan")}
       </h2>
       {result.status === "loading" && (
@@ -110,7 +111,7 @@ export function ProjectTimePlan({ projectId }: { projectId: string }) {
           />
         </div>
       )}
-      {result.status === "success" && <Plan key={`${projectId}:${result.data.id}`} plan={result.data} />}
+      {result.status === "success" && <Plan key={`${projectId}:${result.data.id}`} plan={result.data} editorial={editorial} />}
     </section>
   );
 }

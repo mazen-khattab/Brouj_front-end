@@ -1,0 +1,18 @@
+.areas-index-hero { padding-block: 1.4rem 2.4rem; }
+.areas-index-breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 0.6rem 0.9rem; color: #d1d8dc; font-size: 0.75rem; }
+.areas-index-breadcrumbs li { display: flex; align-items: baseline; gap: 0.9rem; }
+.areas-index-breadcrumbs li + li::before { content: "/"; color: var(--color-accent); }
+.areas-index-breadcrumbs [aria-current] { color: #fff; }
+.areas-index-breadcrumbs a { text-decoration: none; }
+.areas-index-breadcrumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.areas-index-eyebrow { display: flex; align-items: center; gap: 0.75rem; color: #d4c7aa; font-size: 0.72rem; margin-block: 1.8rem 0.6rem; }
+.areas-index-eyebrow::before { content: ""; inline-size: 1.8rem; block-size: 1px; background: var(--color-accent); flex-shrink: 0; }
+.areas-index-eyebrow:lang(en) { text-transform: uppercase; letter-spacing: 0.06em; }
+.areas-index .projects-title-mask h1 { font-size: clamp(3.2rem, 5.4vw, 5.2rem); line-height: 1.15; }
+.areas-index:lang(ar) .projects-title-mask h1 { line-height: 1.45; }
+.areas-index-intro { margin-block-start: 0.8rem; max-inline-size: 65ch; font-size: 0.85rem; line-height: 1.9; color: #d1d8dc; }
+@media (max-width: 600px) {
+  .areas-index-hero { padding-block-end: 2rem; }
+  .areas-index .projects-title-mask h1 { font-size: 3rem; }
+  .areas-index-intro { font-size: 0.8rem; }
+}

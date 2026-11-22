@@ -1,13 +1,18 @@
 import { createContext } from "react";
 import type { ResourceRead } from "../../Hooks/useResourceRead";
 import type { PaginationResult, ProjectListDto, TermsDto } from "../../Types/contracts";
+import type { ProjectType } from "../../Types/contracts";
 
-export interface HomeData {
-  projects: ResourceRead<PaginationResult<ProjectListDto>>;
-  terms: ResourceRead<TermsDto>;
+export interface HomeCollection {
+  result: ResourceRead<PaginationResult<ProjectListDto>>;
   page: number;
   changePage: (page: number) => void;
-  reloadProjects: () => void;
+  reload: () => void;
+}
+
+export interface HomeData {
+  collections: Record<ProjectType, HomeCollection>;
+  terms: ResourceRead<TermsDto>;
   reloadTerms: () => void;
 }
 

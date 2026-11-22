@@ -1781,6 +1781,20 @@
           "defaultExpression": null
         },
         {
+          "name": "startingMeterPrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitSavingPercentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "drawDate",
           "csharpType": "DateTimeOffset?",
           "nullable": true,
@@ -1796,8 +1810,8 @@
         },
         {
           "name": "garagePrice",
-          "csharpType": "decimal",
-          "nullable": false,
+          "csharpType": "decimal?",
+          "nullable": true,
           "requiredMember": false,
           "defaultExpression": "0m"
         },
@@ -2438,13 +2452,6 @@
           "defaultExpression": "string.Empty"
         },
         {
-          "name": "percentage",
-          "csharpType": "decimal",
-          "nullable": false,
-          "requiredMember": false,
-          "defaultExpression": null
-        },
-        {
           "name": "deliveryDate",
           "csharpType": "DateTimeOffset?",
           "nullable": true,
@@ -2469,6 +2476,14 @@
         {
           "name": "pricingDate",
           "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
+        },
+        {
+          "name": "status",
+          "csharpType": "TimePlanStageStatus?",
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null,
@@ -2577,6 +2592,14 @@
           "requiredMember": false,
           "defaultExpression": null,
           "omitWhenNull": true
+        },
+        {
+          "name": "status",
+          "csharpType": "TimePlanStageStatus?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
         }
       ]
     },
@@ -2597,13 +2620,6 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": "string.Empty"
-        },
-        {
-          "name": "percentage",
-          "csharpType": "decimal",
-          "nullable": false,
-          "requiredMember": false,
-          "defaultExpression": null
         },
         {
           "name": "deliveryDate",
@@ -2708,6 +2724,13 @@
           "defaultExpression": null
         },
         {
+          "name": "status",
+          "csharpType": "TimePlanStageStatus",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "deliveryDate",
           "csharpType": "DateTimeOffset",
           "nullable": false,
@@ -2715,16 +2738,9 @@
           "defaultExpression": null
         },
         {
-          "name": "percentage",
+          "name": "price",
           "csharpType": "decimal",
           "nullable": false,
-          "requiredMember": false,
-          "defaultExpression": null
-        },
-        {
-          "name": "price",
-          "csharpType": "decimal?",
-          "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
         },
@@ -3046,6 +3062,48 @@
           "defaultExpression": null
         },
         {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "trend",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "excellencePercentage",
+          "csharpType": "double",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "unitSavingPercentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "finishingDate",
+          "csharpType": "DateTimeOffset?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "stages",
+          "csharpType": "IReadOnlyList<UnitStageDto>",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "[]"
+        },
+        {
           "name": "isAvailable",
           "csharpType": "bool",
           "nullable": false,
@@ -3156,6 +3214,26 @@
       "variants": [
         "UnitPaymentInstallmentDto",
         "InitiativeStagePaymentDto"
+      ]
+    },
+    {
+      "name": "UnitStageDto",
+      "source": "src/Brouj.Application/Features/Units/DTOs/UnitStageDto.cs",
+      "properties": [
+        {
+          "name": "stageName",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
+          "name": "stagePrice",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
       ]
     },
     {
@@ -3771,7 +3849,7 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageDraftInputValidator.cs",
-      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        Include(new TemplateStageDraftInputValidator());\n\n        RuleFor(input => input).Custom((input, context) =>\n        {\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure);\n\n            if (input.StageTemplateId.HasValue && input.Price.HasValue)\n            {\n                context.AddFailure(nameof(input.Price), \"Apply pricing to a copied stage after creation.\");\n            }\n        });\n    }\n}"
+      "rules": "public sealed class StageDraftInputValidator : AbstractValidator<StageDraftInput>\n{\n    public StageDraftInputValidator()\n    {\n        Include(new TemplateStageDraftInputValidator());\n\n        RuleFor(input => input.Status).IsInEnum();\n        RuleFor(input => input).Custom((input, context) =>\n        {\n            if (input.StageTemplateId.HasValue)\n            {\n                if (input.Price.HasValue || input.PricingDate.HasValue)\n                    context.AddFailure(nameof(input.Price), \"Apply pricing to a copied stage after creation.\");\n                if (input.Status.HasValue)\n                    context.AddFailure(nameof(input.Status), \"Change the status of a copied stage after creation.\");\n                return;\n            }\n\n            if (input.Price is null && input.PricingDate is null)\n            {\n                context.AddFailure(nameof(input.Price), \"Price is required for a manual stage.\");\n                context.AddFailure(nameof(input.PricingDate), \"Pricing date is required for a manual stage.\");\n            }\n            else\n            {\n                StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure);\n            }\n        });\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInputValidator.cs",
@@ -3779,11 +3857,11 @@
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/StageUpdateInputValidator.cs",
-      "rules": "public sealed class StageUpdateInputValidator : AbstractValidator<StageUpdateInput>\n{\n    public StageUpdateInputValidator()\n    {\n        Include(new TimePlanInputValidator());\n        RuleFor(input => input).Custom((input, context) =>\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure));\n    }\n}"
+      "rules": "public sealed class StageUpdateInputValidator : AbstractValidator<StageUpdateInput>\n{\n    public StageUpdateInputValidator()\n    {\n        Include(new TimePlanInputValidator());\n        RuleFor(input => input.Status).IsInEnum();\n        RuleFor(input => input).Custom((input, context) =>\n            StagePricingRules.Validate(input.Price, input.PricingDate, context.AddFailure));\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInputValidator.cs",
-      "rules": "public sealed class TemplateStageDraftInputValidator : AbstractValidator<TemplateStageDraftInput>\n{\n    public TemplateStageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        RuleFor(input => input.Percentage).InclusiveBetween(0, 100);\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
+      "rules": "public sealed class TemplateStageDraftInputValidator : AbstractValidator<TemplateStageDraftInput>\n{\n    public TemplateStageDraftInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.Name).NotEmpty().MaximumLength(100).When(input => input.StageTemplateId is null);\n        RuleFor(input => input.StageTemplateId).NotEmpty().When(input => input.StageTemplateId is not null);\n        RuleFor(input => input.DeliveryDate).NotNull().WithMessage(\"Pls insert the dates first\");\n        //RuleFor(input => input.Percentage).InclusiveBetween(0, 100);\n        RuleFor(input => input.Items).NotNull().Must(items => items.Count <= 100);\n        RuleForEach(input => input.Items).NotNull().SetValidator(new StageItemDraftInputValidator());\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/TimePlans/DTOs/TimePlanInputValidator.cs",

@@ -23,9 +23,9 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(pricing.getByText('999', { exact: false })).toBeVisible();
   await expect(pricing.getByText('1,250', { exact: false })).toBeVisible();
   const prices = pricing.locator('dl > div');
-  const firstPrice = await prices.nth(0).boundingBox();
-  const secondPrice = await prices.nth(1).boundingBox();
-  expect(Math.abs(firstPrice!.y - secondPrice!.y)).toBeLessThan(2);
+  // Read both positions in the same frame while the pricing section reveals.
+  const priceTops = await prices.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+  expect(Math.abs(priceTops[0]! - priceTops[1]!)).toBeLessThan(2);
   const details = page.getByRole('region', { name: 'Unit details', exact: true });
   await expect(page.getByRole('region', { name: 'Payment plan', exact: true })).toHaveCount(0);
   await expect(details.getByText('A-204', { exact: true })).toBeVisible();
@@ -42,20 +42,21 @@ test('supported project URL filters, pagination, reset and browser history round
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
   await page.goto(`/projects?search=Garden&cityId=${ids.city}&areaId=${ids.area}&projectType=1&pageNumber=2&pageSize=3`);
   await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
-  await expect(page.getByLabel('Project type', { exact: true })).toHaveValue('1');
+  await expect(page.getByRole('tab', { name: 'Initiative projects', exact: true })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByText('Results: 25', { exact: true })).toBeVisible();
   await page.reload(); await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
   await openProjectFilters(page);
-  await page.getByLabel('Project type', { exact: true }).selectOption('0');
+  await page.getByRole('tab', { name: 'Regular projects', exact: true }).click();
   await expect(page.getByText('No results found', { exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.has('pageNumber')).toBe(false);
   await page.goBack(); await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Next page', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Garden Residence 7', exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.get('pageNumber')).toBe('3');
+  await openProjectFilters(page);
   await page.getByRole('button', { name: 'Clear filters' }).click();
   await expect(page.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
-  expect(new URL(page.url()).searchParams.toString()).toBe('pageSize=3');
+  expect(new URL(page.url()).searchParams.toString()).toBe('projectType=1&pageSize=3');
   expect(server.calls.filter((url) => url.pathname === '/api/v1/projects').every((url) => [...url.searchParams.keys()].every((key) => ['search', 'cityId', 'areaId', 'projectType', 'pageNumber', 'pageSize'].includes(key)))).toBe(true);
 });
 
@@ -81,6 +82,7 @@ test('location choices use the public lookups and changing city clears the previ
 test('rapid search debounces, cancels obsolete reads and rejects late results', async ({ page, context }) => {
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
   await page.goto('/projects'); await expect(page.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
+  await openProjectFilters(page);
   const search = page.getByRole('searchbox', { name: 'Search', exact: true });
   await search.fill('discard this draft');
   await page.getByRole('button', { name: 'Clear filters', exact: true }).click();

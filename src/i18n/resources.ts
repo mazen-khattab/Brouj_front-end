@@ -18,10 +18,19 @@ import arGovernance from './locales/ar/governance.json';
 import enGovernance from './locales/en/governance.json';
 import arHome from './locales/ar/home.json';
 import enHome from './locales/en/home.json';
+import arAbout from './locales/ar/about.json';
+import enAbout from './locales/en/about.json';
+import arLegal from './locales/ar/legal.json';
+import enLegal from './locales/en/legal.json';
+import arProjects from './locales/ar/projects.json';
+import enProjects from './locales/en/projects.json';
 
 export const namespaces = [
   "common",
   "home",
+  "about",
+  "legal",
+  "projects",
   "auth",
   "routing",
   "catalogue",
@@ -38,6 +47,9 @@ export const resources = {
   ar: {
     common: ar,
     home: arHome,
+    about: arAbout,
+    legal: arLegal,
+    projects: arProjects,
     auth: arAuth,
     routing: arRouting,
     catalogue: arCatalogue,
@@ -50,6 +62,9 @@ export const resources = {
   en: {
     common: en,
     home: enHome,
+    about: enAbout,
+    legal: enLegal,
+    projects: enProjects,
     auth: enAuth,
     routing: enRouting,
     catalogue: enCatalogue,

@@ -1,7 +1,9 @@
 import { Filters } from "./Filters";
 import { Listing } from "./Listing";
 import { ListProvider } from "./ListProvider";
-export function CityCatalogue() {
+import { CitiesDirectory } from "./CitiesDirectory";
+export function CityCatalogue({ editorial = false }: { editorial?: boolean }) {
+  if (editorial) return <CitiesDirectory />;
   return (
     <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-8">
       <Filters />
@@ -12,10 +14,10 @@ export function CityCatalogue() {
   );
 }
 /** Integration boundary: callers supply a relation, while the domain owns query state. */
-export function Browser() {
+export function Browser({ editorial = false }: { editorial?: boolean }) {
   return (
     <ListProvider>
-      <CityCatalogue />
+      <CityCatalogue editorial={editorial} />
     </ListProvider>
   );
 }

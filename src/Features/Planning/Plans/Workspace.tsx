@@ -199,7 +199,8 @@ function Workspace() {
                       ),
                     },
                     { id: "delivery", header: t("fields.deliveryDate"), render: (row) => <bdi>{formatDateTime(row.deliveryDate, locale)}</bdi> },
-                    { id: "price", header: t("fields.price"), render: (row) => row.price == null ? "—" : <bdi>{formatCurrency(row.price, locale)}</bdi> },
+                    { id: "status", header: t("fields.stageStatus"), render: (row) => t(`stageStatus.${row.status}`) },
+                    { id: "price", header: t("fields.price"), render: (row) => row.pricingDate == null ? "—" : <bdi>{formatCurrency(row.price, locale)}</bdi> },
                     { id: "pricingDate", header: t("fields.pricingDate"), render: (row) => row.pricingDate ? <bdi>{formatDateTime(row.pricingDate, locale)}</bdi> : "—" },
                     {
                       id: "order",

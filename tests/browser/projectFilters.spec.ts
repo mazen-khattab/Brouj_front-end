@@ -14,10 +14,10 @@ for (const language of ['en', 'ar'] as const) {
     await page.goto('/projects?projectType=1&pageNumber=2&pageSize=3');
     await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
     await openProjectFilters(page);
-    const filters = page.getByRole('region', { name: copy.filters, exact: true });
+    const filters = page.getByRole('complementary', { name: copy.filters, exact: true });
     const city = page.locator('#filter-city summary');
     const area = page.locator('#filter-area summary');
-    const fields = [filters.getByLabel(copy.search, { exact: true }), filters.getByLabel(copy.projectType, { exact: true }), city, area];
+    const fields = [filters.getByLabel(copy.search, { exact: true }), city, area];
     const positions = await Promise.all(fields.map(async (field) => (await field.boundingBox())!.y));
     expect(positions.every((top, index) => index === 0 || top > positions[index - 1]!)).toBe(true);
     const controls = page.getByRole('group', { name: copy.resultControls });
@@ -53,7 +53,7 @@ for (const language of ['en', 'ar'] as const) {
     await expect(page).toHaveURL(new RegExp('cityId=' + catalogueIds.city2));
     expect(new URL(page.url()).searchParams.has('areaId')).toBe(false);
     await filters.getByRole('button', { name: copy.clear, exact: true }).click();
-    await expect(page).toHaveURL(/\/projects\?pageSize=3$/);
+    await expect(page).toHaveURL(/\/projects\?projectType=1&pageSize=3$/);
     await controls.getByLabel(copy.pageSize).selectOption('24');
     await expect(page.getByRole('article')).toHaveCount(24);
     expect(new URL(page.url()).searchParams.get('pageSize')).toBe('24');
@@ -109,7 +109,7 @@ test('lookup failures, late search responses, keyboard dismissal and empty resul
   await expect(page.getByRole('button', { name: 'Choose Obsolete city', exact: true })).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(city).toBeFocused();
-  await expect(page.getByLabel('Project type', { exact: true })).toBeVisible();
+  await expect(page.getByRole('tablist', { name: 'Project type', exact: true })).toBeVisible();
   const area = page.locator('#filter-area summary');
   await area.click();
   const region = page.locator('#filter-area [role="region"]');

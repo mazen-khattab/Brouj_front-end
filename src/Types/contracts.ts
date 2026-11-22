@@ -530,9 +530,11 @@ export interface ProjectDto {
   floorCount: number;
   plannedUnitCount: number;
   neighborPrice: number | null;
+  startingMeterPrice: number;
+  unitSavingPercentage: number | null;
   drawDate: OffsetDateTime | null;
   isGarage: boolean;
-  garagePrice: number;
+  garagePrice: number | null;
   amenities: ReadonlyArray<AmenityDto>;
   images: ReadonlyArray<ImageMetadataDto>;
 }
@@ -645,8 +647,9 @@ export interface StageDraftInput {
   name: string;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
-  price: number;
-  pricingDate: OffsetDateTime;
+  price?: number;
+  pricingDate?: OffsetDateTime;
+  status?: TimePlanStageStatus;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInput.cs */
@@ -709,6 +712,7 @@ export interface StageUpdateInput {
   deliveryDate: OffsetDateTime | null;
   price?: number;
   pricingDate?: OffsetDateTime;
+  status?: TimePlanStageStatus;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInput.cs */
@@ -717,8 +721,6 @@ export interface TemplateStageDraftInput {
   name: string;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
-  price: number;
-  pricingDate: OffsetDateTime;
 }
 
 /** src/Brouj.Application/Features/Terms/DTOs/TermsDto.cs */
@@ -760,9 +762,9 @@ export interface TimePlanStageDto {
   id: Guid;
   name: string;
   sortOrder: number;
+  status: TimePlanStageStatus;
   deliveryDate: OffsetDateTime;
-  percentage: number;
-  price: number | null;
+  price: number;
   pricingDate: OffsetDateTime | null;
   items: ReadonlyArray<PlanStageItemDto>;
 }
@@ -806,6 +808,12 @@ export interface UnitListDto {
   neighborMeterPrice: number | null;
   totalPrice: number;
   percentage: number | null;
+  pricingDate: OffsetDateTime | null;
+  trend: string;
+  excellencePercentage: number;
+  unitSavingPercentage: number | null;
+  finishingDate: OffsetDateTime | null;
+  stages: ReadonlyArray<UnitStageDto>;
   isAvailable: boolean;
   isGarage: boolean;
   garagePrice: number;
@@ -834,6 +842,12 @@ export interface UnitPaymentPlanInput {
 
 /** Payment plan rows contain regular installments or initiative stage payments. */
 export type UnitPaymentPlanRowDto = UnitPaymentInstallmentDto | InitiativeStagePaymentDto;
+
+/** src/Brouj.Application/Features/Units/DTOs/UnitStageDto.cs */
+export interface UnitStageDto {
+  stageName: string;
+  stagePrice: number;
+}
 
 /** src/Brouj.API/Requests/UpdateProjectImageRequest.cs */
 export interface UpdateProjectImageRequest {

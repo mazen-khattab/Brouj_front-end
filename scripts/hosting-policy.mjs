@@ -7,7 +7,7 @@ export function securityHeaders(apiOrigin = 'https://api.brouj.com') {
     throw new Error('Hosting CSP requires a validated HTTPS API origin.');
   }
   return {
-    'Content-Security-Policy': `default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'none'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ${apiOrigin}; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'`,
+    'Content-Security-Policy': `default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'none'; img-src 'self' data: blob:; media-src 'self'; font-src 'self' data:; connect-src 'self' ${apiOrigin}; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'`,
     'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'no-referrer', 'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   };
@@ -16,7 +16,7 @@ export function securityHeaders(apiOrigin = 'https://api.brouj.com') {
 export const contentTypes = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
-  '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ico': 'image/x-icon',
+  '.webp': 'image/webp', '.webm': 'video/webm', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ico': 'image/x-icon',
 };
 
 /** Mirror the documented static-host rules; this local server is a rehearsal, not production hosting. */

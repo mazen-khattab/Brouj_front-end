@@ -1,58 +1,200 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Input, Textarea } from "../../Components/Fields";
+import { useLocation } from "react-router-dom";
+import { Input, Select, Textarea } from "../../Components/Fields";
+import { ApiError } from "../../Types/failures";
+import { apiFailureMessage } from "../../i18n/apiFailures";
+import { registrationPath, surveyPath, sendRegistration, sendSurvey } from "./homeSubmissions";
+import { useHome } from "./useHome";
+
+const priorities = ["design", "quality", "payment", "communication"] as const;
+const clarityOptions = ["clear", "partly", "unclear"] as const;
+
+function useSubmission() {
+  const [pending, setPending] = useState(false);
+  const [notice, setNotice] = useState<"success" | ApiError | null>(null);
+  const active = useRef<AbortController | null>(null);
+  useEffect(() => () => active.current?.abort(), []);
+  async function submit(form: HTMLFormElement, send: (signal: AbortSignal) => Promise<unknown>) {
+    if (active.current) return;
+    const controller = new AbortController();
+    active.current = controller;
+    setPending(true);
+    setNotice(null);
+    try {
+      await send(controller.signal);
+      if (!controller.signal.aborted) {
+        form.reset();
+        setNotice("success");
+      }
+    } catch (err) {
+      if (!controller.signal.aborted) setNotice(err instanceof ApiError ? err : new ApiError("unknown"));
+    } finally {
+      active.current = null;
+      if (!controller.signal.aborted) setPending(false);
+    }
+  }
+  return { submit, pending, notice, clear: () => setNotice(null) };
+}
+
+function SubmissionNotice({ notice, success }: { notice: ReturnType<typeof useSubmission>["notice"]; success: string }) {
+  const { t } = useTranslation("errors");
+  return (
+    <p role="status" aria-live="polite" className="home-form-notice">
+      {notice instanceof ApiError ? t(apiFailureMessage(notice).key) : notice === "success" ? success : ""}
+    </p>
+  );
+}
+
+function RegistrationForm() {
+  const { t } = useTranslation("home");
+  const request = useSubmission();
+  const [invalid, setInvalid] = useState<"name" | "phone" | null>(null);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!registrationPath) return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const phone = String(data.get("phone") ?? "")
+      .trim()
+      .replace(/[٠-٩۰-۹]/g, (digit) => String(digit.charCodeAt(0) % 16));
+    const error = !name ? "name" : !/^01[0125]\d{8}$/.test(phone) ? "phone" : null;
+    setInvalid(error);
+    if (error) {
+      (form.elements.namedItem(error) as HTMLInputElement).focus();
+      return;
+    }
+    void request.submit(form, (signal) => sendRegistration({ name, phone, inquiry: t("contact.callback") }, signal));
+  }
+  return (
+    <form
+      aria-labelledby="registration-title"
+      onSubmit={submit}
+      onInput={() => {
+        request.clear();
+        setInvalid(null);
+      }}
+    >
+      <h3 id="registration-title">{t("contact.registration")}</h3>
+      <p>{t("contact.intro")}</p>
+      <fieldset disabled={request.pending}>
+        <Input
+          id="contact-name"
+          name="name"
+          label={t("contact.name")}
+          autoComplete="name"
+          required
+          maxLength={150}
+          dir="auto"
+          error={invalid === "name" ? t("contact.invalidName") : undefined}
+        />
+        <Input
+          id="contact-phone"
+          name="phone"
+          label={t("contact.phone")}
+          autoComplete="tel"
+          type="tel"
+          placeholder="01xxxxxxxxx"
+          required
+          maxLength={20}
+          error={invalid === "phone" ? t("contact.invalidPhone") : undefined}
+        />
+        <button type="submit" disabled={!registrationPath} className="home-action home-action-solid">
+          {t(request.pending ? "contact.sending" : "contact.register")}
+        </button>
+      </fieldset>
+      {!registrationPath && <p>{t("contact.registrationUnavailable")}</p>}
+      <SubmissionNotice notice={request.notice} success={t("contact.registered")} />
+    </form>
+  );
+}
+
+function SurveyForm() {
+  const { t } = useTranslation("home");
+  const request = useSubmission();
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!surveyPath) return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const body = {
+      priority: String(data.get("priority")),
+      clarity: String(data.get("clarity")),
+      suggestion: String(data.get("suggestion") ?? "").trim(),
+    };
+    void request.submit(form, (signal) => sendSurvey(body, signal));
+  }
+  return (
+    <form aria-labelledby="survey-title" onSubmit={submit} onInput={request.clear}>
+      <h3 id="survey-title">{t("survey.title")}</h3>
+      {!surveyPath && <p>{t("survey.unavailable")}</p>}
+      <fieldset disabled={request.pending}>
+        <Select id="survey-priority" name="priority" label={t("survey.priority")} required defaultValue="">
+          <option value="" disabled>
+            {t("survey.select")}
+          </option>
+          {priorities.map((key) => (
+            <option key={key} value={key}>
+              {t(`survey.${key}`)}
+            </option>
+          ))}
+        </Select>
+        <Select id="survey-clarity" name="clarity" label={t("survey.clarity")} required defaultValue="">
+          <option value="" disabled>
+            {t("survey.select")}
+          </option>
+          {clarityOptions.map((key) => (
+            <option key={key} value={key}>
+              {t(`survey.${key}`)}
+            </option>
+          ))}
+        </Select>
+        <Textarea id="survey-suggestion" name="suggestion" label={t("survey.suggestion")} rows={2} dir="auto" maxLength={1500} />
+        <button type="submit" disabled={!surveyPath} className="home-action home-action-solid">
+          {t(request.pending ? "contact.sending" : "survey.send")}
+        </button>
+      </fieldset>
+      <SubmissionNotice notice={request.notice} success={t("survey.sent")} />
+    </form>
+  );
+}
 
 export function ContactSection() {
   const { t } = useTranslation("home");
-  const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
-
+  const { hash, key } = useLocation();
+  const { collections, terms } = useHome();
+  const section = useRef<HTMLElement>(null);
+  const alignedLocation = useRef<string | null>(null);
+  const waiting = terms.status === "loading" || Object.values(collections).some(collection => collection.result.status === "loading");
+  useEffect(() => {
+    if (hash !== "#contact" || waiting || alignedLocation.current === key) return;
+    let active = true;
+    const frame = requestAnimationFrame(() => {
+      // Cross-route links arrive before the lazy homepage and its collections settle.
+      void document.fonts.ready.then(() => {
+        if (!active) return;
+        section.current?.scrollIntoView({ block: "start", behavior: "instant" });
+        section.current?.focus({ preventScroll: true });
+        alignedLocation.current = key;
+      });
+    });
+    return () => { active = false; cancelAnimationFrame(frame); };
+  }, [hash, key, waiting]);
   return (
-    <section aria-labelledby="contact-title" className="home-section pb-8!">
-      <div className="grid gap-10 rounded-ui border border-accent/35 bg-primary-deep/80 p-7 sm:p-10 lg:grid-cols-[1fr_1.2fr] lg:gap-20 lg:p-14">
-        <div className="flex flex-col items-start justify-between gap-9">
-          <div>
-            <p className="home-eyebrow">{t("contact.eyebrow")}</p>
-            <h2 id="contact-title" className="home-title max-w-[12ch]">
-              {t("contact.title")}
-            </h2>
-            <p className="mt-5 max-w-sm leading-8 text-white/75">{t("contact.description")}</p>
+    <section ref={section} id="contact" tabIndex={-1} aria-labelledby="contact-title" className="home-band home-contact">
+      <div className="home-container">
+        <h2 id="contact-title" className="home-display">
+          {t("contact.title")}
+        </h2>
+        <div className="home-contact-grid">
+          <div data-reveal>
+            <RegistrationForm />
           </div>
-          <span aria-hidden="true" className="h-px w-20 bg-accent" />
+          <div data-reveal>
+            <SurveyForm />
+          </div>
         </div>
-        {/* Sending is intentionally deferred until the owner supplies a contact destination. */}
-        <form className="grid content-start gap-6" onSubmit={(event) => event.preventDefault()} aria-describedby="contact-availability">
-          <Input
-            id="contact-name"
-            name="name"
-            autoComplete="name"
-            label={t("contact.name")}
-            placeholder={t("contact.namePlaceholder")}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-          <Textarea
-            id="contact-subject"
-            name="subject"
-            rows={4}
-            label={t("contact.subject")}
-            placeholder={t("contact.subjectPlaceholder")}
-            value={subject}
-            onChange={(event) => setSubject(event.target.value)}
-          />
-          <div className="flex flex-wrap items-center gap-4">
-            <button
-              type="submit"
-              disabled
-              className="inline-flex min-h-12 items-center rounded-ui bg-accent px-6 py-3 font-medium text-primary disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {t("contact.send")}
-            </button>
-            <p id="contact-availability" className="max-w-xs text-xs leading-6 text-accent-light">
-              {t("contact.pending")}
-            </p>
-          </div>
-        </form>
       </div>
     </section>
   );

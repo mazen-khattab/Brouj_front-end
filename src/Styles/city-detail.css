@@ -1,0 +1,21 @@
+.city-detail { background: #fff; color: #13324a; text-align: start; }
+.city-loading-title { color: #13324a; padding-block: 2rem; }
+.city-hero { padding-block: 1.4rem 2.4rem; }
+.city-breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 0.6rem 0.9rem; color: #d1d8dc; font-size: 0.75rem; }
+.city-breadcrumbs li { display: flex; align-items: baseline; gap: 0.9rem; }
+.city-breadcrumbs li + li::before { content: "/"; color: #bfae89; }
+.city-breadcrumbs [aria-current] { color: #fff; }
+.city-breadcrumbs a { text-decoration: none; }
+.city-breadcrumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.city-eyebrow { display: flex; align-items: center; gap: 0.6rem; color: #d4c7aa; font-size: 0.72rem; margin-block: 1.8rem 0.6rem; }
+.city-eyebrow:lang(en) { text-transform: uppercase; letter-spacing: 0.06em; }
+.city-eyebrow svg { inline-size: 1rem; block-size: 1rem; stroke: #bfae89; stroke-width: 1.3; }
+.city-title-mask { max-inline-size: 100%; }
+.city-title-mask h1 { font-size: clamp(3.2rem, 5.4vw, 5.2rem); line-height: 1.15; overflow-wrap: anywhere; }
+.city-detail:lang(ar) .city-title-mask h1 { line-height: 1.45; }
+.city-intro { margin-block-start: 0.8rem; max-inline-size: 65ch; font-size: 0.85rem; line-height: 1.9; color: #d1d8dc; }
+@media (max-width: 600px) {
+  .city-hero { padding-block-end: 2rem; }
+  .city-title-mask h1 { font-size: 3rem; }
+  .city-intro { font-size: 0.8rem; }
+}

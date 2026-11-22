@@ -36,6 +36,7 @@ const auth: AuthValue = {
   reloadIdentity: vi.fn(),
 };
 const project: ProjectDto = {
+  startingMeterPrice: 0, unitSavingPercentage: null,
   id,
   name: "Fixture",
   areaId: id,

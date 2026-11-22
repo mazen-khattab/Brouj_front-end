@@ -2,10 +2,10 @@ import { useLayoutEffect } from "react";
 import type { ReactNode } from "react";
 import { Link, useLocation, useRouteError, isRouteErrorResponse } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Loading } from "../Components/Feedback";
 import { BrandWordmark } from "../Components/BrandWordmark";
 import { Button } from "../Components/Button";
 import { routePaths } from "./routePaths";
+import "../Styles/loading.css";
 
 export function RouteHeading({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -25,15 +25,16 @@ export function RouteHeading({ children }: { children: ReactNode }) {
 export function PageLoading({ full = false }: { full?: boolean }) {
   const { t } = useTranslation("routing");
   return (
-    <div
-      className={
-        full
-          ? "grid min-h-svh place-content-center gap-8 bg-primary-deep p-8 text-white"
-          : "rounded-ui border border-accent/30 bg-ivory p-8 text-primary"
-      }
-    >
-      {full && <BrandWordmark />}
-      <Loading label={t(full ? "opening" : "loadingPage")} />
+    <div className={`page-loading ${full ? "page-loading--full" : "page-loading--inline"}`} role="status" aria-live="polite">
+      {full && <div className="page-loading-brand"><BrandWordmark /></div>}
+      <div className="page-loading-content">
+        <div className="page-loading-emblem" aria-hidden="true">
+          <svg viewBox="0 0 120 140" fill="none"><path d="M15 125V60a45 45 0 0 1 90 0v65M23 125V60a37 37 0 0 1 74 0v65M60 7v15M9 60h14m74 0h14" /></svg>
+          <span className="page-loading-pillars"><i /><i /><i /></span>
+        </div>
+        <p>{t(full ? "opening" : "loadingPage")}</p>
+        <span className="page-loading-rule" aria-hidden="true"><span /></span>
+      </div>
     </div>
   );
 }

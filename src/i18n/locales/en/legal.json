@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "eyebrow": "Official legal document",
+    "title": "The Initiative Legal Booklet",
+    "intro": "A clear reference for the terms of participation in the Brouj Initiative.",
+    "version": "Version",
+    "effective": "Effective date",
+    "reference": "Initiative",
+    "initiative": "Brouj",
+    "print": "Print / Save PDF"
+  },
+  "reader": {
+    "index": "In this document",
+    "indexHint": "Select a section to continue reading.",
+    "published": "The published text",
+    "note": "Read the complete published terms before registering your interest in the initiative.",
+    "documentText": "Document text",
+    "end": "End of document",
+    "progress": "Reading progress"
+  },
+  "pending": {
+    "eyebrow": "Publication pending",
+    "title": "The booklet is awaiting publication.",
+    "body": "The initiative’s legal booklet will appear here once it is published. You can explore the projects or contact the Brouj team with your questions in the meantime.",
+    "check": "Check for publication"
+  },
+  "closing": {
+    "eyebrow": "Your next step",
+    "title": "Continue with clarity.",
+    "body": "Explore the initiative’s projects, or speak with our team about the booklet and participation terms.",
+    "projects": "Initiative projects",
+    "contact": "Contact us"
+  }
+}

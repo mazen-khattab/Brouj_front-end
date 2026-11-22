@@ -9,7 +9,7 @@ import { useEditorDraft } from "../../../Forms/editorDraft";
 import { ordered } from "../Shared/ordering";
 import { TimePlanStageForm } from "./TimePlanStageForm";
 import type { TemplateApplicationItemDraft, TimePlanStageDraft } from "./types";
-import { stageFromTemplateInput } from "./mapping";
+import { stageFrom, stageFromTemplateInput } from "./mapping";
 import { validateTemplateItemDates } from "./validation";
 
 /** Stage fields belong to TimePlanStageForm; this editor supplies only the template's dated items. */
@@ -52,7 +52,8 @@ export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemp
         id="template"
         title={t("applyTemplate")}
         mode="create"
-        initial={{ name: source.name, deliveryDate: "", price: "", pricingDate: "" }}
+        initial={{ ...stageFrom(), name: source.name }}
+        isTemplateCopy
         nameReadOnly
         resetOnSave
         submitLabel={t("applyTemplate")}

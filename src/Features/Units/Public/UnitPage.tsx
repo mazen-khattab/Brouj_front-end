@@ -1,80 +1,79 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
-import { BidiText } from "../../../Components/BidiText";
-import { MediaGallery } from "../../../Components/MediaGallery";
 import { PublicReadPanel } from "../../../Components/PublicReadPanel";
 import { PageLoading, RouteHeading } from "../../../Router/RouteFeedback";
 import { routePaths } from "../../../Router/routePaths";
+import type { UnitDto } from "../../../Types/contracts";
 import { ReservationEntry } from "../../Reservations/Customer/ReservationEntry";
 import { UnitDetails } from "./UnitDetails";
-
+import { UnitGallery } from "./UnitGallery";
+import { useUnitMotion } from "./useUnitMotion";
 import { useDetail } from "./DetailContext";
 import { DetailProvider } from "./DetailProvider";
+import "../../../Styles/unit-detail.css";
+
 const CustomerScope = lazy(() => import("../../Reservations/Customer/BookingScope"));
-const panel = "grid min-w-0 gap-8 rounded-ui border border-accent/40 bg-ivory p-6 text-primary shadow-panel sm:p-9";
+
+function UnitDossier({ unit, reload }: { unit: UnitDto; reload: () => void }) {
+  const { t } = useTranslation("catalogue");
+  const routing = useTranslation("routing");
+  const root = useRef<HTMLDivElement>(null);
+  useUnitMotion(root);
+  const title = t("unitLabel", { number: unit.number });
+  return <div ref={root} className="unit-detail">
+    <header className="ud-hero">
+      <div className="home-container">
+        <nav className="ud-breadcrumbs" aria-label={routing.t("breadcrumbs")}>
+          <ol>
+            <li><Link to={routePaths.home}>{routing.t("home")}</Link></li>
+            <li><Link to={routePaths.projects}>{routing.t("projects")}</Link></li>
+            <li><Link to={routePaths.project(unit.projectId)}>{routing.t("project")}</Link></li>
+            <li aria-current="page"><bdi>{title}</bdi></li>
+          </ol>
+        </nav>
+        <div className="ud-hero-heading">
+          <div className="ud-identity">
+            <div className="ud-title-mask"><RouteHeading>{title}</RouteHeading></div>
+            <span className={`ud-availability ${unit.isAvailable ? "is-available" : "is-unavailable"}`}>
+              <span aria-hidden="true" />{t(unit.isAvailable ? "available" : "unavailable")}
+            </span>
+          </div>
+          <Link className="ud-back-link" to={routePaths.project(unit.projectId)}>
+            <span aria-hidden="true">←</span>{t("backProject")}
+          </Link>
+        </div>
+      </div>
+    </header>
+    <article className="home-container ud-dossier">
+      <div className="ud-showcase">
+        <div className="ud-gallery-column"><UnitGallery key={unit.id} images={unit.images} /></div>
+        <UnitDetails unit={unit} />
+      </div>
+      <aside className="ud-reservation" aria-label={t("reservationTitle")}>
+        <h2>{t("reservationTitle")}</h2>
+        <ReservationEntry unit={unit} reload={reload} />
+      </aside>
+    </article>
+  </div>;
+}
+
 function Detail() {
   const { result, reload } = useDetail();
-  const { t } = useTranslation("catalogue");
-  return (
+  const { t } = useTranslation("routing");
+  return <>
+    {result.status !== "success" && <div className="home-container ud-loading-title"><RouteHeading>{t("unit")}</RouteHeading></div>}
     <PublicReadPanel result={result} reload={reload}>
-      {(detail) => (
-        <>
-          <article className={panel}>
-            <header className="flex flex-wrap items-center justify-between gap-5">
-              <h2 className="text-3xl font-medium">
-                {t("unitLabel", { number: "" })}
-                <BidiText>{detail.number}</BidiText>
-              </h2>
-              <Link
-                className="group inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-light/30 px-4 py-1.5 text-xs font-medium text-primary transition-all hover:border-accent hover:bg-accent-light hover:text-primary-deep"
-                to={routePaths.project(detail.projectId)}
-              >
-                <span>{t("backProject")}</span>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="size-3.5 text-accent transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
-            </header>
-            <div className="grid items-start gap-8 lg:grid-cols-2">
-              <MediaGallery key={detail.id} images={detail.images} />
-              <UnitDetails unit={detail} />
-            </div>
-            <ReservationEntry unit={detail} reload={reload} />
-          </article>
-        </>
-      )}
+      {unit => <UnitDossier key={unit.id} unit={unit} reload={reload} />}
     </PublicReadPanel>
-  );
+  </>;
 }
+
 export default function UnitPage() {
   const { unitId, projectId } = useParams();
-
-  const kind = "unit";
-  const { t } = useTranslation("routing");
-  const catalogue = useTranslation("catalogue");
-  return (
-    <div className="grid gap-8 motion-safe:animate-fade-in">
-      <header className="grid gap-4">
-        <RouteHeading>{t(kind)}</RouteHeading>
-        <p className="max-w-prose leading-8 text-white/80">{catalogue.t("intro")}</p>
-      </header>
-      <DetailProvider id={unitId} projectId={projectId}>
-        <Suspense fallback={<PageLoading />}>
-          <CustomerScope key={[projectId, unitId].join(":")}>
-            <Detail />
-          </CustomerScope>
-        </Suspense>
-      </DetailProvider>
-    </div>
-  );
+  return <DetailProvider id={unitId} projectId={projectId}>
+    <Suspense fallback={<PageLoading />}>
+      <CustomerScope key={[projectId, unitId].join(":")}><Detail /></CustomerScope>
+    </Suspense>
+  </DetailProvider>;
 }

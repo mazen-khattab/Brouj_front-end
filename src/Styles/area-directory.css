@@ -1,0 +1,32 @@
+.area-directory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.area-directory-card { position: relative; min-inline-size: 0; border: 1px solid rgb(191 174 137 / 0.3); background: #fff; }
+.area-directory-card::before { content: ""; position: absolute; inset-block-start: -1px; inset-inline: -1px; block-size: 2px; background: #bfae89; opacity: 0.35; transition: opacity 0.5s; pointer-events: none; }
+.area-directory-card-link { display: flex; flex-direction: column; min-block-size: 21rem; block-size: 100%; padding: clamp(1.5rem, 2.4vw, 2.2rem); color: #13324a; text-decoration: none; }
+.area-directory-card-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: #596a76; font-size: 0.7rem; }
+.area-directory-card-top svg { inline-size: 3rem; block-size: 3rem; stroke: #bfae89; stroke-width: 0.9; }
+.area-directory-card h2 { font-size: clamp(2.8rem, 3.5vw, 4rem); line-height: 1.15; font-weight: 500; margin-block: 1.8rem 0.5rem; overflow-wrap: anywhere; }
+.area-directory-city { color: #596a76; font-size: 0.85rem; line-height: 1.8; margin-block-end: 1.6rem; overflow-wrap: anywhere; }
+.area-directory-city { display: flex; align-items: baseline; gap: 0.5rem; }
+.area-directory-city svg { inline-size: 0.9rem; block-size: 0.9rem; flex-shrink: 0; align-self: center; stroke: var(--color-accent); stroke-width: 1.4; }
+.area-directory-card-cta { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-block-start: 1px solid rgb(191 174 137 / 0.3); padding-block-start: 1.15rem; margin-block-start: auto; font-size: 0.75rem; }
+.area-directory-card-cta svg { inline-size: 1.2rem; block-size: 1.2rem; stroke: #13324a; stroke-width: 1.2; flex-shrink: 0; transition: translate 0.5s; }
+.area-directory-card:dir(rtl) .area-directory-card-cta svg { transform: scaleX(-1); }
+.area-directory-results { font-variant-numeric: tabular-nums; }
+.area-directory-card:focus-within { border-color: #bfae89; }
+.area-directory-card:focus-within::before { opacity: 1; }
+.area-directory-empty h2 { overflow-wrap: anywhere; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .area-directory-card { transition: translate 0.5s, border-color 0.5s, box-shadow 0.5s; }
+  .area-directory-card:hover { translate: 0 -3px; border-color: #bfae89; box-shadow: 0 16px 40px rgb(19 50 74 / 0.06); }
+  .area-directory-card:hover::before { opacity: 1; }
+  .area-directory-card:hover .area-directory-card-cta svg { translate: 5px 0; }
+  .area-directory-card:dir(rtl):hover .area-directory-card-cta svg { translate: -5px 0; }
+}
+@media (max-width: 650px) {
+  .area-directory-grid { grid-template-columns: minmax(0, 1fr); }
+  .area-directory-card-link { min-block-size: 19rem; }
+  .area-directory-card h2 { font-size: 3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .area-directory-card, .area-directory-card::before, .area-directory-card-cta svg { transition: none; }
+}

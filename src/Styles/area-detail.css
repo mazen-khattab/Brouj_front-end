@@ -1,0 +1,43 @@
+.area-detail { font-variant-numeric: tabular-nums; }
+.area-loading-title { color: #13324a; padding-block: 2rem; }
+.area-hero { padding-block: 1.4rem 2.4rem; }
+.area-breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 0.6rem 0.9rem; color: #d1d8dc; font-size: 0.75rem; }
+.area-breadcrumbs li { display: flex; align-items: baseline; gap: 0.9rem; }
+.area-breadcrumbs li + li::before { content: "/"; color: #bfae89; }
+.area-breadcrumbs [aria-current] { color: #fff; }
+.area-breadcrumbs a { text-decoration: none; }
+.area-breadcrumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.area-hero-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; margin-block-start: 2rem; }
+.area-title-mask { min-inline-size: 0; max-inline-size: 100%; }
+.area-title-mask h1 { font-size: clamp(3.2rem, 5.4vw, 5.2rem); line-height: 1.15; overflow-wrap: anywhere; }
+.area-detail:lang(ar) .area-title-mask h1 { line-height: 1.45; }
+.area-city-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; border: 1px solid rgb(191 174 137 / 0.35); color: #e2d8c3; font-size: 0.8rem; max-inline-size: 100%; }
+.area-city-badge svg { inline-size: 1rem; block-size: 1rem; stroke: #bfae89; stroke-width: 1.3; flex-shrink: 0; }
+.area-city-badge bdi { overflow-wrap: anywhere; }
+.area-city-badge:hover { color: #fff; border-color: #bfae89; }
+.area-intro { margin-block-start: 0.8rem; max-inline-size: 65ch; color: #d1d8dc; font-size: 0.85rem; line-height: 1.9; }
+.area-amenities-band { border-block-end: 1px solid rgb(191 174 137 / 0.25); background: #fff; }
+.area-amenities { display: grid; grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 2.5fr); align-items: center; gap: 1rem clamp(2rem, 4vw, 4rem); padding-block: 1.6rem; }
+.area-amenities h2 { font-size: 2rem; line-height: 1.3; }
+.area-amenity-chips { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.65rem; min-inline-size: 0; }
+.area-amenity-chips > div { display: grid; align-content: start; gap: 0.2rem; padding: 0.7rem 1rem; border: 1px solid rgb(191 174 137 / 0.3); background: #f8f7f4; min-inline-size: 8rem; max-inline-size: 100%; }
+.area-amenity-chips dt { color: #596a76; font-size: 0.7rem; overflow-wrap: anywhere; }
+.area-amenity-chips dd { font-size: 0.85rem; font-weight: 500; overflow-wrap: anywhere; }
+.area-amenities-empty { color: #596a76; font-size: 0.85rem; line-height: 1.9; }
+.area-projects .projects-card { border-radius: 0; }
+.area-projects .projects-card:hover { translate: 0 -3px; }
+.area-projects .projects-card { transition: translate 0.5s, box-shadow 0.5s, border-color 0.5s; }
+@media (max-width: 1023px) {
+  .area-amenities { grid-template-columns: 1fr; gap: 1rem; }
+}
+@media (max-width: 600px) {
+  .area-hero { padding-block-end: 2rem; }
+  .area-hero-heading { gap: 0.7rem 1.2rem; margin-block-start: 1.6rem; }
+  .area-title-mask h1 { font-size: 3rem; }
+  .area-intro { font-size: 0.8rem; }
+  .area-amenities { padding-block: 1.4rem; gap: 0.6rem; }
+  .area-amenities h2 { font-size: 1.8rem; }
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .area-projects .projects-card:hover { translate: none; }
+}

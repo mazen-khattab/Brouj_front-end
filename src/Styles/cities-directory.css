@@ -1,0 +1,4 @@
+.cities-index .city-eyebrow::before { content: ""; inline-size: 1.8rem; block-size: 1px; background: #bfae89; flex-shrink: 0; }
+.cities-directory-card h2 { margin-block-end: 2rem; }
+.cities-directory-results { font-variant-numeric: tabular-nums; }
+.cities-directory-empty h2 { overflow-wrap: anywhere; }

@@ -1,85 +1,76 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Amenities } from "../../../Components/Amenities";
 import { MediaGallery } from "../../../Components/MediaGallery";
 import { PublicReadPanel } from "../../../Components/PublicReadPanel";
 import { RouteHeading } from "../../../Router/RouteFeedback";
 import { routePaths } from "../../../Router/routePaths";
+import type { ProjectDto } from "../../../Types/contracts";
 import { ProjectTimePlan } from "../../Planning/Public/ProjectTimePlan";
-import { UnitCarousel } from "../../Units/Public/UnitCarousel";
+import { UnitTable } from "../../Units/Public/UnitTable";
+import { DrawCountdown } from "./DrawCountdown";
 import { ProjectFacts } from "./Facts";
-
-import { Browser } from "./Browser";
+import { ProjectsIndexPage } from "./ProjectsIndexPage";
 import { useDetail } from "./DetailContext";
 import { DetailProvider } from "./DetailProvider";
-const panel = "grid min-w-0 gap-8 rounded-ui border border-accent/40 bg-ivory p-6 text-primary shadow-panel sm:p-9";
+import { useProjectDetailMotion } from "./useProjectDetailMotion";
+import "../../../Styles/project-detail.css";
+
+function ProjectDossier({ detail }: { detail: ProjectDto }) {
+  const { t } = useTranslation("catalogue");
+  const routing = useTranslation("routing");
+  const root = useRef<HTMLDivElement>(null);
+  useProjectDetailMotion(root);
+  return <div ref={root} className="project-detail">
+    <header className="pd-hero">
+      <div className="home-container">
+        <nav className="pd-breadcrumbs" aria-label={routing.t("breadcrumbs")}>
+          <ol>
+            <li><Link to={routePaths.home}>{routing.t("home")}</Link></li>
+            <li><Link to={routePaths.projects}>{routing.t("projects")}</Link></li>
+            <li aria-current="page"><bdi>{detail.name}</bdi></li>
+          </ol>
+        </nav>
+        <div className="pd-hero-heading">
+          <div>
+            <p className="pd-project-type">{t(detail.projectType === 1 ? "initiative" : detail.projectType === 0 ? "regular" : "unknownType")}</p>
+            <div className="pd-title-mask"><RouteHeading>{detail.name}</RouteHeading></div>
+          </div>
+          <Link className="pd-area-link" to={routePaths.area(detail.areaId)}>{t("backArea")}<span aria-hidden="true">↗</span></Link>
+        </div>
+        <DrawCountdown projectType={detail.projectType} drawDate={detail.drawDate} />
+      </div>
+    </header>
+    <article className="home-container pd-overview" data-pd-reveal>
+      <div className="pd-overview-grid">
+        <div className="pd-gallery"><MediaGallery key={detail.id} images={detail.images} /></div>
+        <div className="pd-spec-sheet"><ProjectFacts project={detail} editorial /></div>
+      </div>
+      <div className="pd-narrative">
+        <section className="pd-description">
+          <h2>{t("description")}</h2>
+          <p dir="auto">{detail.description || t("noDescription")}</p>
+        </section>
+        <div className="pd-amenities"><Amenities items={detail.amenities} cards /></div>
+      </div>
+    </article>
+    <div className="home-container pd-units" data-pd-reveal><UnitTable project={detail} /></div>
+    <div className="pd-plan-band" data-pd-reveal>
+      <div className="home-container"><ProjectTimePlan projectId={detail.id} editorial /></div>
+    </div>
+  </div>;
+}
+
 function Detail() {
   const { result, reload } = useDetail();
-  const { t } = useTranslation("catalogue");
-  return (
-    <PublicReadPanel result={result} reload={reload}>
-      {(detail) => (
-        <>
-          <article className={panel}>
-            <header className="flex flex-wrap items-center justify-between gap-5">
-              <h2 className="text-3xl font-medium">{detail.name}</h2>
-              <Link
-                className="group inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-light/30 px-4 py-1.5 text-xs font-medium text-primary transition-all hover:border-accent hover:bg-accent-light hover:text-primary-deep"
-                to={routePaths.area(detail.areaId)}
-              >
-                <span>{t("backArea")}</span>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="size-3.5 text-accent transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
-            </header>
-            <div className="grid gap-8 lg:grid-cols-2">
-              <MediaGallery key={detail.id} images={detail.images} />
-              <ProjectFacts project={detail} />
-            </div>
-            <section>
-              <h2 className="mb-4 text-2xl font-medium">{t("description")}</h2>
-              <p dir="auto" className="whitespace-pre-wrap leading-9">
-                {detail.description || t("noDescription")}
-              </p>
-            </section>
-            <Amenities items={detail.amenities} cards />
-          </article>
-          <UnitCarousel projectId={detail.id} />
-          <ProjectTimePlan projectId={detail.id} />
-        </>
-      )}
-    </PublicReadPanel>
-  );
+  return <PublicReadPanel result={result} reload={reload}>
+    {detail => <ProjectDossier key={detail.id} detail={detail} />}
+  </PublicReadPanel>;
 }
+
 export default function ProjectPage() {
   const { projectId } = useParams();
-  const [search] = useSearchParams();
-  const kind = projectId === undefined ? "projects" : "project";
-  const { t } = useTranslation("routing");
-  const catalogue = useTranslation("catalogue");
-  return (
-    <div className="grid gap-8 motion-safe:animate-fade-in">
-      <header className="grid gap-4">
-        <RouteHeading>{t(kind === "projects" && search.get("projectType") === "1" ? "initiativeProjects" : kind)}</RouteHeading>
-        <p className="max-w-prose leading-8 text-white/80">{catalogue.t(projectId === undefined ? "projectsIntro" : "intro")}</p>
-      </header>
-      {projectId === undefined ? (
-        <Browser />
-      ) : (
-        <DetailProvider id={projectId}>
-          <Detail />
-        </DetailProvider>
-      )}
-    </div>
-  );
+  if (projectId === undefined) return <ProjectsIndexPage />;
+  return <DetailProvider id={projectId}><Detail /></DetailProvider>;
 }

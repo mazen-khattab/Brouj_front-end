@@ -3,6 +3,10 @@ import type { Page } from '@playwright/test';
 import { routeDefinitions } from '../../src/Router/routeDefinitions';
 import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
 import ar from '../../src/i18n/locales/ar/routing.json' with { type: 'json' };
+import homeEn from '../../src/i18n/locales/en/home.json' with { type: 'json' };
+import homeAr from '../../src/i18n/locales/ar/home.json' with { type: 'json' };
+import aboutEn from '../../src/i18n/locales/en/about.json' with { type: 'json' };
+import legalEn from '../../src/i18n/locales/en/legal.json' with { type: 'json' };
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openPublicSessionActions } from './publicHeaderActions';
 
@@ -25,7 +29,8 @@ for (const actor of ['anonymous', 'customer', 'admin', 'superAdmin'] as const) {
         await expect(page.locator('#auth-password')).toBeVisible();
       } else {
         const forbidden = (route.access === 'customer' && actor !== 'customer') || (route.access === 'staff' && actor === 'customer') || (route.access === 'superAdmin' && actor !== 'superAdmin');
-        await expect(heading(page)).toHaveText(forbidden ? 'Access unavailable' : route.path === '/' ? 'Brouj' : en[route.title as keyof typeof en]);
+        const editorialTitles: Record<string, string> = { '/': homeEn.hero.title, '/about': aboutEn.hero.title, '/terms': legalEn.hero.title };
+        await expect(heading(page)).toHaveText(forbidden ? 'Access unavailable' : editorialTitles[route.path] ?? en[route.title as keyof typeof en]);
       }
     }
     // Own lists require a customer; staff operational reads stay inside the admin branch.
@@ -48,7 +53,7 @@ test('reload, back/forward, localized titles, breadcrumbs, focus, scroll and 404
   await page.goBack(); await expect(heading(page)).toHaveText('Unit');
   await page.goForward(); await expect(heading(page)).toHaveText('Projects');
   await page.setViewportSize({ width: page.viewportSize()!.width, height: 500 });
-  await page.goto('/'); await expect(heading(page)).toHaveText('Brouj');
+  await page.goto('/'); await expect(heading(page)).toHaveText(homeEn.hero.title);
   await page.evaluate(() => scrollTo(0, 300));
   const savedScroll = await page.evaluate(() => scrollY);
   expect(savedScroll).toBeGreaterThan(0);
@@ -57,7 +62,7 @@ test('reload, back/forward, localized titles, breadcrumbs, focus, scroll and 404
   await page.getByRole('link', { name: 'Explore projects' }).evaluate((element: HTMLAnchorElement) => element.click());
   await expect(heading(page)).toHaveText('Projects');
   expect(await page.evaluate(() => scrollY)).toBe(0);
-  await page.goBack(); await expect(heading(page)).toHaveText('Brouj');
+  await page.goBack(); await expect(heading(page)).toHaveText(homeEn.hero.title);
   await expect.poll(() => page.evaluate(() => scrollY)).toBe(savedScroll);
   await page.goto('/missing/page'); await expect(heading(page)).toHaveText('Page not found');
   await expect(page.locator('header')).toBeVisible(); await expect(page.locator('footer')).toBeVisible();
@@ -107,7 +112,7 @@ test('lazy navigation uses a local pending view while the public header and foot
   let release!: () => void;
   const pending = new Promise<void>((resolve) => { release = resolve; });
   await page.route(publicProjectModule, async (route) => { await pending; await route.continue(); });
-  await page.goto('/'); await expect(heading(page)).toHaveText('Brouj');
+  await page.goto('/'); await expect(heading(page)).toHaveText(homeEn.hero.title);
   await page.getByRole('link', { name: 'Explore projects' }).click();
   await expect(page.getByText('Loading page', { exact: true })).toBeVisible();
   await expect(page.locator('header')).toBeVisible(); await expect(page.locator('footer')).toBeVisible();
@@ -152,7 +157,13 @@ for (const language of ['ar', 'en'] as const) {
     ] as const) {
       server.state.actor = actor; await page.goto(path); await expect(heading(page)).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
-      await page.locator('main img').evaluateAll(async (images) => { await Promise.all(images.map((node) => node instanceof HTMLImageElement ? node.decode() : Promise.resolve())); });
+      await page.locator('main img').evaluateAll(async (images) => {
+        await Promise.all(images.map((node) => {
+          if (!(node instanceof HTMLImageElement)) return;
+          node.loading = 'eager';
+          return node.decode();
+        }));
+      });
       await expect(page.locator('html')).toHaveAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await page.screenshot({ path: info.outputPath(`${language}-${layout}.png`), fullPage: true, animations: 'disabled' });
@@ -171,7 +182,7 @@ for (const language of ['ar', 'en'] as const) {
     await expect(page.locator('html')).toHaveAttribute('lang', language === 'en' ? 'ar' : 'en');
     await expect(heading(page)).toHaveText(switched.cities);
     await page.getByRole('navigation', { name: language === 'en' ? 'مسار التنقل' : 'Breadcrumbs' }).getByRole('link', { name: language === 'en' ? 'الرئيسية' : 'Home', exact: true }).click();
-    await expect(heading(page)).toHaveText(language === 'en' ? 'بروج' : 'Brouj');
+    await expect(heading(page)).toHaveText(language === 'en' ? homeAr.hero.title : homeEn.hero.title);
     server.state.actor = 'customer'; await page.goto('/account');
     await expect(heading(page)).toHaveText(language === 'en' ? 'الملف الشخصي' : 'Profile');
   });

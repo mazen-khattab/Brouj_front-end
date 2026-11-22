@@ -25,16 +25,30 @@
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --animate-toast-life: toast-life 5s linear both;
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes shimmer {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
   }
   @keyframes toast-life {
-    from { scale: 1 1; }
-    to { scale: 0 1; }
+    from {
+      scale: 1 1;
+    }
+    to {
+      scale: 0 1;
+    }
   }
 }
 :root {

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Input } from "../../../Components/Fields";
+import { Input, Select } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
 import { useEditorDraft } from "../../../Forms/editorDraft";
 import { serverFieldErrors } from "../../../Forms/fieldErrors";
 import { validateStage } from "./validation";
+import { TimePlanStageStatus } from "../../../Types/contracts";
 import type { TimePlanStageDraft, TimePlanStageFormProps } from "./types";
 
 export function TimePlanStageForm({
@@ -20,7 +21,7 @@ export function TimePlanStageForm({
   onReset,
   mode,
   nameReadOnly = false,
-  showPricing = true,
+  isTemplateCopy = false,
   submitLabel,
   resetOnSave = false,
   children,
@@ -28,7 +29,9 @@ export function TimePlanStageForm({
   const { t } = useTranslation("timePlans");
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof TimePlanStageDraft)[]>([]);
-  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate", "price", "pricingDate"];
+  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate"];
+  const pricingRequired = mode === "create" && !isTemplateCopy;
+  if (!isTemplateCopy) fields.push("status", "price", "pricingDate");
   const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
 
   function change(field: keyof TimePlanStageDraft, value: string) {
@@ -37,11 +40,11 @@ export function TimePlanStageForm({
   }
 
   function error(field: keyof TimePlanStageDraft) {
-    return errors.includes(field) ? t("invalidField", { field: t(`fields.${field}`) }) : undefined;
+    return errors.includes(field) ? t("invalidField", { field: t(field === "status" ? "fields.stageStatus" : `fields.${field}`) }) : undefined;
   }
 
   async function submit() {
-    const issues = validateStage(draft.value, mode, showPricing);
+    const issues = validateStage(draft.value, mode, isTemplateCopy);
     setInvalid(issues);
     if (issues.length) {
       document.getElementById(`${id}-${issues[0]}`)?.focus();
@@ -67,7 +70,7 @@ export function TimePlanStageForm({
     >
       <h3 className="text-xl font-medium">{title}</h3>
       <ValidationSummary
-        items={errors.map((field) => ({ fieldId: `${id}-${field}`, message: t("invalidField", { field: t(`fields.${field}`) }) }))}
+        items={errors.map((field) => ({ fieldId: `${id}-${field}`, message: t("invalidField", { field: t(field === "status" ? "fields.stageStatus" : `fields.${field}`) }) }))}
       />
       <fieldset disabled={disabled} className="grid min-w-0 gap-5 md:grid-cols-2">
         <Input
@@ -92,8 +95,19 @@ export function TimePlanStageForm({
           hint={t("dateHint")}
           required
         />
-        {showPricing && (
+        {!isTemplateCopy && (
           <>
+            <Select
+              id={`${id}-status`}
+              label={t("fields.stageStatus")}
+              value={draft.value.status}
+              error={error("status")}
+              onChange={(event) => change("status", event.target.value)}
+            >
+              {Object.values(TimePlanStageStatus).map((status) => (
+                <option key={status} value={status}>{t(`stageStatus.${status}`)}</option>
+              ))}
+            </Select>
             <Input
               id={`${id}-price`}
               label={t("fields.price")}
@@ -103,7 +117,7 @@ export function TimePlanStageForm({
               dir="ltr"
               inputMode="decimal"
               hint={t("priceHint")}
-              required
+              required={pricingRequired}
             />
             <Input
               id={`${id}-pricingDate`}
@@ -114,7 +128,7 @@ export function TimePlanStageForm({
               dir="ltr"
               maxLength={40}
               hint={t("dateHint")}
-              required
+              required={pricingRequired}
             />
           </>
         )}

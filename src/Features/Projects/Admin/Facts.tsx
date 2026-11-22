@@ -42,7 +42,7 @@ export function ProjectFacts({ project }: { project: ProjectDto }) {
       { label: t("garage"), value: t(project.isGarage ? "yes" : "no") },
       {
         label: t("garagePrice"),
-        value: formatCurrency(project.garagePrice, locale),
+        value: project.garagePrice == null ? t("priceUnavailable") : formatCurrency(project.garagePrice, locale),
       },
     );
     if (project.neighborPrice !== null)
