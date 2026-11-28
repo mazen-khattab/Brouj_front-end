@@ -1,24 +1,68 @@
 {
   "seeAll": "See all",
+  "hero": {
+    "eyebrow": "The Brouj initiative",
+    "title": "A place for what comes next.",
+    "description": "Explore the residences, people and terms behind the Brouj real estate initiative.",
+    "explore": "Explore projects",
+    "expand": "Watch fullscreen",
+    "mute": "Mute film",
+    "unmute": "Unmute film",
+    "pause": "Pause film",
+    "play": "Play film"
+  },
   "projects": {
     "eyebrow": "A place to begin",
     "title": "Initiative projects",
     "description": "Explore the places where your next chapter can take shape.",
-    "category": "Brouj · Initiative",
+    "illustration": "Architectural illustration",
     "details": "View project",
     "area": "{{value}} m²",
     "carousel": "carousel",
     "previous": "Previous projects",
     "next": "Next projects",
-    "position": "Collection {{current}} / {{total}}",
-    "collection": "The initiative collection",
+    "position": "Page {{current}} of {{total}}",
     "empty": "New beginnings are on the way.",
     "emptyDescription": "Our initiative projects will appear here when available."
   },
+  "regular": {
+    "eyebrow": "The Brouj catalogue",
+    "title": "Brouj development works",
+    "description": "Previous and current projects by Brouj Real Estate Development.",
+    "empty": "No regular projects are available yet.",
+    "emptyDescription": "New listings will appear here as they become available.",
+    "filter": "Project status",
+    "all": "All projects",
+    "current": "Current",
+    "previous": "Previous",
+    "unclassified": "Brouj has yet to publish projects in this category. Browse the full collection under All projects."
+  },
   "terms": {
-    "eyebrow": "Clarity at every step",
-    "title": "Terms & conditions",
-    "description": "Take a moment to get to know the details before your next step."
+    "read": "Read full legal booklet",
+    "chapters": "Booklet chapters",
+    "open": "Open the booklet",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
+  "films": {
+    "initiative": "The initiative film",
+    "design": "A study in form",
+    "places": "Spaces to come home to",
+    "perspective": "A different perspective",
+    "preview": "Architectural preview",
+    "watch": "Play {{title}}",
+    "close": "Close",
+    "error": "This video could not be played.",
+    "eyebrow": "Architectural films",
+    "title": "Initiative Videos",
+    "intro": "The vision, safeguards and people shaping the Brouj initiative.",
+    "quality": "Legal Guarantee \u0026 Quality Standards",
+    "expansion": "Initiative Success \u0026 Expansion",
+    "qualityCategory": "Legal safeguards",
+    "expansionCategory": "Growth \u0026 vision",
+    "qualityDescription": "An inside look at our documented legal safeguards and strict engineering standards protecting your investment at every stage.",
+    "expansionDescription": "How the initiative grew into a benchmark for real estate development and the story behind Brouj\u0027s ongoing expansion.",
+    "watchLabel": "Watch Film"
   },
   "about": {
     "eyebrow": "About us",
@@ -27,7 +71,11 @@
     "description": "A thoughtful approach to property. At Brouj, we bring people and places together, with care for the details that make a place feel like yours.",
     "people": "Three people. One shared vision.",
     "ownerRole": "Co-owner",
-    "owners": { "one": "Owner one", "two": "Owner two", "three": "Owner three" },
+    "owners": {
+      "one": "Owner one",
+      "two": "Owner two",
+      "three": "Owner three"
+    },
     "placeholderDescription": "Owner portrait and biography coming soon."
   },
   "aboutPage": {
@@ -37,23 +85,77 @@
     "story": "We see property as part of a larger story: the people who choose it, the lives that grow around it, and the everyday moments that make it home.",
     "principlesTitle": "What guides us",
     "principles": {
-      "people": { "title": "People at the heart", "description": "A place begins with the people who will call it theirs. Their hopes and everyday needs shape how we think about property." },
-      "care": { "title": "Care in the details", "description": "From the first impression to the smallest detail, we value a considered approach to space, comfort, and character." },
-      "clarity": { "title": "Clarity at every step", "description": "We believe in making room for questions and keeping the details clear, so each next step feels considered." }
+      "people": {
+        "title": "People at the heart",
+        "description": "A place begins with the people who will call it theirs. Their hopes and everyday needs shape how we think about property."
+      },
+      "care": {
+        "title": "Care in the details",
+        "description": "From the first impression to the smallest detail, we value a considered approach to space, comfort, and character."
+      },
+      "clarity": {
+        "title": "Clarity at every step",
+        "description": "We believe in making room for questions and keeping the details clear, so each next step feels considered."
+      }
     },
     "teamEyebrow": "The people behind Brouj",
     "teamDescription": "A shared idea brings our three owners together: to connect people with places that feel right for them.",
     "nextTitle": "Find the place for your next chapter."
   },
   "contact": {
-    "eyebrow": "Contact us",
-    "title": "Every beginning starts with a conversation.",
-    "description": "Have something in mind? There is room for your questions, ideas, and next steps.",
+    "title": "Contact us",
+    "registration": "Quick registration",
+    "intro": "Leave your name and mobile number for a call from the Brouj team.",
     "name": "Name",
-    "namePlaceholder": "Your name",
-    "subject": "Subject",
-    "subjectPlaceholder": "What would you like to talk about?",
-    "send": "Send message",
-    "pending": "Message sending will be available soon."
+    "phone": "Phone number",
+    "register": "Request a call",
+    "sending": "Sending…",
+    "registered": "Your callback request has been received.",
+    "invalidName": "Enter your name.",
+    "invalidPhone": "Enter an 11-digit Egyptian mobile number beginning with 010, 011, 012 or 015.",
+    "callback": "Please contact me about registering for the Brouj initiative.",
+    "registrationUnavailable": "Callback requests are currently unavailable."
+  },
+  "leadership": {
+    "eyebrow": "04 — LEADERSHIP",
+    "title": "Initiative leadership",
+    "ceo": {
+      "name": "Eng. Mohamed Agha",
+      "role": "Chief Executive Officer",
+      "initials": "MA",
+      "tag": "CHIEF EXECUTIVE",
+      "statement": "Guiding architectural vision and strategic execution across all initiative developments."
+    },
+    "strategy": {
+      "name": "Eng. Hassan Idris",
+      "role": "Strategic Advisor",
+      "initials": "HI",
+      "tag": "STRATEGIC ADVISOR",
+      "statement": "Crafting long-term urban paradigms and sustainable investment frameworks."
+    },
+    "legal": {
+      "name": "Dr. Ezz",
+      "role": "Legal Advisor",
+      "initials": "E",
+      "tag": "LEGAL COUNSEL",
+      "statement": "Safeguarding participant equity and governance standards with institutional rigor."
+    }
+  },
+  "survey": {
+    "title": "Help improve the initiative and our developments",
+    "priority": "Which area should Brouj prioritise?",
+    "design": "Residential design",
+    "quality": "Construction quality",
+    "payment": "Payment plans",
+    "communication": "Project updates",
+    "clarity": "How clear are the participation terms?",
+    "clear": "Clear",
+    "partly": "Somewhat clear",
+    "unclear": "I need more detail",
+    "select": "Select an answer",
+    "suggestion": "Anything else we should consider? (optional)",
+    "send": "Send feedback",
+    "unavailable": "The survey is currently closed to submissions.",
+    "sent": "Thank you. Your feedback has been received."
   }
 }

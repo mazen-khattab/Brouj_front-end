@@ -27,7 +27,8 @@ All paths below have implemented screens. The home page retains the approved wel
 | `/cities/:cityId` | Public | City and paginated areas / 06 |
 | `/areas/:areaId` | Public | Area, amenities and projects / 06 |
 | `/projects` | Public | Project search/location/type filters / 06 |
-| `/projects/:projectId` | Public | Project, gallery, amenities and units / 06 |
+| `/projects/:projectId` | Public | Project details, gallery, amenities and link to units / 06 |
+| `/projects/:projectId/units` | Public | Paginated project units table / 06 |
 | `/projects/:projectId/units/:unitId` | Public | Unit, gallery and customer reservation confirmation / 06–07 |
 | `/terms` | Public | Current published terms / 06 |
 | `/login` | Anonymous only | Customer login / 04 |

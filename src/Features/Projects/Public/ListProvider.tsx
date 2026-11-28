@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useResourceRead } from "../../../Hooks/useResourceRead";
 import { usePublicContentInvalidation } from "../../../Realtime/publicContentInvalidation";
@@ -10,8 +10,10 @@ import type { ListData } from "./ListContext";
 import { ListContext } from "./ListContext";
 import type { Query } from "./query";
 import { readQuery, writeQuery } from "./query";
+import { queryForType, typeFilterKey, type TypeFilterMemory } from "./typeFilters";
 
-export function ListProvider({ scopeId, children }: { scopeId?: string | undefined; children: ReactNode }) {
+export function ListProvider({ scopeId, children, rememberTypes = false }: { scopeId?: string | undefined; children: ReactNode; rememberTypes?: boolean }) {
+  const typeMemory = useRef<TypeFilterMemory>({});
   const [search, setSearch] = useSearchParams();
   const raw = search.toString();
   const params = useMemo(() => {
@@ -19,6 +21,9 @@ export function ListProvider({ scopeId, children }: { scopeId?: string | undefin
     return parsed;
   }, [raw]);
   const canonical = writeQuery(params).toString();
+  useEffect(() => {
+    if (rememberTypes) typeMemory.current[typeFilterKey(params.projectType)] = params;
+  }, [params, rememberTypes]);
   useEffect(() => {
     if (raw !== canonical) setSearch(canonical, { replace: true, preventScrollReset: true });
   }, [raw, canonical, setSearch]);
@@ -38,12 +43,17 @@ export function ListProvider({ scopeId, children }: { scopeId?: string | undefin
   }, [result, params, setSearch]);
   const update = useCallback(
     (changes: Partial<Query>, replace = false) => {
+      if (rememberTypes && "projectType" in changes && typeFilterKey(changes.projectType) !== typeFilterKey(params.projectType)) {
+        typeMemory.current[typeFilterKey(params.projectType)] = params;
+        setSearch(writeQuery({ ...queryForType(changes.projectType, typeMemory.current), ...changes }), { replace, preventScrollReset: true });
+        return;
+      }
       const next = { ...params, ...changes, pageNumber: changes.pageNumber ?? 1 };
       // A new city starts a new area selection; it must not retain a stale area's constraint.
       if ("cityId" in changes && !("areaId" in changes)) delete next.areaId;
       setSearch(writeQuery(next), { replace, preventScrollReset: true });
     },
-    [params, setSearch],
+    [params, setSearch, rememberTypes],
   );
   return <ListContext value={{ params, result, reload, update }}>{children}</ListContext>;
 }

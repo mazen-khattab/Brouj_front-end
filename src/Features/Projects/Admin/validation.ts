@@ -1,3 +1,4 @@
+import { toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import type { ProjectDraft } from "./types";
 import { isGuid } from "../../../Services/identifiers";
 import type { AmenityDto } from "../../../Types/contracts";
@@ -6,27 +7,6 @@ function decimal(value: string, precision: number, scale: number) {
   const match = /^\+?(\d+)(?:\.(\d+))?$/.exec(value);
   return Boolean(
     match && match[1]!.replace(/^0+/, "").length <= precision - scale && (match[2]?.length ?? 0) <= scale && Number.isFinite(Number(value)),
-  );
-}
-
-function validOffsetDate(value: string) {
-  const match = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(?:\.\d{1,7})?(Z|[+-](\d\d):(\d\d))$/.exec(value);
-  if (!match || Number(match[1]) < 1 || !Number.isFinite(Date.parse(value))) {
-    return false;
-  }
-  const date = new Date(`${match[1]}-${match[2]}-${match[3]}T00:00:00Z`);
-  const zoneHours = Number(match[8] ?? 0),
-    zoneMinutes = Number(match[9] ?? 0);
-  return (
-    date.getUTCFullYear() === Number(match[1]) &&
-    date.getUTCMonth() + 1 === Number(match[2]) &&
-    date.getUTCDate() === Number(match[3]) &&
-    Number(match[4]) < 24 &&
-    Number(match[5]) < 60 &&
-    Number(match[6]) < 60 &&
-    zoneHours <= 14 &&
-    zoneMinutes < 60 &&
-    (zoneHours !== 14 || zoneMinutes === 0)
   );
 }
 
@@ -43,7 +23,7 @@ export function invalidFields(d: ProjectDraft): string[] {
   if (!/^\d+$/.test(d.floorCount) || Number(d.floorCount) > 2147483647) invalid.add("floorCount");
   if (!/^\d+$/.test(d.plannedUnitCount) || Number(d.plannedUnitCount) > 2147483647) invalid.add("plannedUnitCount");
   if (d.neighborPrice !== "" && !decimal(d.neighborPrice, 19, 4)) invalid.add("neighborPrice");
-  if (d.drawDate && !validOffsetDate(d.drawDate)) invalid.add("drawDate");
+  if (d.drawDate && !toDateTimeOffsetIso(d.drawDate)) invalid.add("drawDate");
   if (d.projectType === "1") {
     if (!d.neighborPrice) invalid.add("neighborPrice");
     if (!d.drawDate) invalid.add("drawDate");

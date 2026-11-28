@@ -1,69 +1,72 @@
-import { expect, test, profileRoute } from './sessionFixtures';
+import { expect, test, profileRoute, sessionCors } from './sessionFixtures';
 import { catalogueServer } from './catalogueFixtures';
 import { routingServer, seedRouting } from './routingFixtures';
 import { openPublicSessionActions } from './publicHeaderActions';
+import en from '../../src/i18n/locales/en/home.json' with { type: 'json' };
+import ar from '../../src/i18n/locales/ar/home.json' with { type: 'json' };
+import aboutEn from '../../src/i18n/locales/en/about.json' with { type: 'json' };
+import { legalBooklet } from '../../src/data/legalBooklet';
 
 for (const locale of ['en', 'ar'] as const) {
-  test(`homepage sections, carousel and owner panels in ${locale}`, async ({ page, context }, info) => {
+  test(`homepage catalogue, booklet, leadership and forms in ${locale}`, async ({ page, context }, info) => {
+    const copy = locale === 'en' ? en : ar;
+    const consoleErrors: string[] = [];
+    page.on('console', message => {
+      // Browsers report the anonymous profile bootstrap's expected 401 as a resource error.
+      if (message.type() === 'error' && !(/401/.test(message.text()) && profileRoute.test(message.location().url))) consoleErrors.push(message.text());
+    });
+    await routingServer(context, 'anonymous');
     const server = await catalogueServer(context);
     server.state.projectCount = 4;
-    await page.addInitScript((language) => localStorage.setItem('brouj.locale', language), locale);
-    await page.goto('/');
-    const english = locale === 'en';
-    const hero = page.getByRole('region', { name: english ? 'Welcome to Brouj' : 'مرحبًا بك في بروج', exact: true });
-    await expect(hero.getByRole('link')).toHaveCount(1);
-    await expect(hero.getByRole('link', { name: english ? 'Explore projects' : 'استكشف المشروعات' })).toBeVisible();
-    const carousel = page.getByRole('region', { name: english ? 'Initiative projects' : 'مشروعات المبادرة', exact: true }).last();
-    await expect(carousel.getByRole('article')).toHaveCount(3);
-    await expect(carousel.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
-    const previous = carousel.getByRole('button', { name: english ? 'Previous projects' : 'المشروعات السابقة' });
-    const next = carousel.getByRole('button', { name: english ? 'Next projects' : 'المشروعات التالية' });
-    await expect(previous).toBeDisabled();
-    await next.click();
-    await expect(carousel.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
-    await expect(carousel.getByRole('article')).toHaveCount(1);
-    await expect(next).toBeDisabled();
-    await previous.click();
-    await expect(carousel.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
-    const projectCalls = server.calls.filter((url) => url.pathname === '/api/v1/projects');
-    expect(projectCalls.map((url) => url.searchParams.get('pageNumber'))).toEqual(['1', '2', '1']);
-    expect(projectCalls.every((url) => url.searchParams.get('projectType') === '1' && url.searchParams.get('pageSize') === '3')).toBe(true);
-
-    const about = page.locator('#about');
-    const panels = about.getByRole('button');
-    await expect(panels.nth(0)).toHaveAttribute('aria-expanded', 'true');
-    await panels.nth(1).focus();
-    await expect(panels.nth(1)).toHaveAttribute('aria-expanded', 'true');
-    await expect(panels.nth(0)).toHaveAttribute('aria-expanded', 'false');
-    if (info.project.name === 'chromium') {
-      await panels.nth(2).hover();
-      await expect(panels.nth(2)).toHaveAttribute('aria-expanded', 'true');
-      await expect.poll(async () => (await panels.nth(2).boundingBox())!.width > (await panels.nth(1).boundingBox())!.width).toBe(true);
-    } else {
-      await panels.nth(2).tap();
-      await expect(panels.nth(2)).toHaveAttribute('aria-expanded', 'true');
-    }
-
-    await expect(page.locator('form input')).toHaveCount(1);
-    await expect(page.locator('form textarea')).toHaveCount(1);
-    await page.getByLabel(english ? 'Name' : 'الاسم', { exact: true }).fill('Visitor');
-    await page.getByLabel(english ? 'Subject' : 'الموضوع', { exact: true }).fill('A question about Brouj');
-    await expect(page.getByRole('button', { name: english ? 'Send message' : 'إرسال الرسالة' })).toBeDisabled();
-    await expect(page.locator('footer')).toContainText(english ? 'All rights reserved.' : 'جميع الحقوق محفوظة.');
-    await expect(page.locator('footer a')).toHaveCount(2);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    // Capture the resting design after the interaction checks.
-    await page.locator('#contact-name').fill('');
-    await page.locator('#contact-subject').fill('');
-    await panels.nth(0).click();
-    await page.mouse.move(0, 0);
-    await page.locator('#about').evaluate((element) => (element as HTMLElement).blur());
-    await page.evaluate(() => {
-      (document.activeElement as HTMLElement | null)?.blur();
-      scrollTo(0, 0);
+    server.state.regularProjectCount = 4;
+    let contact: unknown;
+    await context.route('**/api/v1/contact-submissions', route => {
+      contact = route.request().postDataJSON();
+      return route.fulfill({ headers: sessionCors, status: 201, json: { success: true, data: 'fixture-id' } });
     });
+    await seedRouting(page, 'anonymous', locale);
+    await page.goto('/');
+    const hero = page.locator('.home-hero');
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveText(copy.hero.title);
+    const carousel = page.locator('#initiatives');
+    await expect(carousel.getByRole('article')).toHaveCount(3);
+    const next = carousel.getByRole('button', { name: copy.projects.next });
+    const prev = carousel.getByRole('button', { name: copy.projects.previous });
+    await expect(prev).toBeDisabled();
+    const onMobile = info.project.name.includes('mobile');
+    await next.click();
+    if (onMobile) await next.click();
+    await next.click();
+    await expect(carousel.getByRole('link', {name: 'Garden Residence 4'})).toBeVisible();
+    await expect(next).toBeDisabled();
+    await prev.click();
+    await expect(carousel.getByRole('article')).toHaveCount(3);
+    const booklet = page.locator('#booklet');
+    await booklet.getByRole('button', { name: `01 ${legalBooklet.chapters[0]!.title[locale]}` }).click();
+    await expect(booklet.getByRole('heading', { name: legalBooklet.chapters[0]!.title[locale] })).toBeVisible();
+    await expect(page.locator('#about h3')).toHaveText([copy.leadership.ceo.name, copy.leadership.strategy.name, copy.leadership.legal.name]);
+    const works = page.locator('#regular-projects');
+    await works.getByRole('button', { name: copy.regular.current, exact: true }).click();
+    await expect(works.getByRole('status')).toHaveText(copy.regular.unclassified);
+    await works.getByRole('button', { name: copy.regular.all }).click();
+    await works.getByRole('button', { name: copy.projects.next }).click();
+    await expect(works.getByRole('link', {name: 'Terrace Residence 4'})).toBeVisible();
+    const form = page.getByRole('form', {name: copy.contact.registration});
+    await expect(form.locator('input')).toHaveCount(2);
+    await form.getByLabel(copy.contact.name).fill('Visitor');
+    await form.getByLabel(copy.contact.phone).fill('123');
+    await form.getByRole('button').click();
+    await expect(form.getByText(copy.contact.invalidPhone)).toBeVisible();
+    await form.getByLabel(copy.contact.phone).fill('٠١٠١٢٣٤٥٦٧٨');
+    await form.getByRole('button').click();
+    await expect(form.getByRole('status')).toHaveText(copy.contact.registered);
+    expect(contact).toEqual({name:'Visitor', phone:'01012345678', inquiry:copy.contact.callback});
+    await expect(page.getByRole('button', {name:copy.survey.send})).toBeDisabled();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await hero.scrollIntoViewIfNeeded();
     await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({ path: info.outputPath(`home-${locale}.png`), fullPage: true, animations: 'disabled' });
+    await page.screenshot({ path: info.outputPath(`home-${locale}.png`), animations:'disabled' });
+    expect(consoleErrors).toEqual([]);
   });
 }
 
@@ -78,18 +81,18 @@ test('navbar destinations preserve initiative filtering and open the About page'
   };
   await openMenu();
   const navigation = page.getByRole('navigation', { name: 'Main navigation' }).filter({ visible: true });
-  await expect(navigation.getByRole('link')).toHaveText(['Home', 'About us', 'Initiative projects', 'Terms']);
+  await expect(navigation.getByRole('link')).toHaveText(['Home', 'About us', 'Projects', 'Terms']);
   await navigation.getByRole('link', { name: 'About us', exact: true }).click();
   await expect(page).toHaveURL(/\/about$/);
-  await expect(page.getByRole('heading', { name: 'About us', level: 1 })).toBeFocused();
+  await expect(page.getByRole('heading', { name: aboutEn.hero.title, level: 1 })).toBeFocused();
   await openMenu();
   await expect(navigation.getByRole('link', { name: 'About us', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(navigation.getByRole('link', { name: 'Home', exact: true })).not.toHaveAttribute('aria-current');
-  await navigation.getByRole('link', { name: 'Initiative projects', exact: true }).click();
-  await expect(page.getByLabel('Project type', { exact: true })).toHaveValue('1');
+  await navigation.getByRole('link', { name: 'Projects', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'All projects', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.goto('/');
   await page.locator('#initiatives').getByRole('link', { name: 'See all' }).click();
-  await expect(page.getByLabel('Project type', { exact: true })).toHaveValue('1');
+  await expect(page.getByRole('tab', { name: 'Initiative projects', exact: true })).toHaveAttribute('aria-selected', 'true');
 });
 
 for (const locale of ['en', 'ar'] as const) {
@@ -103,10 +106,10 @@ for (const locale of ['en', 'ar'] as const) {
       const hero = page.locator('.home-hero');
       await expect(hero.getByRole('heading', { level: 1 })).toBeVisible();
       expect(await page.locator('html').evaluate((element) => getComputedStyle(element).fontSize)).toBe(locale === 'ar' ? '18px' : '16px');
-      await expect(page.getByRole('heading', { name: locale === 'ar' ? 'من نحن' : 'About us', exact: true })).toBeVisible();
+      await expect(page.locator('#about h2')).toBeVisible();
       if (width < 1024) {
         await expect(page.locator('.home-hero-overlay')).toBeVisible();
-        const imageBounds = (await hero.locator('img').boundingBox())!;
+        const imageBounds = (await hero.locator('.home-hero-image').boundingBox())!;
         const titleBounds = (await hero.getByRole('heading', { level: 1 }).boundingBox())!;
         expect(titleBounds.y).toBeGreaterThan(imageBounds.y);
         expect(titleBounds.y + titleBounds.height).toBeLessThan(imageBounds.y + imageBounds.height);
@@ -119,12 +122,12 @@ for (const locale of ['en', 'ar'] as const) {
         await page.keyboard.press('Escape');
         await expect(menu).toBeFocused();
       } else {
-        await expect(page.locator('.home-hero-overlay')).toBeHidden();
+        await expect(page.locator('.home-hero-overlay')).toBeVisible();
         await expect(page.getByRole('link', { name: locale === 'ar' ? 'تسجيل الدخول' : 'Sign in', exact: true })).toBeVisible();
       }
       expect(await page.locator('body').innerText()).not.toContain('↗');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      await page.locator('.home-hero img').evaluate(async (image) => (image as HTMLImageElement).decode());
+      await page.locator('.home-hero-image').evaluate(async (image) => (image as HTMLImageElement).decode());
       await page.evaluate(() => { (document.activeElement as HTMLElement | null)?.blur(); scrollTo(0, 0); });
       await page.screenshot({ path: info.outputPath(`home-${locale}-${width}.png`), fullPage: true, animations: 'disabled' });
     }
@@ -163,35 +166,104 @@ for (const locale of ['en', 'ar'] as const) {
   }
 }
 
-test('homepage handles independent read failures, retry and an empty initiative collection', async ({ page, context }) => {
+test('homepage keeps the local booklet available during project read failures and empty results', async ({ page, context }) => {
   const server = await catalogueServer(context);
   server.state.failTerms = true;
+  server.state.failProjects = true;
   await page.addInitScript(() => localStorage.setItem('brouj.locale', 'en'));
   await page.goto('/');
-  await expect(page.locator('#initiatives article')).toHaveCount(3);
-  const terms = page.getByRole('region', { name: 'Terms & conditions', exact: true });
-  await expect(terms.getByRole('button', { name: 'Try again' })).toBeVisible();
-  server.state.failTerms = false;
-  await terms.getByRole('button', { name: 'Try again' }).click();
-  await expect(terms.getByRole('heading', { name: 'Published terms' })).toBeVisible();
+  const initiative = page.locator('#initiatives');
+  const terms = page.getByRole('region', { name: legalBooklet.title.en, exact: true });
+  await expect(initiative.getByRole('button', { name: 'Try again' })).toBeVisible();
+  await expect(terms.getByRole('link', { name: en.terms.read })).toHaveAttribute('href', '/terms');
+  server.state.failProjects = false;
+  await initiative.getByRole('button', { name: 'Try again' }).click();
+  await expect(initiative.getByRole('article')).toHaveCount(3);
   await context.route('https://localhost:7249/api/v1/projects?*', (route) => route.fulfill({
     headers: { 'access-control-allow-origin': `https://localhost:${process.env.BROUJ_TEST_PORT ?? '5173'}`, 'access-control-allow-credentials': 'true' },
     json: { success: true, data: { items: [], pageNumber: 1, pageSize: 3, totalCount: 0, totalPages: 0 }, message: null },
   }));
   await page.reload();
   await expect(page.getByRole('heading', { name: 'New beginnings are on the way.' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Next projects' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Previous projects' })).toBeDisabled();
+  await expect(initiative.getByRole('button', { name: 'Next projects' })).toBeDisabled();
+  await expect(initiative.getByRole('button', { name: 'Previous projects' })).toBeDisabled();
+  await expect(terms.getByRole('button', { name: en.terms.open })).toBeVisible();
 });
 
-test('hero entrance follows locale direction and respects reduced motion', async ({ page, context }) => {
+test('hero layout follows locale direction and respects reduced motion', async ({ page, context }) => {
   await catalogueServer(context);
   await page.addInitScript(() => localStorage.setItem('brouj.locale', 'en'));
   await page.goto('/');
   await expect(page.locator('.home-hero-image')).toBeVisible();
-  expect(await page.locator('.home-hero-image').evaluate((element) => getComputedStyle(element).getPropertyValue('--hero-start').trim())).toBe('3rem');
+  await expect(page.locator('.home-hero')).toHaveCSS('direction', 'ltr');
   await page.getByRole('button', { name: 'Switch to Arabic' }).click();
-  expect(await page.locator('.home-hero-image').evaluate((element) => getComputedStyle(element).getPropertyValue('--hero-start').trim())).toBe('-3rem');
+  await expect(page.locator('.home-hero')).toHaveCSS('direction', 'rtl');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('.home-hero-image')).toHaveCSS('animation-name', 'none');
+});
+
+test('all three local films play and return focus when closed', async ({ page, context }) => {
+  await catalogueServer(context);
+  await page.addInitScript(() => localStorage.setItem('brouj.locale', 'en'));
+  await page.goto('/');
+  const films = page.getByRole('button', { name: /^Play / });
+  await expect(films).toHaveCount(3);
+  for (const trigger of await films.all()) {
+    await trigger.click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect.poll(() => dialog.locator('video').evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+  }
+});
+
+test('dragging the initiative gallery reveals the following project', async ({ page, context }, info) => {
+  test.skip(info.project.name !== 'chromium', 'Mouse drag complements the mobile navigation checks.');
+  await catalogueServer(context);
+  await seedRouting(page);
+  await page.goto('/');
+  const viewport = page.locator('.home-carousel-viewport');
+  await viewport.scrollIntoViewIfNeeded();
+  const bounds = (await viewport.boundingBox())!;
+  const start = bounds.x + bounds.width * .8;
+  const y = bounds.y + bounds.height * .4;
+  const track = page.locator('.home-project-track');
+  const resting = await track.evaluate(el => getComputedStyle(el).transform);
+  await page.mouse.move(start, y);
+  await page.mouse.down();
+  await page.mouse.move(start + (await page.locator('html').getAttribute('dir') === 'rtl' ? 1 : -1) * bounds.width * .35, y, {steps:12});
+  await page.mouse.up();
+  await expect.poll(() => track.evaluate(el => getComputedStyle(el).transform)).not.toEqual(resting);
+});
+
+test('configured status collections and survey submit through the public API', async ({ page, context }) => {
+  const surveyPath = process.env.VITE_HOME_SURVEY_PATH;
+  const projectId = process.env.VITE_HOME_CURRENT_PROJECT_IDS;
+  test.skip(!surveyPath || !projectId, 'Run with a connected survey and curated project status.');
+  await routingServer(context);
+  await catalogueServer(context);
+  await context.route('**/api/v1/projects/' + projectId, route => route.fulfill({
+    headers:sessionCors, json:{success:true, data:{id:projectId,name:'Published current work',projectType:0,size:1250}},
+  }));
+  let body: unknown;
+  await context.route('**' + surveyPath, route => {
+    body = route.request().postDataJSON();
+    return route.fulfill({headers: sessionCors, json:{success:true, data:'response-id'}});
+  });
+  await seedRouting(page);
+  await page.goto('/');
+  const works = page.locator('#regular-projects');
+  await works.getByRole('button', {name: en.regular.current, exact:true}).click();
+  await expect(works.getByRole('link', {name:'Published current work'})).toHaveAttribute('href', '/projects/' + projectId);
+  const survey = page.getByRole('form', {name:en.survey.title});
+  await survey.getByRole('button').click();
+  expect(body).toBeUndefined();
+  await survey.getByLabel(en.survey.priority).selectOption('design');
+  await survey.getByLabel(en.survey.clarity).selectOption('clear');
+  await survey.getByLabel(en.survey.suggestion).fill('More courtyard plans');
+  await survey.getByRole('button').click();
+  await expect(survey.getByRole('status')).toHaveText(en.survey.sent);
+  expect(body).toEqual({priority:'design', clarity:'clear', suggestion:'More courtyard plans'});
 });

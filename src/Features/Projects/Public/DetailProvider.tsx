@@ -1,20 +1,7 @@
 import type { ReactNode } from "react";
-import { useCallback } from "react";
-import { useResourceRead } from "../../../Hooks/useResourceRead";
-import { usePublicContentInvalidation } from "../../../Realtime/publicContentInvalidation";
-import { getProjectById } from "../../../Services/Projects";
-import { isGuid } from "../../../Services/identifiers";
-import { ApiError } from "../../../Types/failures";
+import { usePublicProject } from "../../../Hooks/usePublicProject";
 import { DetailContext } from "./DetailContext";
 export function DetailProvider({ id, children }: { id: string | undefined; children: ReactNode }) {
-  const load = useCallback(
-    async (signal: AbortSignal) => {
-      if (!isGuid(id)) throw new ApiError("transport", { status: 404 });
-      return getProjectById({ id }, { signal });
-    },
-    [id],
-  );
-  const read = useResourceRead(["project", id].join(":"), load);
-  usePublicContentInvalidation(read.reload);
+  const read = usePublicProject(id);
   return <DetailContext value={read}>{children}</DetailContext>;
 }

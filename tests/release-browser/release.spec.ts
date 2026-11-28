@@ -9,6 +9,8 @@ import ar from '../../src/i18n/locales/ar/routing.json' with { type: 'json' };
 import en from '../../src/i18n/locales/en/routing.json' with { type: 'json' };
 import authAr from '../../src/i18n/locales/ar/auth.json' with { type: 'json' };
 import authEn from '../../src/i18n/locales/en/auth.json' with { type: 'json' };
+import homeAr from '../../src/i18n/locales/ar/home.json' with { type: 'json' };
+import homeEn from '../../src/i18n/locales/en/home.json' with { type: 'json' };
 import { releaseServer } from './fixtures';
 
 const pointer = JSON.parse(readFileSync('artifacts/release/latest.json', 'utf8')) as { directory: string };
@@ -49,7 +51,7 @@ for (const locale of ['ar', 'en'] as const) {
       const response = await page.goto(path);
       expect(response?.status()).toBe(200);
       expect(response?.headers()['cache-control']).toBe('no-cache');
-      const title = route.path === '/' ? (locale === 'ar' ? 'بروج' : 'Brouj')
+      const title = route.path === '/' ? (locale === 'ar' ? homeAr.hero.title : homeEn.hero.title)
         : route.access === 'anonymous' ? (route.path === '/register' ? auth.registerTitle : route.path === '/admin/login' ? auth.staffTitle : auth.customerTitle)
           : copy[route.title as keyof typeof copy];
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
@@ -85,7 +87,7 @@ test('production hosting has safe headers, asset cache/404 behavior, no dev rout
   const loaded: string[] = [];
   page.on('request', (event) => { loaded.push(new URL(event.url()).pathname); });
   const response = await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Brouj', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: homeEn.hero.title, level: 1 })).toBeVisible();
   expect(response?.headers()['content-security-policy']).toContain("script-src 'self'");
   expect(response?.headers()['x-content-type-options']).toBe('nosniff');
   expect(response?.headers()['x-frame-options']).toBe('DENY');

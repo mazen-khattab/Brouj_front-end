@@ -348,6 +348,7 @@ for (const path of applicationFiles.filter(
 }
 for (const path of [
   "src/Brouj.API/Extensions/ApiServiceExtensions.cs",
+  "src/Brouj.API/Serialization/EgyptDateTimeOffsetJsonConverter.cs",
   "src/Brouj.API/Controllers/ApiControllerBase.cs",
   "src/Brouj.API/Authorization/AuthorizationExtensions.cs",
   "src/Brouj.API/Filters/UploadValidationFilter.cs",
@@ -364,7 +365,8 @@ const enumConverters = files("src")
   .filter((path) => path.endsWith(".cs") && !path.includes("/Migrations/"))
   .filter((path) =>
     /JsonStringEnumConverter|JsonConverter\s*\(/.test(read(path)
-      .replace(/\[JsonConverter\(typeof\(Stage(?:Price|PricingDate)JsonConverter\)\)\]/g, "")),
+      .replace(/\[JsonConverter\(typeof\(Stage(?:Price|PricingDate)JsonConverter\)\)\]/g, "")
+      .replace(/new EgyptDateTimeOffsetJsonConverter\(\)/g, "")),
   );
 for (const name of ["StagePriceJsonConverter", "StagePricingDateJsonConverter"])
   source(`src/Brouj.Application/Features/TimePlans/Serialization/${name}.cs`);

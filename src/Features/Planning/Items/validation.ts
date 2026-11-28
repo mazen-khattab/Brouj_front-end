@@ -1,18 +1,18 @@
 import type { TimePlanItemDraft, TimePlanItemStatusDraft, ItemImageDescriptionDraft } from "./types";
-import { validDateTime } from "../../../Validation/dateTime";
+import { toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 
 export function validateItem(values: TimePlanItemDraft, completed = false): (keyof TimePlanItemDraft)[] {
   const errors: (keyof TimePlanItemDraft)[] = [];
   if (!values.name.trim() || values.name.length > 100) errors.push("name");
-  if (!validDateTime(values.dueDate)) errors.push("dueDate");
-  if (values.confirmedDate ? !validDateTime(values.confirmedDate) : completed) errors.push("confirmedDate");
+  if (!toDateTimeOffsetIso(values.dueDate)) errors.push("dueDate");
+  if (values.confirmedDate ? !toDateTimeOffsetIso(values.confirmedDate) : completed) errors.push("confirmedDate");
   return errors;
 }
 
 export function validateItemStatus(values: TimePlanItemStatusDraft): (keyof TimePlanItemStatusDraft)[] {
   const errors: (keyof TimePlanItemStatusDraft)[] = [];
   if (!/^[0-2]$/.test(values.status)) errors.push("status");
-  if (values.confirmedDate ? !validDateTime(values.confirmedDate) : values.status === "2") errors.push("confirmedDate");
+  if (values.confirmedDate ? !toDateTimeOffsetIso(values.confirmedDate) : values.status === "2") errors.push("confirmedDate");
   return errors;
 }
 

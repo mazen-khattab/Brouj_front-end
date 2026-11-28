@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Input } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
 import { useEditorDraft } from "../../../Forms/editorDraft";
 import { serverFieldErrors } from "../../../Forms/fieldErrors";
 import { validateStage } from "./validation";
+import { stageFields } from "./fields";
 import type { TimePlanStageDraft, TimePlanStageFormProps } from "./types";
 
 export function TimePlanStageForm({
@@ -20,7 +20,7 @@ export function TimePlanStageForm({
   onReset,
   mode,
   nameReadOnly = false,
-  showPricing = true,
+  isTemplateCopy = false,
   submitLabel,
   resetOnSave = false,
   children,
@@ -28,20 +28,20 @@ export function TimePlanStageForm({
   const { t } = useTranslation("timePlans");
   const draft = useEditorDraft(id, initial);
   const [invalid, setInvalid] = useState<(keyof TimePlanStageDraft)[]>([]);
-  const fields: (keyof TimePlanStageDraft)[] = ["name", "deliveryDate", "price", "pricingDate"];
-  const errors = [...new Set([...invalid, ...serverFieldErrors(failure, fields)])];
+  const fields = stageFields.filter((field) => !isTemplateCopy || field.template);
+  const pricingRequired = mode === "create" && !isTemplateCopy;
+  const errors = new Set([...invalid, ...serverFieldErrors(failure, fields.map((field) => field.key))]);
+  const messages = new Map(fields.flatMap((field) =>
+    errors.has(field.key) ? [[field.key, t("invalidField", { field: field.label(t) })] as const] : [],
+  ));
 
   function change(field: keyof TimePlanStageDraft, value: string) {
     draft.update({ ...draft.value, [field]: value });
     setInvalid((previous) => previous.filter((key) => key !== field));
   }
 
-  function error(field: keyof TimePlanStageDraft) {
-    return errors.includes(field) ? t("invalidField", { field: t(`fields.${field}`) }) : undefined;
-  }
-
   async function submit() {
-    const issues = validateStage(draft.value, mode, showPricing);
+    const issues = validateStage(draft.value, mode, isTemplateCopy);
     setInvalid(issues);
     if (issues.length) {
       document.getElementById(`${id}-${issues[0]}`)?.focus();
@@ -67,57 +67,23 @@ export function TimePlanStageForm({
     >
       <h3 className="text-xl font-medium">{title}</h3>
       <ValidationSummary
-        items={errors.map((field) => ({ fieldId: `${id}-${field}`, message: t("invalidField", { field: t(`fields.${field}`) }) }))}
+        items={Array.from(messages, ([field, message]) => ({ fieldId: `${id}-${field}`, message }))}
       />
       <fieldset disabled={disabled} className="grid min-w-0 gap-5 md:grid-cols-2">
-        <Input
-          id={`${id}-name`}
-          label={t("fields.name")}
-          value={draft.value.name}
-          error={error("name")}
-          onChange={(event) => change("name", event.target.value)}
-          dir="auto"
-          maxLength={100}
-          required
-          readOnly={nameReadOnly}
-        />
-        <Input
-          id={`${id}-deliveryDate`}
-          label={t("fields.deliveryDate")}
-          value={draft.value.deliveryDate}
-          error={error("deliveryDate")}
-          onChange={(event) => change("deliveryDate", event.target.value)}
-          dir="ltr"
-          maxLength={40}
-          hint={t("dateHint")}
-          required
-        />
-        {showPricing && (
-          <>
-            <Input
-              id={`${id}-price`}
-              label={t("fields.price")}
-              value={draft.value.price}
-              error={error("price")}
-              onChange={(event) => change("price", event.target.value)}
-              dir="ltr"
-              inputMode="decimal"
-              hint={t("priceHint")}
-              required
-            />
-            <Input
-              id={`${id}-pricingDate`}
-              label={t("fields.pricingDate")}
-              value={draft.value.pricingDate}
-              error={error("pricingDate")}
-              onChange={(event) => change("pricingDate", event.target.value)}
-              dir="ltr"
-              maxLength={40}
-              hint={t("dateHint")}
-              required
-            />
-          </>
-        )}
+        {fields.map((field) => (
+          <Fragment key={field.key}>
+            {field.input({
+              id: `${id}-${field.key}`,
+              label: field.label(t),
+              value: draft.value[field.key],
+              error: messages.get(field.key),
+              change: (value) => change(field.key, value),
+              nameReadOnly,
+              pricingRequired,
+              t,
+            })}
+          </Fragment>
+        ))}
       </fieldset>
       {children}
       <div className="flex flex-wrap gap-3">

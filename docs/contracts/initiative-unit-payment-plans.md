@@ -43,21 +43,22 @@ Example `paymentPlan` value from a unit detail response
 - Format non-null `stageCost` with the existing currency formatter. Render zero as a currency amount. For `null`, show the localized `paymentPlan.pricingUnavailable` string, **Pricing unavailable** in English and **السعر غير متاح** in Arabic.
 - Use unit detail as the complete data source for this section. The browser sends one unit detail request for the rows and performs display formatting only. Regular rows keep their installment name, number, percentage, and timing. [Unit detail rendering](../../src/Features/Units/Public/UnitDetails.tsx) · [Locale formatters](../../src/i18n/format.ts)
 
-## Staff stage pricing
+## Staff stage pricing and status
 
 Admin and SuperAdmin use the project time-plan workspace. The price is the full stage amount. Each initiative unit's share is derived from that amount on the server. [Planning commands](../../src/Features/Planning/Plans/commands.ts) · [Time Plans service](../../src/Services/TimePlans.ts)
 
 | Operation | Contract |
 | --- | --- |
-| `GET /api/v1/projects/{projectId}/time-plan` | Returns `200` with `TimePlanDto`. Each stage has `price` and `pricingDate`, both returned as `null` when unpriced. The response also retains the existing `percentage` field. |
-| `POST /api/v1/admin/time-plans/{timePlanId}/stages` | Returns `201` with the stage ID. Add optional `price` and `pricingDate` to the manual `StageDraftInput` alongside its existing fields. |
-| `PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id}` | Returns `200` with the stage ID. Use `StageUpdateInput` with `name`, `deliveryDate`, and the optional pricing pair. Omitting both pricing fields preserves saved pricing. |
-| `POST /api/v1/admin/projects/{projectId}/time-plan` | Returns `201` with the plan ID. The pricing pair is supported on individual manual entries in `CreateTimePlanRequest.stages`. The current frontend creates an empty plan and then adds stages in the workspace. |
-| `POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template` | Returns `201` with the copied stage ID. Send the existing `TemplateStageDraftInput`. Price the copied stage afterward through the normal stage PATCH. |
+| `GET /api/v1/projects/{projectId}/time-plan` | Returns `200` with `TimePlanDto`. Each stage has a numeric `price`, a nullable `pricingDate`, and `status`. A null pricing date identifies an unpriced stage. |
+| `POST /api/v1/admin/time-plans/{timePlanId}/stages` | Returns `201` with the stage ID. Manual `StageDraftInput` requires `price` and `pricingDate` and accepts an optional `status`. |
+| `PATCH /api/v1/admin/time-plans/{timePlanId}/stages/{id}` | Returns `200` with the stage ID. Use `StageUpdateInput` with `name`, `deliveryDate`, optional `status`, and the optional pricing pair. Omitting the status or both pricing fields preserves the respective saved values. |
+| `POST /api/v1/admin/projects/{projectId}/time-plan` | Returns `201` with the plan ID. Manual entries in `CreateTimePlanRequest.stages` require the pricing pair and accept optional `status`. The current frontend creates an empty plan and then adds stages in the workspace. |
+| `POST /api/v1/admin/time-plans/{timePlanId}/stages/from-template` | Returns `201` with the copied stage ID. Send the existing `TemplateStageDraftInput`. The copied stage starts as Pending and unpriced. Set either value afterward through the normal stage PATCH. |
 
 ### Form and request rules
 
-- Include both pricing fields or omit both. On creation, omission creates an unpriced stage. Explicit `null` is invalid in requests. The API returns `400` for incomplete or invalid pricing.
+- Send both pricing fields for manual creation. During an edit, send both fields to change pricing or omit both to preserve it. Explicit `null` is invalid for pricing fields. The API returns `400` for incomplete or invalid pricing.
+- Send `status` as `0` (Pending), `1` (Processing), or `2` (Completed). New stages default to Pending. Any of the three values can be saved on edit, independently of child items, pricing, or delivery dates. The editor prefills the saved status.
 - Send `price` as a nonnegative JSON number with up to 15 whole digits and four fractional digits. Zero is valid. The existing form checks that conversion from input text to a JavaScript number preserves the value sent to the API.
 - Send `pricingDate` as an ISO timestamp with an explicit offset, such as `2026-11-21T10:00:00+02:00`, or with `Z`. It records when the stage price was set. `deliveryDate` retains its existing purpose.
 - Populate the edit form from the stage's saved `price` and `pricingDate`. Show empty pricing inputs for an unpriced stage and display a saved zero as `0`. Reload the plan through the existing workspace flow after a successful save. Keep the draft and surface field errors when validation fails.

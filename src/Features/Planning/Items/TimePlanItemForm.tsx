@@ -1,3 +1,4 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "../../../Components/Fields";
@@ -56,25 +57,23 @@ export function TimePlanItemForm({ id, title, initial, disabled, pending, failur
           maxLength={100}
           required
         />
-        <Input
+        <DateTimeInput
           id={`${id}-dueDate`}
           label={t("fields.dueDate")}
           value={draft.value.dueDate}
           error={error("dueDate")}
-          onChange={event => change("dueDate", event.target.value)}
+          onValueChange={value => change("dueDate", value)}
           dir="ltr"
-          maxLength={40}
-          hint={t("dateHint")}
+          // hint={t("dateHint")}
           required
         />
-        <Input
+        <DateTimeInput
           id={`${id}-confirmedDate`}
           label={t("fields.confirmedDate")}
           value={draft.value.confirmedDate}
           error={error("confirmedDate")}
-          onChange={event => change("confirmedDate", event.target.value)}
+          onValueChange={value => change("confirmedDate", value)}
           dir="ltr"
-          maxLength={40}
           hint={t("confirmedHint")}
           required={completed}
         />

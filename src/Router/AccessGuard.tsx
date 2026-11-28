@@ -13,7 +13,7 @@ import type { ReactNode } from "react";
 
 function GuardFrame({ standalone, children }: { standalone: boolean; children: ReactNode }) {
   return standalone ? (
-    <main id="route-content" tabIndex={-1} className="mx-auto max-w-4xl px-5 py-10 sm:px-10">
+    <main id="route-content" tabIndex={-1} className="guard-frame">
       {children}
     </main>
   ) : (

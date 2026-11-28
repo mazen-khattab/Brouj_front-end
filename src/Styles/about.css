@@ -1,0 +1,106 @@
+.about-page {
+  --about-surface: #f8f7f4;
+  --about-line: rgb(191 174 137 / 0.3);
+  color: var(--color-primary);
+  background: var(--color-background);
+  text-align: start;
+}
+.about-page p { max-inline-size: 60ch; line-height: 1.9; }
+.about-page h1, .about-page h2, .about-page h3 { font-family: var(--home-display); font-weight: 400; }
+.about-page h2 { font-size: clamp(2.6rem, 4.3vw, 4.8rem); line-height: 1.05; text-wrap: balance; }
+.about-page h3 { font-size: clamp(1.8rem, 2.4vw, 2.65rem); line-height: 1.2; }
+.about-page:lang(ar) h1, .about-page:lang(ar) h2, .about-page:lang(ar) h3 { line-height: 1.45; }
+.about-eyebrow { font-size: 0.8rem; font-weight: 600; margin-block-end: 1.5rem; }
+.about-hero { background: var(--color-primary); color: var(--color-background); overflow: hidden; }
+.about-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 5rem);
+  min-block-size: min(49rem, calc(100svh - 7.5rem));
+  padding-block: 4.5rem;
+}
+.about-hero-copy { min-inline-size: 0; }
+.about-hero .about-eyebrow { color: var(--color-accent); }
+.about-title-mask { overflow: hidden; padding-block-end: 0.35rem; }
+.about-title-mask h1:focus { outline: none; }
+.about-hero h1 { font-size: clamp(3.4rem, 5.8vw, 6.4rem); line-height: 1.02; max-inline-size: 12ch; text-wrap: balance; }
+.about-hero:lang(ar) h1 { max-inline-size: 13ch; font-size: clamp(3.2rem, 5.2vw, 5.5rem); }
+.about-hero-intro { margin-block-start: 1.6rem; color: rgb(255 255 255 / 0.8); font-size: 0.95rem; }
+.about-scroll { display: inline-flex; align-items: center; gap: 1rem; margin-block-start: 2.25rem; color: var(--color-background); font-size: 0.75rem; text-decoration: none; }
+.about-scroll > span { inline-size: 1px; block-size: 2.8rem; background: var(--color-accent); transform-origin: center top; animation: about-scroll-line 2.6s ease-in-out infinite; }
+@keyframes about-scroll-line { 0%, 100% { transform: scaleY(0.65); } 50% { transform: scaleY(1); } }
+.about-sculpture { position: relative; min-inline-size: 0; aspect-ratio: 1.06; margin: 0; border-block-end: 1px solid var(--about-line); }
+.about-sculpture-fallback, .about-canvas { position: absolute; inset: 0 0 2.5rem; }
+.about-sculpture-fallback { overflow: hidden; perspective: 800px; }
+.about-study-ground { position: absolute; inset: 45% 8% 4%; border: 1px solid var(--about-line); transform: rotateX(58deg) rotateZ(-25deg); }
+.about-sculpture-fallback i { position: absolute; inset-block-end: 23%; inset-inline-start: 18%; inline-size: 17%; block-size: 40%; border: 1px solid var(--color-accent); background: linear-gradient(110deg, var(--color-primary), rgb(191 174 137 / 0.14)); transform: skewY(-15deg); box-shadow: 18px 14px 0 rgb(191 174 137 / 0.08); }
+.about-sculpture-fallback i:nth-of-type(2) { inset-inline-start: 44%; block-size: 64%; background: linear-gradient(110deg, var(--color-accent), #867b62); }
+.about-sculpture-fallback i:nth-of-type(3) { inset-inline-start: 70%; block-size: 49%; }
+.about-sculpture figcaption { position: absolute; inset-inline: 0; inset-block-end: 0.75rem; display: flex; justify-content: space-between; gap: 1rem; font-size: 0.64rem; color: var(--color-accent); }
+.about-sculpture figcaption span:last-child { color: rgb(255 255 255 / 0.65); }
+.about-section { padding-block: clamp(4.5rem, 8vw, 8rem); scroll-margin-block-start: 6rem; }
+.about-principles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 9vw, 9rem); }
+.about-principles-intro h2 { max-inline-size: 14ch; margin-block-end: 2.8rem; }
+.about-purpose + .about-purpose { margin-block-start: 2rem; }
+.about-purpose h3 { font-size: 1.8rem; margin-block-end: 0.7rem; }
+.about-purpose p, .about-pillars p { color: var(--home-muted); font-size: 0.95rem; }
+.about-pillars { padding-block-start: 3.5rem; }
+.about-pillars article { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.5rem 1.2rem; position: relative; padding-block: 2.1rem; }
+.about-hairline { block-size: 1px; inline-size: 100%; background: var(--about-line); transform-origin: left center; }
+.about-page:dir(rtl) .about-hairline { transform-origin: right center; }
+.about-pillars .about-hairline { position: absolute; inset-block-start: 0; inset-inline: 0; }
+.about-pillar-index { font: 1.4rem/1.5 var(--home-display); }
+.about-pillars h3 { margin-block-end: 0.8rem; }
+.about-journey { background: var(--color-primary); color: var(--color-background); }
+.about-journey-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(3rem, 10vw, 10rem); }
+.about-journey header .about-eyebrow { color: var(--color-accent); }
+.about-journey header > p:last-child { margin-block-start: 1.8rem; font-size: 0.95rem; color: rgb(255 255 255 / 0.75); }
+.about-timeline-wrap { position: relative; }
+.about-timeline { list-style: none; margin: 0; padding: 0; }
+.about-timeline-track { position: absolute; inset-inline-start: 0; inset-block: 0 3rem; inline-size: 1px; background: var(--about-line); }
+.about-timeline-track > span { display: block; block-size: 100%; background: var(--color-accent); transform-origin: center top; }
+.about-timeline li { position: relative; padding-inline-start: 3rem; padding-block-end: 3.25rem; }
+.about-timeline li:last-child { padding-block-end: 0; }
+.about-timeline-node { position: absolute; inset-inline-start: -3px; inset-block-start: 0.6rem; inline-size: 7px; block-size: 7px; background: var(--color-accent); }
+.about-stage-index { display: block; color: var(--color-accent); font-size: 0.72rem; margin-block-end: 0.65rem; }
+.about-timeline h3 { font-size: clamp(1.9rem, 2.5vw, 2.6rem); margin-block-end: 0.8rem; }
+.about-timeline p { font-size: 0.9rem; color: rgb(255 255 255 / 0.75); }
+.about-closing { background: var(--about-surface); }
+.about-closing .about-hairline { margin-block-end: 3rem; }
+.about-closing h2 { max-inline-size: 18ch; }
+.about-closing p:not(.about-eyebrow) { margin-block-start: 1.5rem; color: var(--home-muted); }
+.about-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-block-start: 2rem; }
+.about-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; min-block-size: 3.4rem; padding: 0.9rem 1.4rem; border: 1px solid var(--color-primary); border-radius: 2px; background: var(--color-primary); color: var(--color-background); text-decoration: none; font-size: 0.85rem; transition: background 0.4s, color 0.4s; }
+.about-button-secondary { color: var(--color-primary); background: transparent; border-color: var(--color-accent); }
+.about-page:dir(rtl) .about-button > span { transform: scaleX(-1); }
+.about-page a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .about-button:hover { background: var(--color-accent); color: var(--color-primary); }
+}
+@media (max-width: 1023px) {
+  .about-hero-grid { min-block-size: auto; padding-block: 3rem; gap: 1rem; }
+  .about-hero h1 { font-size: 3.8rem; }
+  .about-hero:lang(ar) h1 { font-size: 3.4rem; }
+  .about-sculpture figcaption { flex-direction: column; gap: 0.3rem; }
+  .about-sculpture-fallback { inset-block-end: 3rem; }
+}
+@media (max-width: 650px) {
+  .about-hero-grid, .about-principles-grid, .about-journey-grid { grid-template-columns: minmax(0, 1fr); }
+  .about-hero h1, .about-hero:lang(ar) h1 { font-size: 3.25rem; }
+  .about-hero-grid { padding-block: 2.5rem 1.75rem; }
+  .about-hero-intro { font-size: 0.88rem; margin-block-start: 1rem; }
+  .about-scroll { margin-block-start: 1.25rem; }
+  .about-scroll > span { block-size: 1.5rem; }
+  .about-sculpture { aspect-ratio: 1.5; }
+  .about-sculpture figcaption { flex-direction: row; font-size: 0.55rem; gap: 1rem; }
+  .about-page h2 { font-size: 2.8rem; }
+  .about-principles-grid { gap: 2.75rem; }
+  .about-pillars { padding-block-start: 0; }
+  .about-journey-grid { gap: 3rem; }
+  .about-timeline li { padding-inline-start: 1.75rem; }
+  .about-actions { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-scroll > span { animation: none; }
+}

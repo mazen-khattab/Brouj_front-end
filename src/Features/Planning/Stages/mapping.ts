@@ -1,37 +1,37 @@
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import { ApiError } from "../../../Types/failures";
-import type { StageDraftInput, StageTemplateDto, StageUpdateInput, TemplateStageDraftInput, TimePlanStageDto } from "../../../Types/contracts";
+import { TimePlanStageStatus, type StageDraftInput, type StageTemplateDto, type StageUpdateInput, type TemplateStageDraftInput, type TimePlanStageDto } from "../../../Types/contracts";
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
 
 export function stageFrom(source?: TimePlanStageDto): TimePlanStageDraft {
   return {
     name: source?.name ?? "",
-    deliveryDate: source?.deliveryDate ?? "",
-    price: source?.price == null ? "" : String(source.price),
-    pricingDate: source?.pricingDate ?? "",
+    deliveryDate: toDateTimeLocalValue(source?.deliveryDate),
+    price: source?.pricingDate == null ? "" : String(source.price),
+    pricingDate: toDateTimeLocalValue(source?.pricingDate),
+    status: String(source?.status ?? TimePlanStageStatus.Pending),
   };
 }
 
-export function stageInput(values: TimePlanStageDraft): Pick<StageDraftInput, "name" | "deliveryDate" | "price" | "pricingDate"> {
-  return {
-    name: values.name,
-    deliveryDate: values.deliveryDate || null,
-    price: Number(values.price),
-    pricingDate: values.pricingDate.trim(),
-  };
-}
-
-export function stagePricingInput(values: TimePlanStageDraft): Pick<StageUpdateInput, "price" | "pricingDate"> {
-  return values.price.trim() && values.pricingDate.trim() ? { price: Number(values.price), pricingDate: values.pricingDate.trim() } : {};
+function stagePricingInput(values: TimePlanStageDraft): Pick<StageUpdateInput, "price" | "pricingDate"> {
+  const pricingDate = toDateTimeOffsetIso(values.pricingDate);
+  return values.price.trim() && pricingDate ? { price: Number(values.price), pricingDate } : {};
 }
 
 export function stageUpdateInput(values: TimePlanStageDraft): StageUpdateInput {
-  return { name: values.name, deliveryDate: values.deliveryDate || null, ...stagePricingInput(values) };
+  return {
+    name: values.name,
+    deliveryDate: toDateTimeOffsetIso(values.deliveryDate),
+    status: Number(values.status) as TimePlanStageStatus,
+    ...stagePricingInput(values),
+  };
 }
 
-export function approvedStageUpdate({ name, deliveryDate, price, pricingDate }: StageUpdateInput): StageUpdateInput {
+export function approvedStageUpdate({ name, deliveryDate, price, pricingDate, status }: StageUpdateInput): StageUpdateInput {
   return {
     name,
     deliveryDate,
+    ...(status !== undefined && { status }),
     ...(price !== undefined && { price }),
     ...(pricingDate !== undefined && { pricingDate }),
   };
@@ -40,10 +40,7 @@ export function approvedStageUpdate({ name, deliveryDate, price, pricingDate }: 
 export function approvedStageDraft(input: StageDraftInput): StageDraftInput {
   return {
     stageTemplateId: input.stageTemplateId,
-    name: input.name,
-    deliveryDate: input.deliveryDate,
-    price: input.price,
-    pricingDate: input.pricingDate,
+    ...approvedStageUpdate(input),
     items: input.items.map((row) => ({
       itemTemplateId: row.itemTemplateId,
       name: row.name,
@@ -68,14 +65,14 @@ export function stageFromTemplateInput(
     throw new ApiError("transport", { status: 409 });
   }
   return {
-    ...stageInput(values),
+    deliveryDate: toDateTimeOffsetIso(values.deliveryDate),
     stageTemplateId: source.id,
     name: source.name,
     items: rows.map((row) => ({
       itemTemplateId: row.itemTemplateId,
       name: source.items.find((item) => item.itemTemplateId === row.itemTemplateId)!.name,
-      dueDate: row.dueDate || null,
-      confirmedDate: row.confirmedDate || null,
+      dueDate: toDateTimeOffsetIso(row.dueDate),
+      confirmedDate: toDateTimeOffsetIso(row.confirmedDate),
     })),
   };
 }

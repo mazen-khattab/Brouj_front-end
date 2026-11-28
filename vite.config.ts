@@ -41,8 +41,8 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     build: { manifest: true },
-    // Services are loaded lazily; prepare Axios before their first import to avoid a dev reload.
-    optimizeDeps: { include: ['axios'] },
+    // Prepare lazy route dependencies so opening the About scene cannot restart the dev page.
+    optimizeDeps: { include: ['axios', 'gsap', 'gsap/ScrollTrigger', 'lenis', 'embla-carousel-react', '@react-three/fiber', 'three', 'three/addons/environments/RoomEnvironment.js'] },
     server: {
       host: "localhost",
       port: 5173,

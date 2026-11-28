@@ -1,6 +1,7 @@
-import type { UnitDraft, UnitProject } from "./types";
+import type { SavedUnitPricing, UnitDraft, UnitProject } from "./types";
 import { isGuid } from "../../../Services/identifiers";
 import { ProjectType, type AmenityDto } from "../../../Types/contracts";
+import { toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 
 function decimal(value: string, precision: number, scale: number) {
   const match = /^\+?(\d+)(?:\.(\d+))?$/.exec(value);
@@ -22,19 +23,30 @@ export function unitTotalFits(size: string, meterPrice: string) {
   return cents <= 99999999999999999n;
 }
 
-export function invalidFields(d: UnitDraft, project?: UnitProject): string[] {
+export function requiresPricingDate(d: UnitDraft, data?: SavedUnitPricing) {
+  return data?.pricingDate == null || Number(d.meterPrice) !== data.meterPrice;
+}
+
+export function invalidFields(d: UnitDraft, project?: UnitProject, data?: SavedUnitPricing): string[] {
   const invalid = new Set<string>();
   if (!isGuid(d.projectId)) invalid.add("projectId");
   if (!d.number.trim() || d.number.length > 64) invalid.add("number");
   if (!decimal(d.meterPrice, 19, 4)) invalid.add("meterPrice");
   if (!/^\d+$/.test(d.floorNumber) || Number(d.floorNumber) > 2147483647) invalid.add("floorNumber");
   if (!decimal(d.size, 18, 4) || Number(d.size) <= 0) invalid.add("size");
+  const excellence = d.excellencePercentage.trim();
+  if (excellence && (!decimal(excellence, 5, 2) || Number(excellence) > 100)) invalid.add("excellencePercentage");
+  if (d.trend.length > 64) invalid.add("trend");
   if (d.neighborMeterPrice !== "" && !decimal(d.neighborMeterPrice, 19, 4)) invalid.add("neighborMeterPrice");
   if (!unitTotalFits(d.size, d.meterPrice)) invalid.add("meterPrice");
   if (project?.projectType === ProjectType.Initiative && (!d.neighborMeterPrice || Number(d.size) * Number(d.meterPrice) > project.price)) {
     invalid.add("neighborMeterPrice");
   }
   if (project?.projectType === ProjectType.Regular && d.neighborMeterPrice) invalid.add("neighborMeterPrice");
+  if (project?.projectType === ProjectType.Initiative &&
+      (d.pricingDate || requiresPricingDate(d, data)) && !toDateTimeOffsetIso(d.pricingDate)) {
+    invalid.add("pricingDate");
+  }
   return [...invalid];
 }
 

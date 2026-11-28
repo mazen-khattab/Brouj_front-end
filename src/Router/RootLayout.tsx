@@ -1,10 +1,5 @@
 import { Suspense, useLayoutEffect } from "react";
-import {
-  Outlet,
-  ScrollRestoration,
-  useLocation,
-  useNavigation,
-} from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation, useNavigation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PageLoading } from "./RouteFeedback";
 
@@ -30,17 +25,11 @@ export default function RootLayout() {
   }, [location.pathname]);
   return (
     <>
-      <a
-        href="#route-content"
-        className="fixed start-4 top-4 z-50 -translate-y-40 rounded-ui bg-accent p-4 text-primary focus:translate-y-0"
-      >
+      <a href="#route-content" className="fixed start-4 top-4 z-50 -translate-y-40 rounded-ui bg-accent p-4 text-primary focus:translate-y-0">
         {t("skip")}
       </a>
       {navigation.state !== "idle" && (
-        <div
-          role="status"
-          className="fixed inset-x-0 top-0 z-50 bg-accent p-2 text-center text-primary"
-        >
+        <div role="status" className="fixed inset-x-0 top-0 z-50 bg-accent p-2 text-center text-primary">
           {t("navigationPending")}
         </div>
       )}

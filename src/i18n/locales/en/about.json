@@ -1,0 +1,42 @@
+{
+  "hero": {
+    "eyebrow": "About Brouj",
+    "title": "A shared vision. A place to belong.",
+    "intro": "The Brouj Initiative begins with a simple belief: a home should be built on clarity, considered design and lasting value. This is the thinking that brings our people and projects together.",
+    "scroll": "Discover our story",
+    "study": "A study in structure",
+    "studyNote": "An architectural expression of our pillars"
+  },
+  "principles": {
+    "eyebrow": "Vision, mission & principles",
+    "title": "The foundations beneath every decision.",
+    "vision": { "title": "Our vision", "body": "Places that enrich everyday life, where thoughtful architecture and a clear path to participation make room for a new beginning." },
+    "mission": { "title": "Our mission", "body": "To bring people, engineering and legal expertise into one considered development approach, from the first question to the spaces we create." },
+    "legal": { "title": "Legal transparency", "body": "Clear participation terms, accessible documentation and a legal framework that helps people understand each next step." },
+    "engineering": { "title": "Engineering excellence", "body": "Careful planning, considered materials and attention to the details that shape how a place works and feels." },
+    "value": { "title": "Sustainable value", "body": "A long-term view of design and development, with enduring usefulness and the needs of the community at its heart." }
+  },
+  "leadership": {
+    "eyebrow": "The people behind the vision",
+    "intro": "Architecture, strategy and legal expertise. Three complementary perspectives shaping one shared direction.",
+    "ceo": "Bringing the initiative’s architectural intent and delivery priorities together, with attention to the decisions that connect a vision to the experience of a place.",
+    "strategy": "Connecting the initiative’s direction with a longer view of development, community needs and the opportunities that shape its next chapter.",
+    "legal": "Bringing legal perspective to the initiative’s framework, with a focus on clear documentation, participation terms and responsible governance."
+  },
+  "journey": {
+    "eyebrow": "The Brouj journey",
+    "title": "An idea, given structure.",
+    "intro": "From the first intention to the next opportunity, our approach follows a considered sequence. Each stage gives the next a stronger foundation.",
+    "conception": { "title": "Initiative conception", "body": "Begin with people and place. Define a shared vision for residential development and the everyday needs it should serve." },
+    "framework": { "title": "Legal & quality framework", "body": "Establish participation terms and engineering priorities, giving the vision a clear framework for decisions and delivery." },
+    "execution": { "title": "Project execution", "body": "Translate architectural thinking into project planning and development, keeping design intent connected to the details." },
+    "expansion": { "title": "Ongoing expansion", "body": "Carry the learning forward. Explore opportunities to extend the initiative while keeping its founding principles in view." }
+  },
+  "closing": {
+    "eyebrow": "Your next step",
+    "title": "See the vision take shape.",
+    "intro": "Explore the initiative’s projects, or take a closer look at the published participation terms.",
+    "projects": "Initiative projects",
+    "booklet": "The legal booklet"
+  }
+}

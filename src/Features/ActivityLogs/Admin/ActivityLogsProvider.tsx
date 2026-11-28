@@ -1,3 +1,4 @@
+import { toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { isGuid } from "../../../Services/identifiers";
@@ -25,8 +26,8 @@ export function ActivityLogsProvider({ scope, id, children }: { scope: string; i
             userId: filters.userId || null,
             entityType: filters.entityType || null,
             action: filters.action ? (Number(filters.action) as ActivityAction) : null,
-            dateFrom: filters.dateFrom || null,
-            dateTo: filters.dateTo || null,
+            dateFrom: toDateTimeOffsetIso(filters.dateFrom),
+            dateTo: toDateTimeOffsetIso(filters.dateTo),
           },
         },
         { signal },

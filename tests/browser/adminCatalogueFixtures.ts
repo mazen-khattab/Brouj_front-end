@@ -125,9 +125,13 @@ export async function adminCatalogueServer(context: BrowserContext) {
     const nextId = () => `90000000-0000-4000-8000-${String(sequence++).padStart(12, "0")}`;
     if (collection === "projects" && path[2] === "units" && method === "POST") {
       const paymentPlan = (body.paymentPlan ?? []) as UnitDto["paymentPlan"];
-      if ((projects.get(id)?.projectType === ProjectType.Regular) !== Boolean(paymentPlan.length)) return fail(400);
+      const regular = projects.get(id)?.projectType === ProjectType.Regular;
+      if (regular !== Boolean(paymentPlan.length) || regular === (typeof body.pricingDate === "string")) return fail(400);
       const created = nextId();
-      units.set(created, { ...catalogueUnit, ...body, id: created, projectId: id, images: [], amenities: [], paymentPlan });
+      units.set(created, {
+        ...catalogueUnit, ...body, id: created, projectId: id, images: [], amenities: [], paymentPlan,
+        excellencePercentage: Number(body.excellencePercentage ?? 0),
+      });
       return ok(created);
     }
     if (collection === "units" && path[2] === "payment-plan" && method === "PUT") {
@@ -214,7 +218,15 @@ export async function adminCatalogueServer(context: BrowserContext) {
       projects.set(savedId, { ...catalogueProject, images: [], amenities: [], ...projects.get(savedId), ...body, id: savedId });
     }
     if (collection === "units") {
-      units.set(savedId, { ...units.get(savedId)!, ...body });
+      const unit = units.get(savedId)!;
+      const regular = projects.get(unit.projectId)?.projectType === ProjectType.Regular;
+      if (regular && body.pricingDate != null) return fail(400);
+      if (!regular && (!unit.pricingDate || unit.meterPrice !== body.meterPrice) && typeof body.pricingDate !== "string") return fail(400);
+      units.set(savedId, {
+        ...unit, ...body,
+        excellencePercentage: Number(body.excellencePercentage ?? unit.excellencePercentage),
+        pricingDate: typeof body.pricingDate === "string" ? body.pricingDate : unit.pricingDate,
+      });
     }
     return ok(savedId);
   });

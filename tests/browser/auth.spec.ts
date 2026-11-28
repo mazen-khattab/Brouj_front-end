@@ -72,7 +72,7 @@ for (const language of ['ar', 'en'] as const) {
       await page.locator('main img').evaluateAll(async (nodes) => { await Promise.all(nodes.map((node) => node instanceof HTMLImageElement ? node.decode() : Promise.resolve())); });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.locator('html')).toHaveAttribute('dir', english ? 'ltr' : 'rtl');
-      expect(await page.locator('#auth-email').evaluate((element) => getComputedStyle(element).borderTopLeftRadius)).toBe('16px');
+      expect(await page.locator('#auth-email').evaluate((element) => getComputedStyle(element).borderTopLeftRadius)).toBe('2px');
       await expect(page.locator('#auth-email')).toHaveAttribute('dir', 'ltr');
       await page.screenshot({ path: testInfo.outputPath(`auth-${language}-${mode}.png`), fullPage: true, animations: 'disabled' });
     }

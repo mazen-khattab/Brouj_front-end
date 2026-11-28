@@ -47,6 +47,7 @@ test("cross-domain consumers use explicit integration components, never private 
     "src/Features/Areas/Public/Browser",
     "src/Features/Projects/Public/Browser",
     "src/Features/Units/Public/UnitCarousel",
+    "src/Features/Units/Public/UnitTable",
     "src/Features/Planning/Public/ProjectTimePlan",
     "src/Features/Reservations/Customer/ReservationEntry",
     "src/Features/Reservations/Customer/BookingScope",

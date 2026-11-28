@@ -1,3 +1,4 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../../Components/Button";
@@ -84,6 +85,11 @@ export function VersionForm({
     };
   }
 
+  function dateControl(field: "effectiveDate") {
+    const { onChange, ...props } = control(field);
+    return { ...props, onValueChange: (value: string) => onChange({ target: { value } }) };
+  }
+
   return (
     <form
       aria-label={title}
@@ -101,7 +107,7 @@ export function VersionForm({
       <fieldset disabled={disabled || confirming} className="grid min-w-0 gap-5 md:grid-cols-2">
         <Input {...control("title")} type="text" dir="auto" maxLength={300} autoComplete="off" />
         <Input {...control("versionNumber")} type="text" dir="ltr" maxLength={32} autoComplete="off" />
-        <Input {...control("effectiveDate")} type="text" dir="ltr" maxLength={40} autoComplete="off" hint={t("dateHint")} />
+        <DateTimeInput {...dateControl("effectiveDate")} autoComplete="off" /*hint={t("dateHint")}*/ />
         <div className="md:col-span-2">
           <Textarea {...control("content")} dir="auto" maxLength={100000} rows={12} hint={t("legalHint")} />
         </div>

@@ -1,0 +1,19 @@
+{
+  "intro": "Explore places designed for your next chapter.",
+  "types": { "all": "All projects", "initiative": "Initiative projects", "regular": "Regular projects" },
+  "filters": {
+    "toggle": "Filters",
+    "active_one": "{{count}} active filter",
+    "active_other": "{{count}} active filters",
+    "eyebrow": "Refine your search",
+    "all": "Find your place",
+    "allHint": "Explore the complete Brouj collection by name and location.",
+    "initiative": "Initiative filters",
+    "initiativeHint": "Find a project within the Brouj Initiative.",
+    "regular": "Regular project filters",
+    "regularHint": "Explore Brouj developments by name and location.",
+    "matching": "Matching projects"
+  },
+  "resultsLabel": "Project results",
+  "empty": "Try another name or location, or clear the filters for this collection."
+}

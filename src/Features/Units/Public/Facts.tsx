@@ -10,15 +10,16 @@ export function UnitFacts({
   unit,
   full = false,
   showMeterPrices = true,
+  showTotalPrice = true,
 }: {
   unit: UnitDto | UnitListDto;
   full?: boolean;
   showMeterPrices?: boolean;
+  showTotalPrice?: boolean;
 }) {
   const { t } = useTranslation("catalogue");
   const { locale } = useLocale();
   const items: { label: string; value: ReactNode }[] = [
-    { label: t("unitPrice"), value: formatCurrency(unit.totalPrice, locale) },
     {
       label: t("size"),
       value: t("squareMeters", {
@@ -31,14 +32,15 @@ export function UnitFacts({
       value: t(unit.isAvailable ? "available" : "unavailable"),
     },
   ];
+  if (showTotalPrice) items.unshift({ label: t("unitPrice"), value: formatCurrency(unit.totalPrice, locale) });
   if (full) {
     items.unshift({ label: t("unitNumber"), value: <BidiText>{unit.number}</BidiText> });
     items.push(
       { label: t("garage"), value: t(unit.isGarage ? "yes" : "no") },
-      {
-        label: t("garagePrice"),
-        value: formatCurrency(unit.garagePrice, locale),
-      },
+      // {
+      //   label: t("garagePrice"),
+      //   value: formatCurrency(unit.garagePrice, locale),
+      // },
     );
     if (showMeterPrices) {
       items.push({
@@ -51,10 +53,9 @@ export function UnitFacts({
         label: t("neighborMeterPrice"),
         value: formatCurrency(unit.neighborMeterPrice, locale),
       });
-    if (unit.percentage !== null)
-      items.push({
+    items.push({
         label: t("percentage"),
-        value: t("percentValue", {
+        value: unit.percentage == null ? t("priceUnavailable") : t("percentValue", {
           value: formatNumber(unit.percentage, locale, {
             maximumFractionDigits: 6,
           }),

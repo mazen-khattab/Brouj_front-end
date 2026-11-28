@@ -18,6 +18,7 @@ import { validateCreateStaff, validateStaff } from "../../src/Features/Staff/Adm
 import { useTermsAdmin } from "../../src/Features/Terms/Admin/TermsAdminContext";
 import { TermsAdminProvider } from "../../src/Features/Terms/Admin/TermsAdminProvider";
 import { termsInput, validateTerms } from "../../src/Features/Terms/Admin/validation";
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../src/utils/dateTimeOffset";
 import { useTerms } from "../../src/Features/Terms/Public/TermsContext";
 import { TermsProvider } from "../../src/Features/Terms/Public/TermsProvider";
 import { useStaffResource } from "../../src/Hooks/useStaffResource";
@@ -63,9 +64,9 @@ afterEach(() => {
 });
 
 test("legal version validators preserve source prose and constrain integer/date/length boundaries", () => {
-  const values = { title: " Original ", content: " <img src=x>\n Original legal text ", versionNumber: "3", effectiveDate: date };
+  const values = { title: " Original ", content: " <img src=x>\n Original legal text ", versionNumber: "3", effectiveDate: toDateTimeLocalValue(date) };
   expect(validateTerms(values)).toEqual([]);
-  expect(termsInput(values)).toEqual({ ...values, versionNumber: "3" });
+  expect(termsInput(values)).toEqual({ ...values, versionNumber: "3", effectiveDate: toDateTimeOffsetIso(values.effectiveDate) });
   expect(validateTerms({ ...values, title: " ", content: "", versionNumber: "", effectiveDate: "2026-02-31T00:00:00Z" })).toEqual([
     "title",
     "content",
@@ -102,14 +103,15 @@ test("passwords are not trimmed and only new passwords have an eight-character m
 });
 
 test("audit filters reject reversed ranges, empty GUIDs, unknown actions and oversized resource types", () => {
-  expect(validateAuditFilters({ userId: "", entityType: "", action: "0", dateFrom: date, dateTo: "2026-02-01T00:00:00Z" })).toEqual([]);
+  const date = "2026-01-01T09:00";
+  expect(validateAuditFilters({ userId: "", entityType: "", action: "0", dateFrom: date, dateTo: "2026-02-01T00:00" })).toEqual([]);
   expect(
     validateAuditFilters({
       userId: "00000000-0000-0000-0000-000000000000",
       entityType: "x".repeat(129),
       action: "3",
       dateFrom: date,
-      dateTo: "2025-01-01T00:00:00Z",
+      dateTo: "2025-01-01T00:00",
     }),
   ).toEqual(["userId", "entityType", "action", "dateTo"]);
 });
@@ -283,8 +285,8 @@ test("audit paging uses only approved query fields and safely handles an absent 
   const hook = renderHook(useActivityLogs, { wrapper });
   await waitFor(() => expect(hook.result.current.read.result.status).toBe("success"));
   expect(hook.result.current.read.result).toMatchObject({ data: { page: { items: [] } } });
-  const filters = { userId: "", action: "0", entityType: "Project", dateFrom: date, dateTo: "", ignored: "not-approved" };
+  const filters = { userId: "", action: "0", entityType: "Project", dateFrom: toDateTimeLocalValue(date), dateTo: "", ignored: "not-approved" };
   act(() => hook.result.current.apply(filters));
-  await waitFor(() => expect(read.mock.calls.at(-1)![0]!.query).toMatchObject({ action: 0, entityType: "Project", dateFrom: date }));
+  await waitFor(() => expect(read.mock.calls.at(-1)![0]!.query).toMatchObject({ action: 0, entityType: "Project", dateFrom: toDateTimeOffsetIso(filters.dateFrom) }));
   expect(read.mock.calls.at(-1)![0]!.query).not.toHaveProperty("ignored");
 });

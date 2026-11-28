@@ -1,7 +1,7 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { StageTemplateDto } from "../../../Types/contracts";
-import { Input } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { Alert, ValidationSummary } from "../../../Components/Feedback";
 import { useTimePlan } from "../Plans/TimePlanContext";
@@ -9,13 +9,14 @@ import { useEditorDraft } from "../../../Forms/editorDraft";
 import { ordered } from "../Shared/ordering";
 import { TimePlanStageForm } from "./TimePlanStageForm";
 import type { TemplateApplicationItemDraft, TimePlanStageDraft } from "./types";
-import { stageFromTemplateInput } from "./mapping";
+import { stageFrom, stageFromTemplateInput } from "./mapping";
 import { validateTemplateItemDates } from "./validation";
 
 /** Stage fields belong to TimePlanStageForm; this editor supplies only the template's dated items. */
 export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemplateDto; disabled: boolean }) {
   const { t } = useTranslation("timePlans");
-  const { run, action } = useTimePlan();
+  const { run, action, lastAction } = useTimePlan();
+  const label = `template-stage:${source.id}`;
   const draft = useEditorDraft<TemplateApplicationItemDraft[]>(`stage-source-${source.id}`, ordered(source.items).map(row => ({
     itemTemplateId: row.itemTemplateId, name: row.name, dueDate: "", confirmedDate: "",
   })));
@@ -30,7 +31,7 @@ export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemp
       document.getElementById(errors[0]!)?.focus();
       return undefined;
     }
-    return run("template-stage", {
+    return run(label, {
       kind: "addStage",
       input: stageFromTemplateInput({ ...source, items: ordered(source.items) }, value, draft.value),
     });
@@ -52,13 +53,14 @@ export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemp
         id="template"
         title={t("applyTemplate")}
         mode="create"
-        initial={{ name: source.name, deliveryDate: "", price: "", pricingDate: "" }}
+        initial={{ ...stageFrom(), name: source.name }}
+        isTemplateCopy
         nameReadOnly
         resetOnSave
         submitLabel={t("applyTemplate")}
         disabled={disabled || unusable || changed}
-        pending={action.pending}
-        failure={action.failure}
+        pending={action.pending && lastAction === label}
+        failure={lastAction === label ? action.failure : undefined}
         onSave={save}
         onSaved={() => draft.reset()}
         onReset={() => { draft.reset(); setInvalid([]); }}
@@ -69,24 +71,24 @@ export function ApplyStageTemplateForm({ source, disabled }: { source: StageTemp
           {draft.value.map((row, index) => (
             <fieldset key={row.itemTemplateId} className="grid gap-4 rounded-ui border border-accent/50 p-4 md:grid-cols-2">
               <legend dir="auto">{source.items.find(item => item.itemTemplateId === row.itemTemplateId)?.name ?? row.name}</legend>
-              <Input
+              <DateTimeInput
                 id={`template-due-${index}`}
                 label={t("fields.dueDate")}
                 dir="ltr"
                 required
-                hint={t("dateHint")}
+                // hint={t("dateHint")}
                 value={row.dueDate}
                 error={invalid.includes(`template-due-${index}`) ? t("dateInvalid") : undefined}
-                onChange={event => changeDate(index, "dueDate", event.target.value)}
+                onValueChange={value => changeDate(index, "dueDate", value)}
               />
-              <Input
+              <DateTimeInput
                 id={`template-confirmed-${index}`}
                 label={t("fields.confirmedDate")}
                 dir="ltr"
                 hint={t("confirmedHint")}
                 value={row.confirmedDate}
                 error={invalid.includes(`template-confirmed-${index}`) ? t("dateInvalid") : undefined}
-                onChange={event => changeDate(index, "confirmedDate", event.target.value)}
+                onValueChange={value => changeDate(index, "confirmedDate", value)}
               />
             </fieldset>
           ))}

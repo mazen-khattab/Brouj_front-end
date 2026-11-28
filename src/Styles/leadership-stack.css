@@ -1,0 +1,254 @@
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/amiri/arabic-700.css";
+
+.leadership-stack {
+  --leadership-alabaster: #f8f7f4;
+  --leadership-line: rgb(191 174 137 / 0.35);
+  padding-block: clamp(4.5rem, 8vw, 8rem) clamp(3rem, 6vw, 6rem);
+  background: var(--leadership-alabaster);
+  color: var(--color-primary);
+  text-align: start;
+}
+
+.leadership-stack > .home-container { max-inline-size: 1160px; }
+
+.leadership-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.25rem 3rem;
+  margin-block-end: clamp(2rem, 4vw, 4rem);
+}
+
+.leadership-stack .leadership-heading h2 {
+  font: 500 clamp(2.6rem, 4.3vw, 4.8rem)/1.08 var(--home-display);
+  text-wrap: balance;
+}
+
+.leadership-stack:lang(ar) .leadership-heading h2 { line-height: 1.32; }
+
+.leadership-heading .leadership-eyebrow {
+  margin-block-end: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.leadership-heading .leadership-intro {
+  max-inline-size: 35ch;
+  color: var(--home-muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.leadership-story { align-self: end; }
+
+.leadership-deck {
+  --leadership-min-strip: 68px;
+  --leadership-gap: clamp(1rem, 2.5vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+}
+
+.leadership-card-anchor { block-size: 0; }
+.leadership-deck-card + .leadership-card-anchor { margin-block-start: var(--leadership-gap); }
+
+.leadership-deck[data-stacking] {
+  --leadership-gap: clamp(4rem, 10svh, 7rem);
+}
+
+.leadership-deck[data-stacking]::after {
+  content: "";
+  block-size: clamp(9rem, 22svh, 16rem);
+}
+
+.leadership-deck-card {
+  --leadership-panel: var(--color-background);
+  --leadership-ink: var(--color-primary);
+  --leadership-bio-ink: var(--home-muted);
+}
+
+.leadership-deck-card--ceo {
+  --leadership-panel: var(--color-primary);
+  --leadership-ink: var(--color-background);
+  --leadership-bio-ink: var(--leadership-alabaster);
+}
+
+.leadership-deck-card--strategy { --leadership-panel: var(--leadership-alabaster); }
+
+.leadership-deck[data-stacking] .leadership-deck-card {
+  position: sticky;
+  inset-block-start: calc(var(--leadership-pin-start) + var(--leadership-layer) * var(--leadership-strip));
+  z-index: calc(10 * (var(--leadership-layer) + 1));
+  /* Equalize the pinned bottom edges so all three strips release together. */
+  padding-block-end: calc(var(--leadership-layers-above) * var(--leadership-strip));
+  pointer-events: none;
+}
+
+.leadership-card-panel {
+  background: var(--leadership-panel);
+  color: var(--leadership-ink);
+  border-inline: 1px solid var(--leadership-line);
+  border-radius: 0;
+  box-shadow: 0 10px 26px rgb(19 50 74 / 0.1), 0 2px 5px rgb(19 50 74 / 0.06);
+  pointer-events: auto;
+}
+
+.leadership-card-bar {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-block-size: var(--leadership-min-strip);
+  border-block: 1px solid var(--leadership-line);
+}
+
+.leadership-deck[data-stacking] .leadership-card-bar { min-block-size: var(--leadership-strip); }
+
+.leadership-card-bar-content {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.45rem, 1.25vw, 1.25rem);
+  padding-block: 5px;
+  padding-inline: clamp(0.65rem, 2.8vw, 2rem);
+}
+
+.leadership-card-index {
+  display: grid;
+  place-items: center;
+  min-inline-size: 2.1em;
+  min-block-size: 1.65em;
+  border: 1px solid var(--leadership-line);
+  background: var(--color-primary);
+  color: var(--color-accent);
+  font: 700 clamp(1.05rem, 2vw, 1.5rem)/1 Georgia, serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.leadership-stack .leadership-card-bar h3 {
+  font: 500 clamp(1.15rem, 2.45vw, 2.125rem)/1.15 var(--home-display);
+}
+
+.leadership-stack:lang(ar) .leadership-card-bar h3 { line-height: 1.35; }
+
+.leadership-card-role {
+  justify-self: end;
+  padding: 0.25em 0.65em;
+  border: 1px solid var(--leadership-line);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.leadership-card-bar button { display: none; }
+
+.leadership-deck[data-stacking] .leadership-card-bar button {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.leadership-stack .leadership-card-bar button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -3px;
+}
+
+@media (hover: hover) {
+  .leadership-card-bar:has(button:hover) .leadership-card-role { border-color: var(--color-accent); }
+}
+
+.leadership-card-body {
+  --leadership-dim: 0;
+  position: relative;
+  display: grid;
+  align-items: center;
+  border-block-end: 1px solid var(--leadership-line);
+}
+
+.leadership-deck[data-stacking] .leadership-card-body { min-block-size: var(--leadership-body-size); }
+
+.leadership-card-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--leadership-dim);
+  background: #0e2538;
+}
+
+.leadership-card-content {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 5rem);
+  padding-block: clamp(1.75rem, 4.5svh, 3rem);
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+  transform-origin: top center;
+}
+
+.leadership-card-portrait {
+  display: grid;
+  position: relative;
+  place-items: center;
+  justify-self: center;
+  inline-size: min(100%, 235px, 27svh);
+  aspect-ratio: 320 / 380;
+  color: var(--color-accent);
+}
+
+.leadership-card-portrait svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+.leadership-card-portrait svg path + path { opacity: 0.65; }
+
+.leadership-card-portrait span {
+  margin-block-start: 12%;
+  color: var(--leadership-ink);
+  font: 500 clamp(2rem, 5vw, 4.75rem)/1 var(--home-display);
+  text-shadow: 1px 2px 0 var(--leadership-line);
+}
+
+.leadership-deck-card--ceo .leadership-card-portrait span { color: var(--color-accent); }
+
+.leadership-card-copy { max-inline-size: 50ch; }
+
+.leadership-stack .leadership-statement {
+  font: 600 clamp(1.5rem, 2.55vw, 2.4rem)/1.24 var(--home-display);
+  text-wrap: pretty;
+}
+
+.leadership-stack:lang(ar) .leadership-statement { font-weight: 700; line-height: 1.45; }
+
+.leadership-stack .leadership-bio {
+  margin-block-start: 1rem;
+  color: var(--leadership-bio-ink);
+  font-size: 0.91rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 700px), (max-height: 700px) {
+  .leadership-deck { --leadership-min-strip: 52px; }
+}
+
+@media (max-width: 600px) {
+  .leadership-heading { align-items: start; flex-direction: column; }
+  .leadership-story { align-self: start; }
+  .leadership-card-bar-content { padding-block: 3px; }
+  .leadership-card-role { max-inline-size: 13ch; font-size: 0.61rem; }
+  .leadership-card-content {
+    grid-template-columns: minmax(0, clamp(68px, 24vw, 105px)) minmax(0, 1fr);
+    gap: 0.8rem 1rem;
+    padding: 0.95rem;
+  }
+  .leadership-card-copy { display: contents; }
+  .leadership-stack .leadership-statement { font-size: clamp(1.18rem, 4.8vw, 1.52rem); }
+  .leadership-stack .leadership-bio { grid-column: 1 / -1; margin-block-start: 0; }
+}

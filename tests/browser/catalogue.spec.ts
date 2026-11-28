@@ -1,5 +1,6 @@
 import { expect, test } from './test';
-import { catalogueIds as ids, cataloguePaymentPlan, catalogueServer, initiativePaymentPlan } from './catalogueFixtures';
+import { catalogueIds as ids, cataloguePaymentPlan, catalogueProject, catalogueServer, initiativePaymentPlan } from './catalogueFixtures';
+import { ProjectType } from '../../src/Types/contracts';
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openProjectFilters } from './projectFilterActions';
 import { loadEnv } from 'vite';
@@ -16,6 +17,8 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(page.getByText('Shared outdoor space')).toBeVisible();
   await expect(page.getByText('Second paragraph. <b>Plain text</b>', { exact: false })).toBeVisible();
   expect(await page.locator('main b').count()).toBe(0);
+  await page.getByRole('link', { name: enCatalogue.viewUnits, exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/units$`));
   await page.getByRole('link', { name: 'Unit A-204', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/units/${ids.unit}$`));
   await expect(page.getByRole('heading', { name: 'Unit A-204', exact: true })).toBeVisible();
@@ -23,9 +26,9 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(pricing.getByText('999', { exact: false })).toBeVisible();
   await expect(pricing.getByText('1,250', { exact: false })).toBeVisible();
   const prices = pricing.locator('dl > div');
-  const firstPrice = await prices.nth(0).boundingBox();
-  const secondPrice = await prices.nth(1).boundingBox();
-  expect(Math.abs(firstPrice!.y - secondPrice!.y)).toBeLessThan(2);
+  // Read both positions in the same frame while the pricing section reveals.
+  const priceTops = await prices.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+  expect(Math.abs(priceTops[0]! - priceTops[1]!)).toBeLessThan(2);
   const details = page.getByRole('region', { name: 'Unit details', exact: true });
   await expect(page.getByRole('region', { name: 'Payment plan', exact: true })).toHaveCount(0);
   await expect(details.getByText('A-204', { exact: true })).toBeVisible();
@@ -42,20 +45,21 @@ test('supported project URL filters, pagination, reset and browser history round
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
   await page.goto(`/projects?search=Garden&cityId=${ids.city}&areaId=${ids.area}&projectType=1&pageNumber=2&pageSize=3`);
   await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
-  await expect(page.getByLabel('Project type', { exact: true })).toHaveValue('1');
+  await expect(page.getByRole('tab', { name: 'Initiative projects', exact: true })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByText('Results: 25', { exact: true })).toBeVisible();
   await page.reload(); await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
   await openProjectFilters(page);
-  await page.getByLabel('Project type', { exact: true }).selectOption('0');
+  await page.getByRole('tab', { name: 'Regular projects', exact: true }).click();
   await expect(page.getByText('No results found', { exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.has('pageNumber')).toBe(false);
   await page.goBack(); await expect(page.getByRole('link', { name: 'Garden Residence 4', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Next page', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Garden Residence 7', exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.get('pageNumber')).toBe('3');
+  await openProjectFilters(page);
   await page.getByRole('button', { name: 'Clear filters' }).click();
   await expect(page.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
-  expect(new URL(page.url()).searchParams.toString()).toBe('pageSize=3');
+  expect(new URL(page.url()).searchParams.toString()).toBe('projectType=1&pageSize=3');
   expect(server.calls.filter((url) => url.pathname === '/api/v1/projects').every((url) => [...url.searchParams.keys()].every((key) => ['search', 'cityId', 'areaId', 'projectType', 'pageNumber', 'pageSize'].includes(key)))).toBe(true);
 });
 
@@ -81,6 +85,7 @@ test('location choices use the public lookups and changing city clears the previ
 test('rapid search debounces, cancels obsolete reads and rejects late results', async ({ page, context }) => {
   await routingServer(context); const server = await catalogueServer(context); await seedRouting(page);
   await page.goto('/projects'); await expect(page.getByRole('link', { name: 'Garden Residence 1', exact: true })).toBeVisible();
+  await openProjectFilters(page);
   const search = page.getByRole('searchbox', { name: 'Search', exact: true });
   await search.fill('discard this draft');
   await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
@@ -143,6 +148,53 @@ test('reservation CTA returns a customer to the selected unit and never submits 
 });
 
 for (const language of ['ar', 'en'] as const) {
+  test(`project summary shows localized reservations and payment terms in ${language}`, async ({ page, context }) => {
+    await routingServer(context);
+    const server = await catalogueServer(context);
+    await seedRouting(page, 'anonymous', language);
+    const catalogue = language === 'ar' ? arCatalogue : enCatalogue;
+    const copy = catalogue.projectSummary;
+    const reservations = page.getByRole('region', { name: copy.reservations, exact: true });
+    const payment = page.getByRole('region', { name: copy.paymentPlan, exact: true });
+    const number = new Intl.NumberFormat(language);
+
+    await page.goto('/projects/' + ids.project);
+    await expect(reservations.locator('dt')).toHaveText([copy.withoutOrder, copy.pendingOrder]);
+    await expect(reservations.locator('dd')).toHaveText([number.format(1284), number.format(0)]);
+    await expect(payment).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+    const paymentPlanDto = { downpaymentStartFrom: 112500.75, installmentStartFrom: 4250.5, repaymentPeriod: 36 };
+    server.state.projectDetail = {
+      ...catalogueProject, projectType: ProjectType.Regular, paymentPlanDto,
+      reservationsWithoutOrderCount: null, reservationsWithPendingOrderCount: null,
+    };
+    const currency = loadEnv('development', process.cwd(), 'VITE_').VITE_BUSINESS_CURRENCY;
+    const amount = new Intl.NumberFormat(language, { maximumFractionDigits: 4, ...(currency && { style: 'currency', currency }) });
+    const months = new Intl.NumberFormat(language, { style: 'unit', unit: 'month', unitDisplay: 'long' });
+    await page.reload();
+    await expect(payment.locator('dt')).toHaveText([copy.downpayment, copy.installment, copy.repaymentPeriod]);
+    await expect(payment.locator('dd')).toHaveText([
+      amount.format(paymentPlanDto.downpaymentStartFrom),
+      amount.format(paymentPlanDto.installmentStartFrom),
+      months.format(paymentPlanDto.repaymentPeriod),
+    ]);
+    const price = payment.locator('xpath=../preceding-sibling::*[1]');
+    const facts = payment.locator('xpath=following-sibling::*[1]');
+    await expect(price.locator('dt').first()).toHaveText(catalogue.startingMeterPrice);
+    await expect(facts.locator('dt').first()).toHaveText(catalogue.size);
+    const priceFontSize = await price.locator('dd').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    const termsFontSize = await payment.locator('dd').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    expect(termsFontSize).toBeLessThan(priceFontSize);
+    await expect(reservations).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+    server.state.projectDetail = { ...server.state.projectDetail, paymentPlanDto: null };
+    await page.reload();
+    await expect(page.getByRole('heading', { name: catalogueProject.name, exact: true })).toBeVisible();
+    await expect(payment).toHaveCount(0);
+  });
+
   test(`regular unit payment plans preserve installment order and show localized percentages in ${language}`, async ({ page, context }) => {
     await routingServer(context);
     const server = await catalogueServer(context);

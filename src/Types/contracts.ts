@@ -14,6 +14,13 @@ export const ActivityAction = {
 } as const;
 export type ActivityAction = (typeof ActivityAction)[keyof typeof ActivityAction];
 
+export const InstallmentType = {
+  Downpayment: 0,
+  Installment: 1,
+  Deposit: 2,
+} as const;
+export type InstallmentType = (typeof InstallmentType)[keyof typeof InstallmentType];
+
 export const OrderStatus = {
   Pending: 0,
   Processing: 1,
@@ -235,7 +242,10 @@ export interface CreateUnitInput {
   meterPrice: number;
   floorNumber: number;
   size: number;
+  excellencePercentage: number | null;
+  trend: string | null;
   neighborMeterPrice: number | null;
+  pricingDate: OffsetDateTime | null;
   paymentPlan?: ReadonlyArray<UnitPaymentInstallmentInput> | null;
 }
 
@@ -498,6 +508,13 @@ export interface PasswordChangeInput {
   newPassword: string;
 }
 
+/** src/Brouj.Application/Features/Projects/DTOs/PaymentPlanDto.cs */
+export interface PaymentPlanDto {
+  downpaymentStartFrom: number;
+  installmentStartFrom: number;
+  repaymentPeriod: number;
+}
+
 /** src/Brouj.Application/Features/TimePlans/DTOs/PlanStageItemDto.cs */
 export interface PlanStageItemDto {
   id: Guid;
@@ -530,9 +547,14 @@ export interface ProjectDto {
   floorCount: number;
   plannedUnitCount: number;
   neighborPrice: number | null;
+  startingMeterPrice: number;
+  unitSavingPercentage: number | null;
   drawDate: OffsetDateTime | null;
+  reservationsWithoutOrderCount: number | null;
+  reservationsWithPendingOrderCount: number | null;
   isGarage: boolean;
-  garagePrice: number;
+  garagePrice: number | null;
+  paymentPlanDto: PaymentPlanDto | null;
   amenities: ReadonlyArray<AmenityDto>;
   images: ReadonlyArray<ImageMetadataDto>;
 }
@@ -570,7 +592,8 @@ export interface RegisterCustomerInput {
   fName: string;
   lName: string;
   phone: string;
-  identityNumber: string;
+  identityNumber?: string;
+  regularReservationUnitId?: Guid;
   email: string;
   password: string;
 }
@@ -645,8 +668,9 @@ export interface StageDraftInput {
   name: string;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
-  price: number;
-  pricingDate: OffsetDateTime;
+  price?: number;
+  pricingDate?: OffsetDateTime;
+  status?: TimePlanStageStatus;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/StageItemDraftInput.cs */
@@ -709,6 +733,7 @@ export interface StageUpdateInput {
   deliveryDate: OffsetDateTime | null;
   price?: number;
   pricingDate?: OffsetDateTime;
+  status?: TimePlanStageStatus;
 }
 
 /** src/Brouj.Application/Features/TimePlans/DTOs/TemplateStageDraftInput.cs */
@@ -717,8 +742,6 @@ export interface TemplateStageDraftInput {
   name: string;
   deliveryDate: OffsetDateTime | null;
   items: ReadonlyArray<StageItemDraftInput>;
-  price: number;
-  pricingDate: OffsetDateTime;
 }
 
 /** src/Brouj.Application/Features/Terms/DTOs/TermsDto.cs */
@@ -760,9 +783,9 @@ export interface TimePlanStageDto {
   id: Guid;
   name: string;
   sortOrder: number;
+  status: TimePlanStageStatus;
   deliveryDate: OffsetDateTime;
-  percentage: number;
-  price: number | null;
+  price: number;
   pricingDate: OffsetDateTime | null;
   items: ReadonlyArray<PlanStageItemDto>;
 }
@@ -775,7 +798,10 @@ export interface UnitDto {
   meterPrice: number;
   floorNumber: number;
   size: number;
+  excellencePercentage: number;
+  trend: string;
   neighborMeterPrice: number | null;
+  pricingDate: OffsetDateTime | null;
   totalPrice: number;
   percentage: number | null;
   isAvailable: boolean;
@@ -792,7 +818,10 @@ export interface UnitInput {
   meterPrice: number;
   floorNumber: number;
   size: number;
+  excellencePercentage: number | null;
+  trend: string | null;
   neighborMeterPrice: number | null;
+  pricingDate: OffsetDateTime | null;
 }
 
 /** src/Brouj.Application/Features/Units/DTOs/UnitListDto.cs */
@@ -806,6 +835,12 @@ export interface UnitListDto {
   neighborMeterPrice: number | null;
   totalPrice: number;
   percentage: number | null;
+  pricingDate: OffsetDateTime | null;
+  trend: string;
+  excellencePercentage: number;
+  unitSavingPercentage: number | null;
+  finishingDate: OffsetDateTime | null;
+  stages: ReadonlyArray<UnitStageDto>;
   isAvailable: boolean;
   isGarage: boolean;
   garagePrice: number;
@@ -834,6 +869,13 @@ export interface UnitPaymentPlanInput {
 
 /** Payment plan rows contain regular installments or initiative stage payments. */
 export type UnitPaymentPlanRowDto = UnitPaymentInstallmentDto | InitiativeStagePaymentDto;
+
+/** src/Brouj.Application/Features/Units/DTOs/UnitStageDto.cs */
+export interface UnitStageDto {
+  stageName: string;
+  stagePrice: number;
+  isCompleted: boolean;
+}
 
 /** src/Brouj.API/Requests/UpdateProjectImageRequest.cs */
 export interface UpdateProjectImageRequest {

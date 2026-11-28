@@ -14,6 +14,7 @@ export const routePaths = {
   area: (id: string) => `/areas/${segment(id)}`,
   projects: "/projects",
   project: (id: string) => `/projects/${segment(id)}`,
+  projectUnits: (id: string) => `/projects/${segment(id)}/units`,
   unit: (projectId: string, unitId: string) =>
     `/projects/${segment(projectId)}/units/${segment(unitId)}`,
   timePlan: (id: string) => `/projects/${segment(id)}/time-plan`,

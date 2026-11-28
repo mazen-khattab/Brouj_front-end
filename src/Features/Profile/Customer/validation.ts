@@ -4,6 +4,7 @@ import { validEmail } from "../../../Validation/email";
 export function validateProfile(values: CustomerProfileInput): FieldIssue[] {
   const issues: FieldIssue[] = [];
   for (const [field, value] of Object.entries(values)) {
+    if (field === "identityNumber" && !value.trim()) continue;
     if (!value.trim()) issues.push({ field, key: "validation.required" });
     else if ((field === "fName" || field === "lName") && value.length > 100) issues.push({ field, key: "validation.nameLength" });
     else if (field === "email" && !validEmail(value)) issues.push({ field, key: "validation.email" });

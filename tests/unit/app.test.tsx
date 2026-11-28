@@ -15,7 +15,7 @@ test.each(['ar', 'en'] as const)('the real lazy route renders the %s welcome pag
   bootstrapLocale();
   renderUi(<AuthContext value={anonymous}><App /></AuthContext>, locale);
   // The first lazy route also compiles its feature modules on a cold Vitest worker.
-  expect(await screen.findByRole('heading', { name: locale === 'ar' ? 'بروج' : 'Brouj', level: 1 }, { timeout: 10_000 })).toBeVisible();
-  expect(screen.getByRole('main')).toHaveTextContent(locale === 'ar' ? 'مرحبًا بك في بروج' : 'Welcome to Brouj');
+  expect(await screen.findByRole('heading', { name: locale === 'ar' ? 'مكان لخطوتك القادمة.' : 'A place for what comes next.', level: 1 }, { timeout: 10_000 })).toBeVisible();
+  expect(screen.getByRole('main')).toHaveTextContent(locale === 'ar' ? 'مبادرة بروج' : 'The Brouj initiative');
   expect(document.documentElement).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
 }, 15_000);

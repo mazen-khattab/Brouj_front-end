@@ -40,7 +40,7 @@ export function formatDateOnly(value: string, locale: InitialLocale, options?: O
   }).format(dateOnly(value));
 }
 
-/** Require a complete offset-bearing API timestamp; never reinterpret an unspecified zone as local. */
+/** Keep the API instant and display Egypt time, independently of the browser timezone. */
 export function formatDateTime(value: string, locale: InitialLocale, options?: Intl.DateTimeFormatOptions) {
   if (!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,7})?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(value)) {
     throw new RangeError("Expected an ISO date-time with an explicit offset.");
@@ -60,6 +60,7 @@ export function formatDateTime(value: string, locale: InitialLocale, options?: I
         };
   return new Intl.DateTimeFormat(locale, {
     ...defaults,
+    timeZone: "Africa/Cairo",
     ...options,
     calendar: "gregory",
   }).format(date);

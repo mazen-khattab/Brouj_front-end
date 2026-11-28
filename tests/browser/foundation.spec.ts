@@ -10,16 +10,16 @@ for (const locale of ['ar', 'en'] as const) {
     page.on('request', (request) => { if (request.url().includes('/api/')) apiCalls.push(request.url()); });
     await page.addInitScript((language) => { localStorage.setItem('brouj.locale', language); }, locale);
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: locale === 'ar' ? 'بروج' : 'Brouj', level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: locale === 'ar' ? 'مكان لخطوتك القادمة.' : 'A place for what comes next.', level: 1 })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
     await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     expect(errors).toEqual([]);
-    await expect.poll(() => apiCalls.length).toBe(4);
+    await expect.poll(() => apiCalls.length).toBe(5);
     expect(apiCalls.map((url) => new URL(url).pathname).sort()).toEqual([
-      '/api/v1/customers/me', '/api/v1/projects', '/api/v1/terms-and-conditions/current', '/api/v1/users/me',
+      '/api/v1/customers/me', '/api/v1/projects', '/api/v1/projects', '/api/v1/terms-and-conditions/current', '/api/v1/users/me',
     ]);
-    await page.locator('main img').evaluate(async (node) => {
+    await page.locator('.home-hero-image').evaluate(async (node) => {
       if (!(node instanceof HTMLImageElement)) throw new Error('Architectural image is missing.');
       await node.decode();
       if (!node.naturalWidth) throw new Error('Architectural image failed to load.');

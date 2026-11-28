@@ -18,6 +18,18 @@ export interface BookingValues {
   preferredRepaymentPeriod: string;
 }
 
+export interface BookingMode {
+  guest: boolean;
+  initiative: boolean;
+}
+
+export function bookingFields({ guest, initiative }: BookingMode): (keyof BookingValues)[] {
+  const fields: (keyof BookingValues)[] = ["fullName", "phone"];
+  if (guest) fields.push("email", "password");
+  if (initiative) fields.push("identityNumber", "ageGroup", "placeOfResidence", "preferredFinancialBracket", "preferredRepaymentPeriod");
+  return fields;
+}
+
 export function bookingValues(profile?: CurrentCustomerDto): BookingValues {
   return {
     fullName: profile ? `${profile.fName} ${profile.lName}`.trim() : "",
@@ -32,14 +44,9 @@ export function bookingValues(profile?: CurrentCustomerDto): BookingValues {
   };
 }
 
-export function validateBooking(values: BookingValues, guest: boolean): FieldIssue[] {
+export function validateBooking(values: BookingValues, mode: BookingMode): FieldIssue[] {
   const issues: FieldIssue[] = [];
-  const fields = Object.keys(values) as (keyof BookingValues)[];
-  for (const field of fields) {
-    if (!guest && (field === "email" || field === "password")) {
-      continue;
-    }
-
+  for (const field of bookingFields(mode)) {
     const value = values[field];
 
     if (!(field === "password" ? value : value.trim())) {
@@ -47,8 +54,12 @@ export function validateBooking(values: BookingValues, guest: boolean): FieldIss
     } else if (field === "fullName") {
       const parts = value.trim().split(/\s+/);
 
-      if (parts.length !== 4) {
+      if (parts.join(" ").length > 100) {
+        issues.push({ field, key: "catalogue:booking.nameLength" });
+      } else if (mode.initiative && parts.length !== 4) {
         issues.push({ field, key: "catalogue:booking.fullNameError" });
+      } else if (mode.guest && parts.length < 2) {
+        issues.push({ field, key: "catalogue:booking.guestNameHint" });
       }
     } else if (field === "email" && !validEmail(value)) {
       issues.push({ field, key: "auth:validation.email" });
@@ -71,17 +82,30 @@ export function validateBooking(values: BookingValues, guest: boolean): FieldIss
   return issues;
 }
 
-/** Build an explicit body; profile edits and account identifiers are never included. */
-export function bookingInput(unitId: string, values: BookingValues, guest: boolean): ReservationBookingInput {
+/** Build separate request bodies so credentials go only to customer registration. */
+export function bookingInput(unitId: string, values: BookingValues, { guest, initiative }: BookingMode): ReservationBookingInput {
+  const names = values.fullName.trim().split(/\s+/);
+  const phone = values.phone.trim();
   return {
-    unitId,
-    fullName: values.fullName.trim().split(/\s+/).join(" "),
-    phone: values.phone.trim(),
-    identityNumber: values.identityNumber.trim(),
-    ageGroup: values.ageGroup as ReservationBookingInput["ageGroup"],
-    placeOfResidence: values.placeOfResidence.trim(),
-    preferredFinancialBracket: Number(values.preferredFinancialBracket) as ReservationBookingInput["preferredFinancialBracket"],
-    preferredRepaymentPeriod: Number(values.preferredRepaymentPeriod) as ReservationBookingInput["preferredRepaymentPeriod"],
-    ...(guest ? { email: values.email.trim(), password: values.password } : {}),
+    reservation: {
+      unitId,
+      fullName: names.join(" "),
+      phone,
+      identityNumber: initiative ? values.identityNumber.trim() : null,
+      ageGroup: initiative ? values.ageGroup : null,
+      placeOfResidence: initiative ? values.placeOfResidence.trim() : null,
+      preferredFinancialBracket: initiative ? Number(values.preferredFinancialBracket) : null,
+      preferredRepaymentPeriod: initiative ? Number(values.preferredRepaymentPeriod) : null,
+    },
+    ...(guest && {
+      registration: {
+        fName: names[0]!,
+        lName: names.slice(1).join(" "),
+        phone,
+        ...(initiative ? { identityNumber: values.identityNumber.trim() } : { regularReservationUnitId: unitId }),
+        email: values.email.trim(),
+        password: values.password,
+      },
+    }),
   };
 }

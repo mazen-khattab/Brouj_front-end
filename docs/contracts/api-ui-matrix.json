@@ -74,7 +74,7 @@
       "action": "RegisterCustomer",
       "uiPhase": "04",
       "servicePhase": "03",
-      "representativeFailure": "CustomerErrors.Conflict",
+      "representativeFailure": "CustomerErrors.Validation",
       "handler": "src/Brouj.Application/Features/Customers/Commands/Register/RegisterCustomerCommandHandler.cs"
     },
     {

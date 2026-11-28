@@ -14,8 +14,9 @@ import { executeTemplate } from "../../src/Features/Planning/Templates/commands"
 import type { PlanCommand } from "../../src/Features/Planning/Plans/commands";
 import { assertCompleteOrdering, moveRows, orderingInput } from "../../src/Features/Planning/Shared/ordering";
 import { serverFieldErrors } from "../../src/Forms/fieldErrors";
-import { stageFromTemplateInput, stageInput, stageUpdateInput, stageFrom } from "../../src/Features/Planning/Stages/mapping";
+import { stageFromTemplateInput, stageUpdateInput, stageFrom } from "../../src/Features/Planning/Stages/mapping";
 import { validDateTime } from "../../src/Validation/dateTime";
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../src/utils/dateTimeOffset";
 import { ApiError } from "../../src/Types/failures";
 import * as plans from "../../src/Services/TimePlans";
 import * as templates from "../../src/Services/Templates";
@@ -89,6 +90,7 @@ test.each([
 });
 
 test("feature validation explicitly covers plan, stage, item, status, image and template fields", () => {
+  const date = toDateTimeLocalValue(plan.deliveryDate);
   expect(validatePlan({ name: " ", deliveryDate: "" })).toEqual(["name", "deliveryDate"]);
   expect(validatePlan({ name: "Plan", deliveryDate: date })).toEqual([]);
   expect(validateStageTemplate({ name: "x".repeat(101), code: "x".repeat(65) })).toEqual(["name", "code"]);
@@ -99,17 +101,19 @@ test("feature validation explicitly covers plan, stage, item, status, image and 
   expect(validateItemStatus({ status: "2", confirmedDate: date })).toEqual([]);
   expect(validateItemStatus({ status: "3", confirmedDate: "" })).toEqual(["status"]);
   expect(validateImageDescription({ description: "x".repeat(20001) })).toEqual(["description"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "1000", pricingDate: date }, "create")).toEqual([]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "0", pricingDate: date }, "create")).toEqual([]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "", pricingDate: date }, "create")).toEqual(["price"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "1000", pricingDate: "" }, "create")).toEqual(["pricingDate"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "1.23456", pricingDate: date }, "create")).toEqual(["price"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "0", pricingDate: date }, "edit")).toEqual([]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "1", pricingDate: "" }, "edit")).toEqual(["pricingDate"]);
-  expect(validateStage({ name: "Stage", deliveryDate: date, price: "1.23456", pricingDate: date }, "edit")).toEqual(["price"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "1000", pricingDate: date }, "create")).toEqual([]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "0", pricingDate: date }, "create")).toEqual([]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "", pricingDate: date }, "create")).toEqual(["price"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "1000", pricingDate: "" }, "create")).toEqual(["pricingDate"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "1.23456", pricingDate: date }, "create")).toEqual(["price"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "0", pricingDate: date }, "edit")).toEqual([]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "1", pricingDate: "" }, "edit")).toEqual(["pricingDate"]);
+  expect(validateStage({ name: "Stage", deliveryDate: date, status: "0", price: "1.23456", pricingDate: date }, "edit")).toEqual(["price"]);
   // Unknown fields cannot accidentally acquire date validation; the feature owns its explicit rules.
-  const extended = { name: "Stage", deliveryDate: date, price: "2500", pricingDate: date, notes: "A regular text field" };
+  const extended = { name: "Stage", deliveryDate: date, status: "0", price: "2500", pricingDate: date, notes: "A regular text field" };
   expect(validateStage(extended, "create")).toEqual([]);
+  expect(validateStage({ ...extended, status: "3" }, "edit")).toEqual(["status"]);
+  expect(validateStage({ ...extended, price: "", pricingDate: "" }, "edit")).toEqual([]);
   expect(serverFieldErrors(new ApiError("transport", { fieldErrors: { "Input.Name": ["Untrusted text"] } }), ["name", "code"])).toEqual(["name"]);
 });
 
@@ -151,14 +155,16 @@ test("ordering preserves input arrays and checks the complete unique sibling set
 });
 
 test("template drafts carry source references, explicit dates and reject inactive/incomplete sources", () => {
+  const date = toDateTimeLocalValue(plan.deliveryDate);
   const rows = template.items.map((row) => ({ itemTemplateId: row.itemTemplateId, dueDate: date, confirmedDate: "" }));
-  const values = { name: "Ignored manual name", deliveryDate: date, price: "2500", pricingDate: date };
+  const values = { name: "Ignored manual name", deliveryDate: date, price: "2500", pricingDate: date, status: "2" };
   const input = stageFromTemplateInput(template, values, rows);
   expect(input.stageTemplateId).toBe(ids.stageTemplate);
-  expect(input.price).toBe(2500);
-  expect(input.pricingDate).toBe(date);
+  expect(input).not.toHaveProperty("price");
+  expect(input).not.toHaveProperty("pricingDate");
+  expect(input).not.toHaveProperty("status");
   expect(input.items.map((row) => row.itemTemplateId)).toEqual([ids.itemTemplate, ids.itemTemplate2]);
-  expect(input.items.every((row) => row.dueDate === date && row.confirmedDate === null)).toBe(true);
+  expect(input.items.every((row) => row.dueDate === toDateTimeOffsetIso(date) && row.confirmedDate === null)).toBe(true);
   expect(() => stageFromTemplateInput({ ...template, isActive: false }, values, rows)).toThrow(ApiError);
   expect(() => stageFromTemplateInput({ ...template, items: template.items.map((row) => ({ ...row, isActive: false })) }, values, rows)).toThrow(ApiError);
   expect(() => stageFromTemplateInput(template, values, [])).toThrow(ApiError);
@@ -169,9 +175,8 @@ test("template drafts carry source references, explicit dates and reject inactiv
       rows.map((row) => ({ ...row, itemTemplateId: ids.item })),
     ),
   ).toThrow(ApiError);
-  expect(stageInput(values)).toEqual({ name: values.name, deliveryDate: date, price: 2500, pricingDate: date });
-  expect(stageUpdateInput(values)).toEqual({ name: values.name, deliveryDate: date, price: 2500, pricingDate: date });
-  expect(stageFrom(plan.stages[0]!)).toMatchObject({ name: plan.stages[0]!.name, deliveryDate: plan.stages[0]!.deliveryDate });
+  expect(stageUpdateInput(values)).toEqual({ name: values.name, deliveryDate: toDateTimeOffsetIso(date), price: 2500, pricingDate: toDateTimeOffsetIso(date), status: 2 });
+  expect(stageFrom(plan.stages[0]!)).toMatchObject({ name: plan.stages[0]!.name, deliveryDate: toDateTimeLocalValue(plan.stages[0]!.deliveryDate) });
 });
 
 test.each([
