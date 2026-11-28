@@ -9,19 +9,23 @@ import { Button } from "../../../Components/Button";
 import { Dialog } from "../../../Components/Dialog";
 import { Alert, ValidationSummary } from "../../../Components/Feedback";
 import { Input, Select } from "../../../Components/Fields";
+import { PublicReadPanel } from "../../../Components/PublicReadPanel";
 import { useAuth } from "../../../Hooks/useAuth";
 import { useLocale } from "../../../Hooks/useLocale";
+import { usePublicProject } from "../../../Hooks/usePublicProject";
 import { apiFailureMessage } from "../../../i18n/apiFailures";
 import { formatNumber } from "../../../i18n/format";
 import { routePaths } from "../../../Router/routePaths";
 import { SessionActionError } from "../../../Types/auth";
-import type { UnitDto } from "../../../Types/contracts";
+import { ProjectType, type UnitDto } from "../../../Types/contracts";
 import { ApiError } from "../../../Types/failures";
 import type { BookingValues } from "./booking";
-import { ageGroups, bookingInput, bookingValues, financialBrackets, repaymentPeriods, validateBooking } from "./booking";
+import { ageGroups, bookingFields, bookingInput, bookingValues, financialBrackets, repaymentPeriods, validateBooking } from "./booking";
 import { useReservationBooking } from "./useReservationBooking";
 
-export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: () => void }) {
+type BookingProps = { unit: UnitDto; reload: () => void };
+
+function BookingDialog({ unit, reload, initiative }: BookingProps & { initiative: boolean }) {
   const { t } = useTranslation(["catalogue", "auth", "account"]);
   const auth = useAuth();
   const { locale } = useLocale();
@@ -44,10 +48,11 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
   }
 
   const guest = auth.actor !== "customer";
+  const mode = { guest, initiative };
   const disabled = !unit.isAvailable || !!booking.uncertain || auth.pending;
   const failure = booking.failure;
   const fieldIssues =
-    failure instanceof ApiError ? serverIssues(failure, Object.keys(values)).map((issue) => ({ ...issue, key: "auth:validation.server" })) : [];
+    failure instanceof ApiError ? serverIssues(failure, bookingFields(mode)).map((issue) => ({ ...issue, key: "auth:validation.server" })) : [];
   const allIssues = [...issues, ...fieldIssues];
 
   const fieldError = (field: keyof BookingValues) => {
@@ -99,7 +104,7 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
       return;
     }
 
-    const next = validateBooking(values, guest);
+    const next = validateBooking(values, mode);
     setIssues(next);
 
     if (next.length) {
@@ -107,7 +112,7 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
       return;
     }
 
-    const result = await booking.submit(bookingInput(unit.id, values, guest), () => {
+    const result = await booking.submit(bookingInput(unit.id, values, mode), () => {
       setValues((current) => ({ ...current, email: "", password: "" }));
     });
 
@@ -153,10 +158,10 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
                   id="booking-fullName"
                   name="fullName"
                   label={t("booking.fullName")}
-                  hint={t("booking.fullNameHint")}
+                  hint={initiative ? t("booking.fullNameHint") : guest ? t("booking.guestNameHint") : undefined}
                   value={values.fullName}
                   required
-                  maxLength={201}
+                  maxLength={100}
                   autoComplete="name"
                   error={fieldError("fullName")}
                   onChange={(event) => update("fullName", event.target.value)}
@@ -205,84 +210,90 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
                 error={fieldError("phone")}
                 onChange={(event) => update("phone", event.target.value)}
               />
-              <Input
-                id="booking-identityNumber"
-                name="identityNumber"
-                label={t("booking.identityNumber")}
-                value={values.identityNumber}
-                inputMode="numeric"
-                dir="ltr"
-                required
-                minLength={14}
-                maxLength={14}
-                autoComplete="off"
-                error={fieldError("identityNumber")}
-                onChange={(event) => update("identityNumber", event.target.value)}
-              />
-              <Select
-                id="booking-ageGroup"
-                name="ageGroup"
-                label={t("booking.ageGroup")}
-                value={values.ageGroup}
-                required
-                error={fieldError("ageGroup")}
-                onChange={(event) => update("ageGroup", event.target.value)}
-              >
-                <option value="">{t("booking.choose")}</option>
-                {ageGroups.map((group) => (
-                  <option key={group} value={group}>
-                    {group === "36+"
-                      ? t("booking.age36")
-                      : t("booking.ageRange", {
-                          from: formatNumber(group === "21-27" ? 21 : 28, locale),
-                          to: formatNumber(group === "21-27" ? 27 : 35, locale),
-                        })}
-                  </option>
-                ))}
-              </Select>
-              <Input
-                id="booking-placeOfResidence"
-                name="placeOfResidence"
-                label={t("booking.placeOfResidence")}
-                value={values.placeOfResidence}
-                required
-                maxLength={250}
-                autoComplete="address-level2"
-                error={fieldError("placeOfResidence")}
-                onChange={(event) => update("placeOfResidence", event.target.value)}
-              />
-              <Select
-                id="booking-preferredFinancialBracket"
-                name="preferredFinancialBracket"
-                label={t("booking.preferredFinancialBracket")}
-                value={values.preferredFinancialBracket}
-                required
-                error={fieldError("preferredFinancialBracket")}
-                onChange={(event) => update("preferredFinancialBracket", event.target.value)}
-              >
-                <option value="">{t("booking.choose")}</option>
-                {financialBrackets.map((amount) => (
-                  <option key={amount} value={amount}>
-                    {t("booking.bracket", { value: formatNumber(amount / 1000, locale) })}
-                  </option>
-                ))}
-              </Select>
-              <Select
-                id="booking-preferredRepaymentPeriod"
-                name="preferredRepaymentPeriod"
-                label={t("booking.preferredRepaymentPeriod")}
-                value={values.preferredRepaymentPeriod}
-                required
-                error={fieldError("preferredRepaymentPeriod")}
-                onChange={(event) => update("preferredRepaymentPeriod", event.target.value)}
-              >
-                <option value="">{t("booking.choose")}</option>
-                {repaymentPeriods.map((months) => (
-                  <option key={months} value={months}>
-                    {t("booking.months", { value: formatNumber(months, locale) })}
-                  </option>
-                ))}
-              </Select>
+              {initiative && (
+                <Input
+                  id="booking-identityNumber"
+                  name="identityNumber"
+                  label={t("booking.identityNumber")}
+                  value={values.identityNumber}
+                  inputMode="numeric"
+                  dir="ltr"
+                  required
+                  minLength={14}
+                  maxLength={14}
+                  autoComplete="off"
+                  error={fieldError("identityNumber")}
+                  onChange={(event) => update("identityNumber", event.target.value)}
+                />
+              )}
+              {initiative && (
+                <>
+                  <Select
+                    id="booking-ageGroup"
+                    name="ageGroup"
+                    label={t("booking.ageGroup")}
+                    value={values.ageGroup}
+                    required
+                    error={fieldError("ageGroup")}
+                    onChange={(event) => update("ageGroup", event.target.value)}
+                  >
+                    <option value="">{t("booking.choose")}</option>
+                    {ageGroups.map((group) => (
+                      <option key={group} value={group}>
+                        {group === "36+"
+                          ? t("booking.age36")
+                          : t("booking.ageRange", {
+                              from: formatNumber(group === "21-27" ? 21 : 28, locale),
+                              to: formatNumber(group === "21-27" ? 27 : 35, locale),
+                            })}
+                      </option>
+                    ))}
+                  </Select>
+                  <Input
+                    id="booking-placeOfResidence"
+                    name="placeOfResidence"
+                    label={t("booking.placeOfResidence")}
+                    value={values.placeOfResidence}
+                    required
+                    maxLength={250}
+                    autoComplete="address-level2"
+                    error={fieldError("placeOfResidence")}
+                    onChange={(event) => update("placeOfResidence", event.target.value)}
+                  />
+                  <Select
+                    id="booking-preferredFinancialBracket"
+                    name="preferredFinancialBracket"
+                    label={t("booking.preferredFinancialBracket")}
+                    value={values.preferredFinancialBracket}
+                    required
+                    error={fieldError("preferredFinancialBracket")}
+                    onChange={(event) => update("preferredFinancialBracket", event.target.value)}
+                  >
+                    <option value="">{t("booking.choose")}</option>
+                    {financialBrackets.map((amount) => (
+                      <option key={amount} value={amount}>
+                        {t("booking.bracket", { value: formatNumber(amount / 1000, locale) })}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    id="booking-preferredRepaymentPeriod"
+                    name="preferredRepaymentPeriod"
+                    label={t("booking.preferredRepaymentPeriod")}
+                    value={values.preferredRepaymentPeriod}
+                    required
+                    error={fieldError("preferredRepaymentPeriod")}
+                    onChange={(event) => update("preferredRepaymentPeriod", event.target.value)}
+                  >
+                    <option value="">{t("booking.choose")}</option>
+                    {repaymentPeriods.map((months) => (
+                      <option key={months} value={months}>
+                        {t("booking.months", { value: formatNumber(months, locale) })}
+                      </option>
+                    ))}
+                  </Select>
+                </>
+              )}
             </fieldset>
             <Link
               className="w-fit text-sm underline"
@@ -315,5 +326,14 @@ export default function BookingForm({ unit, reload }: { unit: UnitDto; reload: (
         )}
       </Dialog>
     </div>
+  );
+}
+
+export default function BookingForm(props: BookingProps) {
+  const { result, reload } = usePublicProject(props.unit.projectId);
+  return (
+    <PublicReadPanel result={result} reload={reload}>
+      {(project) => <BookingDialog {...props} initiative={project.projectType === ProjectType.Initiative} />}
+    </PublicReadPanel>
   );
 }

@@ -5,6 +5,7 @@ import { openPublicSessionActions } from './publicHeaderActions';
 import en from '../../src/i18n/locales/en/home.json' with { type: 'json' };
 import ar from '../../src/i18n/locales/ar/home.json' with { type: 'json' };
 import aboutEn from '../../src/i18n/locales/en/about.json' with { type: 'json' };
+import { legalBooklet } from '../../src/data/legalBooklet';
 
 for (const locale of ['en', 'ar'] as const) {
   test(`homepage catalogue, booklet, leadership and forms in ${locale}`, async ({ page, context }, info) => {
@@ -41,8 +42,8 @@ for (const locale of ['en', 'ar'] as const) {
     await prev.click();
     await expect(carousel.getByRole('article')).toHaveCount(3);
     const booklet = page.locator('#booklet');
-    await booklet.locator('summary').click();
-    await expect(booklet.locator('.home-document')).toContainText('<b>This stays plain text.</b>');
+    await booklet.getByRole('button', { name: `01 ${legalBooklet.chapters[0]!.title[locale]}` }).click();
+    await expect(booklet.getByRole('heading', { name: legalBooklet.chapters[0]!.title[locale] })).toBeVisible();
     await expect(page.locator('#about h3')).toHaveText([copy.leadership.ceo.name, copy.leadership.strategy.name, copy.leadership.legal.name]);
     const works = page.locator('#regular-projects');
     await works.getByRole('button', { name: copy.regular.current, exact: true }).click();
@@ -165,31 +166,28 @@ for (const locale of ['en', 'ar'] as const) {
   }
 }
 
-test('homepage handles independent read failures, retry and an empty initiative collection', async ({ page, context }) => {
+test('homepage keeps the local booklet available during project read failures and empty results', async ({ page, context }) => {
   const server = await catalogueServer(context);
   server.state.failTerms = true;
+  server.state.failProjects = true;
   await page.addInitScript(() => localStorage.setItem('brouj.locale', 'en'));
   await page.goto('/');
-  await expect(page.locator('#initiatives article')).toHaveCount(3);
-  const terms = page.getByRole('region', { name: 'The initiative legal booklet', exact: true });
-  await expect(terms.getByRole('button', { name: 'Try again' })).toBeVisible();
-  server.state.failTerms = false;
-  await terms.getByRole('button', { name: 'Try again' }).click();
-  await expect(terms.locator('summary')).toBeVisible();
-  await expect(terms.locator('.home-book')).toBeVisible();
-  await expect(terms.getByRole('link', { name: 'Read the full booklet' })).toHaveAttribute('href', '/terms');
-  server.state.missingTerms = true;
+  const initiative = page.locator('#initiatives');
+  const terms = page.getByRole('region', { name: legalBooklet.title.en, exact: true });
+  await expect(initiative.getByRole('button', { name: 'Try again' })).toBeVisible();
+  await expect(terms.getByRole('link', { name: en.terms.read })).toHaveAttribute('href', '/terms');
+  server.state.failProjects = false;
+  await initiative.getByRole('button', { name: 'Try again' }).click();
+  await expect(initiative.getByRole('article')).toHaveCount(3);
   await context.route('https://localhost:7249/api/v1/projects?*', (route) => route.fulfill({
     headers: { 'access-control-allow-origin': `https://localhost:${process.env.BROUJ_TEST_PORT ?? '5173'}`, 'access-control-allow-credentials': 'true' },
     json: { success: true, data: { items: [], pageNumber: 1, pageSize: 3, totalCount: 0, totalPages: 0 }, message: null },
   }));
   await page.reload();
   await expect(page.getByRole('heading', { name: 'New beginnings are on the way.' })).toBeVisible();
-  const initiative = page.locator('#initiatives');
   await expect(initiative.getByRole('button', { name: 'Next projects' })).toBeDisabled();
   await expect(initiative.getByRole('button', { name: 'Previous projects' })).toBeDisabled();
-  await expect(terms.getByRole('heading', { name: 'The booklet is awaiting publication.' })).toBeVisible();
-  await expect(terms.getByRole('link')).toHaveCount(0);
+  await expect(terms.getByRole('button', { name: en.terms.open })).toBeVisible();
 });
 
 test('hero layout follows locale direction and respects reduced motion', async ({ page, context }) => {
@@ -219,42 +217,6 @@ test('all three local films play and return focus when closed', async ({ page, c
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
   }
-});
-
-test('model rendering settles at rest and releases the canvas for reduced motion', async ({ page, context }, info) => {
-  await catalogueServer(context);
-  await seedRouting(page);
-  await page.addInitScript(() => {
-    if (!window.WebGL2RenderingContext) return;
-    const original = WebGL2RenderingContext.prototype.drawElementsInstanced;
-    WebGL2RenderingContext.prototype.drawElementsInstanced = function (...args) {
-      const canvas = this.canvas;
-      if (canvas instanceof HTMLCanvasElement) {
-        canvas.dataset.draws = String(Number(canvas.dataset.draws ?? 0) + 1);
-        canvas.dataset.lastDraw = String(performance.now());
-      }
-      original.apply(this, args);
-    };
-  });
-  await page.goto('/');
-  const canvas = page.locator('.home-model canvas');
-  if (info.project.name.includes('mobile')) {
-    await expect(page.locator('.home-hero-image')).toBeVisible();
-    await expect(canvas).toHaveCount(0);
-    return;
-  }
-  await page.getByRole('button', { name: en.hero.model }).click();
-  await expect.poll(() => canvas.getAttribute('data-draws').then(Number)).toBeGreaterThanOrEqual(3);
-  await expect(page.locator('.home-hero')).toHaveAttribute('data-model','true');
-  await expect.poll(() => canvas.evaluate(el => performance.now() - Number(el.dataset.lastDraw))).toBeGreaterThan(300);
-  const idle = Number(await canvas.getAttribute('data-draws'));
-  await page.mouse.move(500, 280);
-  await expect.poll(() => canvas.getAttribute('data-draws').then(Number)).toBeGreaterThan(idle);
-  await expect.poll(() => canvas.evaluate(el => performance.now() - Number(el.dataset.lastDraw))).toBeGreaterThan(300);
-  await page.screenshot({path:info.outputPath('scale-model.png'), animations:'disabled'});
-  await page.emulateMedia({ reducedMotion:'reduce' });
-  await expect(canvas).toHaveCount(0);
-  await expect(page.locator('.home-hero-image')).toHaveCSS('opacity', '1');
 });
 
 test('dragging the initiative gallery reveals the following project', async ({ page, context }, info) => {

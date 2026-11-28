@@ -39,7 +39,7 @@
     "pricingDate": "Pricing date"
   },
   "invalidField": "Check {{field}}.",
-  "dateHint": "Required. Include the time and UTC offset, for example 2026-12-01T09:00:00+02:00.",
+  "dateHint": "Required. Choose the date and time in your local timezone.",
   "stageStatus": {
     "0": "Pending",
     "1": "Processing",
@@ -47,8 +47,8 @@
   },
   "priceHint": "Enter a price with up to four decimal places and provide its pricing date.",
   "percentageHint": "Required. Number between 0 and 100.",
-  "confirmedHint": "Optional unless Completed. Include the time and UTC offset, for example 2026-12-01T09:00:00+02:00.",
-  "dateInvalid": "Enter a valid date, time and UTC offset.",
+  "confirmedHint": "Optional unless Completed. Choose the date and time in your local timezone.",
+  "dateInvalid": "Choose a valid local date and time.",
   "searchSource": "Search {{source}}",
   "source": { "project": "Project", "stage": "Stage template", "item": "Item template" },
   "choose": "Choose…",

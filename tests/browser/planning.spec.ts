@@ -6,6 +6,9 @@ import { seedRouting } from "./routingFixtures";
 import en from "../../src/i18n/locales/en/timePlans.json" with { type: "json" };
 import ar from "../../src/i18n/locales/ar/timePlans.json" with { type: "json" };
 
+test.use({ timezoneId: "Africa/Cairo" });
+const localDate = "2026-12-01T09:00";
+
 const planPath = `/admin/time-plans/${ids.project}`;
 const templatePath = `/admin/templates/stages?id=${ids.stageTemplate}`;
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==", "base64");
@@ -43,7 +46,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await seedRouting(page, "admin");
   await page.goto(planPath);
   await page.locator("#plan-name").fill("New project schedule");
-  await page.locator("#plan-deliveryDate").fill(planningDate);
+  await page.locator("#plan-deliveryDate").fill(localDate);
   await saveForm(page, en.createPlan);
   expect(server.calls.find((call) => call.method === "POST")!.body).toEqual({
     input: { name: "New project schedule", deliveryDate: planningDate },
@@ -53,7 +56,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await saveForm(page, en.editPlan);
   await page.getByText(en.addStage, { exact: true }).click();
   await page.locator("#add-stage-name").fill("New manual stage");
-  await page.locator("#add-stage-deliveryDate").fill(planningDate);
+  await page.locator("#add-stage-deliveryDate").fill(localDate);
   await page.locator("#add-stage-price").fill("100000.1234");
   const manualSave = page.getByRole("form", { name: en.manualStage }).getByRole("button", { name: en.save, exact: true });
   const stageCreates = () => server.calls.filter((call) => call.method === "POST" && call.url.pathname.endsWith("/stages"));
@@ -61,7 +64,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await expect(page.locator("#add-stage-pricingDate")).toHaveAttribute("aria-invalid", "true");
   await expect(page.locator("#add-stage-price")).toHaveValue("100000.1234");
   expect(stageCreates()).toHaveLength(0);
-  await page.locator("#add-stage-pricingDate").fill(planningDate);
+  await page.locator("#add-stage-pricingDate").fill(localDate);
   await page.locator("#add-stage-price").fill("100000.12345");
   await manualSave.click();
   await expect(page.locator("#add-stage-price")).toHaveAttribute("aria-invalid", "true");
@@ -74,7 +77,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   const stage = server.state.plan!.stages[0]!;
   await page.getByRole("button", { name: stage.name, exact: true }).click();
   await expect(page.locator("#stage-price")).toHaveValue("100000.1234");
-  await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
+  await expect(page.locator("#stage-pricingDate")).toHaveValue(localDate);
   await expect(page.locator("#stage-status")).toHaveValue("1");
   await expect(page.getByRole("row").filter({ hasText: stage.name }).getByText(en.stageStatus[1], { exact: true })).toBeVisible();
   await page.locator("#stage-status").selectOption("2");
@@ -92,10 +95,10 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await saveForm(page, en.editStage);
   expect(server.calls.findLast((call) => call.method === "PATCH")!.body).toEqual({ name: "Renamed stage", deliveryDate: planningDate, status: 0 });
   await expect(page.locator("#stage-price")).toHaveValue("0");
-  await expect(page.locator("#stage-pricingDate")).toHaveValue(planningDate);
+  await expect(page.locator("#stage-pricingDate")).toHaveValue(localDate);
   await page.locator("summary").filter({ hasText: en.addItem }).click();
   await page.locator("#add-item-name").fill("New work item");
-  await page.locator("#add-item-dueDate").fill(planningDate);
+  await page.locator("#add-item-dueDate").fill(localDate);
   await saveForm(page, en.addItem);
   const item = server.state.plan!.stages[0]!.items[0]!;
   await page.getByRole("button", { name: item.name, exact: true }).click();
@@ -103,7 +106,7 @@ test("complete empty plan → manual stage → item → image workflow uses prec
   await itemForm.getByLabel(en.fields.name, { exact: true }).fill("Updated work item");
   await saveForm(page, en.editItem);
   await page.locator("#item-status-status").selectOption("2");
-  await page.locator("#item-status-confirmedDate").fill(planningDate);
+  await page.locator("#item-status-confirmedDate").fill(localDate);
   await saveForm(page, en.changeStatus);
   expect(server.calls.findLast((call) => call.url.pathname.endsWith("/status"))!.body).toEqual({ status: 2, confirmedDate: planningDate });
   expect(server.calls.findLast((call) => call.method === "PATCH" && call.url.pathname.includes("/items/"))!.body).toEqual({
@@ -166,7 +169,7 @@ test("a concurrent plan creation retains the create draft, and confirmed deletio
   await seedRouting(page, "admin");
   await page.goto(planPath);
   await page.locator("#plan-name").fill("Retained creation draft");
-  await page.locator("#plan-deliveryDate").fill(planningDate);
+  await page.locator("#plan-deliveryDate").fill(localDate);
   server.state.plan = structuredClone(planningPlan);
   await page.getByRole("form", { name: en.createPlan }).getByRole("button", { name: en.save, exact: true }).click();
   await expect(page.getByText(en.conflict, { exact: true })).toBeVisible();
@@ -216,7 +219,7 @@ test("all status transitions use the dedicated endpoint and Completed requires a
   expect(server.calls.filter((call) => call.method !== "GET")).toHaveLength(0);
   for (const value of ["1", "2", "0", "2", "1", "0"]) {
     await page.locator("#item-status-status").selectOption(value);
-    await page.locator("#item-status-confirmedDate").fill(value === "2" ? planningDate : "");
+    await page.locator("#item-status-confirmedDate").fill(value === "2" ? localDate : "");
     await saveForm(page, en.changeStatus);
     expect(server.state.plan!.stages[0]!.items[0]!.status).toBe(Number(value));
     expect(server.state.plan!.stages[0]!.items[1]!.status).toBe(0);
@@ -232,9 +235,9 @@ test("server template application supplies every mapped item date and also suppo
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.locator("#template-deliveryDate")).toHaveAttribute("aria-invalid", "true");
-  await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-due-0").fill(planningDate);
-  await page.locator("#template-due-1").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(localDate);
+  await page.locator("#template-due-0").fill(localDate);
+  await page.locator("#template-due-1").fill(localDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
   expect(server.calls.findLast((call) => call.method === "POST")!.url.pathname).toBe(`/api/v1/admin/time-plans/${ids.plan}/stages/from-template`);
@@ -260,15 +263,16 @@ test("server template application supplies every mapped item date and also suppo
     name: "Reusable construction stage", deliveryDate: planningDate, status: 2,
   });
   await page.locator("#stage-price").fill("100000");
-  await page.locator("#stage-pricingDate").fill(planningDate);
+  await page.locator("#stage-pricingDate").fill(localDate);
   await saveForm(page, en.editStage);
   const copiedStage = server.state.plan!.stages.find((stage) => stage.name === "Reusable construction stage")!;
   const patch = server.calls.findLast((call) => call.method === "PATCH")!;
   expect(patch.url.pathname).toBe(`/api/v1/admin/time-plans/${ids.plan}/stages/${copiedStage.id}`);
   expect(patch.body).toEqual({ name: copiedStage.name, deliveryDate: planningDate, price: 100000, pricingDate: planningDate, status: 2 });
+  await page.getByRole("button", { name: en.addStage, exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.emptyTemplate);
   await expect(page.getByText(en.emptyTemplate, { exact: true })).toBeVisible();
-  await page.locator("#template-deliveryDate").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(localDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect.poll(() => server.state.plan!.stages.length).toBe(4);
   expect(server.calls.findLast((call) => call.method === "POST")!.body.items).toEqual([]);
@@ -287,13 +291,13 @@ test("inactive mapped templates cannot be applied and a newly stale template rep
   await page.reload();
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
-  await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-due-0").fill(planningDate);
-  await page.locator("#template-due-1").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(localDate);
+  await page.locator("#template-due-0").fill(localDate);
+  await page.locator("#template-due-1").fill(localDate);
   server.state.failNext = 409;
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.conflict, { exact: true })).toBeVisible();
-  await expect(page.locator("#template-due-0")).toHaveValue(planningDate);
+  await expect(page.locator("#template-due-0")).toHaveValue(localDate);
   expect(server.calls.filter((call) => call.method === "POST")).toHaveLength(1);
 });
 
@@ -352,20 +356,20 @@ test("changed template assignments keep dates tied to their source IDs until an 
   await page.goto(planPath);
   await page.getByText(en.addStage, { exact: true }).click();
   await page.getByLabel(en.source.stage, { exact: true }).selectOption(ids.stageTemplate);
-  await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-due-0").fill(planningDate);
-  await page.locator("#template-due-1").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(localDate);
+  await page.locator("#template-due-0").fill(localDate);
+  await page.locator("#template-due-1").fill(localDate);
   server.stages.set(ids.stageTemplate, { ...server.stages.get(ids.stageTemplate)!, items: [server.stages.get(ids.stageTemplate)!.items[1]!] });
   server.state.failNext = 409;
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.sourceChanged, { exact: true })).toBeVisible();
-  await expect(page.locator("#template-due-0")).toHaveValue(planningDate);
+  await expect(page.locator("#template-due-0")).toHaveValue(localDate);
   await expect(page.getByRole("button", { name: en.applyTemplate, exact: true })).toBeDisabled();
   await page.getByRole("button", { name: en.resetTemplateDates, exact: true }).click();
   await expect(page.locator("#template-due-1")).toHaveCount(0);
   await expect(page.locator("#template-due-0")).toHaveValue("");
-  await page.locator("#template-deliveryDate").fill(planningDate);
-  await page.locator("#template-due-0").fill(planningDate);
+  await page.locator("#template-deliveryDate").fill(localDate);
+  await page.locator("#template-due-0").fill(localDate);
   await page.getByRole("button", { name: en.applyTemplate, exact: true }).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
   expect(
@@ -488,6 +492,45 @@ test("image file limits and failed upload preserve the local preview, descriptio
   await expect(page.locator("#image-upload-description")).toHaveValue("Retained upload");
   expect(await page.locator("#item-image-file").evaluate((input: HTMLInputElement) => input.files?.[0]?.name)).toBe("valid.png");
   expect(server.calls.filter((call) => call.method === "POST")).toHaveLength(1);
+});
+
+test("one stage editor protects drafts in both directions when adding and editing", async ({ page, context }) => {
+  const server = await planningServer(context);
+  await seedRouting(page, "admin");
+  await page.goto(planPath);
+  const add = page.getByRole("button", { name: en.addStage, exact: true });
+  const stage = page.getByRole("button", { name: "Foundations", exact: true });
+  const create = page.getByRole("form", { name: en.manualStage, exact: true });
+  const edit = page.getByRole("form", { name: en.editStage, exact: true });
+  const dialog = page.getByRole("dialog");
+  const discard = dialog.getByRole("button", { name: en.discard, exact: true });
+  const keep = dialog.getByRole("button", { name: en.keepEditing, exact: true });
+
+  await add.focus();
+  await page.keyboard.press("Enter");
+  await expect(create).toBeVisible();
+  await expect(edit).toHaveCount(0);
+  await page.locator("#add-stage-name").fill("Unsaved new stage");
+  await stage.click();
+  await keep.click();
+  await expect(page.locator("#add-stage-name")).toHaveValue("Unsaved new stage");
+  await stage.click();
+  await discard.click();
+  await expect(edit).toBeVisible();
+  await expect(create).toHaveCount(0);
+  await expect(stage).toHaveAttribute("aria-pressed", "true");
+
+  await page.locator("#stage-name").fill("Unsaved edit");
+  await add.click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#stage-name")).toHaveValue("Unsaved edit");
+  await add.click();
+  await discard.click();
+  await expect(create).toBeVisible();
+  await expect(edit).toHaveCount(0);
+  await expect(page.locator("#add-stage-name")).toHaveValue("");
+  await expect(stage).toHaveAttribute("aria-pressed", "false");
+  expect(server.calls.filter((call) => call.method !== "GET")).toHaveLength(0);
 });
 
 test("unsaved edits protect stage, item, project and template navigation with keyboard cancellation", async ({ page, context }) => {

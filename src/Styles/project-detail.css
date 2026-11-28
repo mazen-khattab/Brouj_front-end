@@ -33,6 +33,9 @@
 .project-detail:lang(ar) .pd-title-mask h1 { line-height: 1.5; }
 .pd-area-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 2.2rem; flex-shrink: 0; border: 1px solid #bfae89; color: #e4dac6; padding: 0.85rem 1.15rem; font-size: 0.8rem; transition: background 0.35s, color 0.35s; }
 .pd-area-link:hover { background: #bfae89; color: #13324a; }
+.pd-project-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.75rem; }
+.pd-units-link { background: #bfae89; color: #13324a; font-weight: 600; }
+.pd-units-link:hover { background: #e4dac6; border-color: #e4dac6; }
 .pd-area-link span { font-size: 1.2rem; }
 .project-detail:dir(rtl) .pd-area-link span { transform: scaleX(-1); }
 .pd-countdown { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem 3rem; padding-block: 1.3rem; border-block-start: 1px solid var(--pd-gold-line); }
@@ -42,6 +45,22 @@
 .pd-countdown dd { color: #e4dac6; font-weight: 400; font-size: 1.8rem; }
 .pd-countdown dt { color: #c9c2b1; font-size: 0.7rem; }
 .pd-overview { padding-block: clamp(2.5rem, 5vw, 5rem); }
+.pd-summary {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(0, 3fr);
+  align-items: center;
+  gap: 1rem clamp(1.25rem, 3vw, 3rem);
+  margin-block-end: clamp(2rem, 4vw, 3.6rem);
+  padding: clamp(1.1rem, 2.6vw, 2rem);
+  border-block: 1px solid var(--pd-gold-line);
+  border-inline-start: 3px solid #bfae89;
+  background: #f8f7f4;
+}
+.project-detail .pd-summary h2 { font-size: clamp(1.6rem, 2.5vw, 2.25rem); }
+.pd-summary dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pd-summary dl > div { display: grid; align-content: start; gap: 0.45rem; padding-inline: clamp(0.65rem, 2vw, 1.5rem); border-inline-start: 1px solid var(--pd-gold-line); }
+.pd-summary dt { font-size: 0.8rem; line-height: 1.5; color: var(--pd-muted); }
+.pd-summary dd { font-size: clamp(1.2rem, 2.3vw, 2rem); line-height: 1.35; font-weight: 600; font-variant-numeric: tabular-nums; }
 .pd-overview-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 4vw, 4.5rem); align-items: start; }
 .pd-gallery, .pd-spec-sheet { min-inline-size: 0; }
 .pd-gallery > section > div:first-child { block-size: clamp(25rem, 35vw, 32rem); }
@@ -65,11 +84,14 @@
 .pd-facts dl > div { border-color: var(--pd-line); padding-block: 0.9rem; min-inline-size: 0; }
 .pd-facts dt { font-size: 0.72rem; color: var(--pd-muted); }
 .pd-facts dd { margin-block-start: 0.3rem; font-size: 0.9rem; line-height: 1.6; font-weight: 500; font-variant-numeric: tabular-nums; }
+.pd-payment-terms { margin-block-end: 0.5rem; }
+.pd-facts .pd-payment-terms dl { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0.9rem; }
+.pd-facts .pd-payment-terms dl > div { padding-block: 0.55rem; }
 .pd-narrative { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 2rem clamp(2rem, 4vw, 4.5rem); padding-block-start: 3.5rem; margin-block-start: 3rem; border-block-start: 1px solid var(--pd-line); }
 .pd-description p { max-inline-size: 70ch; font-size: 0.9rem; line-height: 2; white-space: pre-wrap; color: var(--pd-muted); margin-block-start: 1.3rem; }
 .pd-amenities dl { gap: 0.65rem; }
 .pd-amenities dl > div { border-radius: 0; background: #f8f7f4; border-color: var(--pd-gold-line); min-inline-size: 9rem; max-inline-size: 100%; }
-.pd-units { padding-block: 1rem clamp(3rem, 6vw, 6rem); }
+.pd-units { padding-block: clamp(2rem, 4vw, 3.5rem) clamp(3rem, 6vw, 6rem); }
 .pd-units #project-units { gap: 1.4rem; }
 .pd-units #project-units > div.flex { color: var(--pd-muted); font-size: 0.75rem; }
 .pd-units #units-table-help { max-inline-size: 50ch; }
@@ -118,13 +140,24 @@
 .pd-progress-gallery > section > div:first-child { direction: inherit; flex-direction: row; }
 .pd-progress-gallery button { border-radius: 0; }
 @media (max-width: 900px) {
+  .pd-summary { grid-template-columns: minmax(0, 1fr); }
+  .pd-summary dl > div:first-child { border-inline-start: 0; padding-inline-start: 0; }
   .pd-overview-grid, .pd-narrative { grid-template-columns: 1fr; }
   .pd-gallery > section > div:first-child { block-size: 27rem; }
   .pd-hero-heading { align-items: start; }
   .pd-countdown dl { min-inline-size: 50%; }
 }
 @media (max-width: 600px) {
+  .pd-facts .pd-payment-terms dl { grid-template-columns: minmax(0, 1fr); }
+  .pd-facts .pd-payment-terms dl > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: baseline;
+    column-gap: 0.75rem;
+  }
+  .pd-facts .pd-payment-terms dd { margin-block-start: 0; text-align: end; }
   .pd-hero-heading { flex-direction: column; gap: 1.3rem; padding-block: 2rem; }
+  .pd-project-actions { justify-content: flex-start; }
   .pd-title-mask h1 { font-size: 2.8rem; }
   .pd-countdown { flex-direction: column; align-items: stretch; gap: 1.2rem; padding-block: 1.3rem 1.5rem; }
   .pd-countdown dl { inline-size: 100%; }

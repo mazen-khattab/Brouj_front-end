@@ -1,0 +1,239 @@
+.account-page {
+  --account-surface: #f8f7f4;
+  --account-line: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  --account-control-line: color-mix(in srgb, var(--color-accent) 65%, white);
+  --account-space: clamp(1.15rem, 3vw, 2.15rem);
+  text-align: start;
+}
+
+.account-hero {
+  padding-block: clamp(1.85rem, 4.2vw, 3.35rem) clamp(1.8rem, 3.5vw, 2.85rem);
+  background: var(--color-primary);
+  color: var(--color-background);
+}
+
+.account-hero-mask { overflow: clip; }
+.account-hero h1 {
+  font: 500 clamp(2.75rem, 5vw, 4.55rem)/1.08 var(--home-display);
+  letter-spacing: -0.025em;
+  outline: none;
+}
+.account-hero:lang(ar) h1 { letter-spacing: normal; line-height: 1.22; }
+.account-hero p {
+  margin-block-start: 0.55rem;
+  color: #d9e0e4;
+  font-size: 0.86rem;
+}
+
+.account-tab-band {
+  border-block-end: 1px solid var(--account-line);
+  background: var(--color-background);
+}
+.account-tabs { display: flex; align-items: stretch; gap: clamp(1rem, 3.5vw, 3rem); }
+.account-tabs a {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: 3.3rem;
+  padding-inline: 0.25rem;
+  color: var(--home-muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: center;
+}
+.account-tabs a:is(:hover, [aria-current="page"]) { color: var(--color-primary); }
+.account-tabs a[aria-current="page"]::after {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -1px;
+  block-size: 2px;
+  background: var(--color-accent);
+  content: "";
+}
+.home-shell .account-page :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.home-shell .account-hero h1:focus { outline: none; }
+.home-shell .account-tabs a:focus-visible { outline-offset: -4px; }
+
+.account-content {
+  padding-block: clamp(1.65rem, 4vw, 3.4rem) clamp(3.5rem, 7vw, 6.5rem);
+}
+.account-profile,
+.account-list-page,
+.account-list { display: grid; min-inline-size: 0; gap: 1.45rem; }
+.account-profile { gap: clamp(1.5rem, 3vw, 2.5rem); }
+.account-panel {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--account-space);
+  padding: var(--account-space);
+  border: 1px solid var(--account-line);
+  background: var(--color-background);
+}
+.account-section-title {
+  font: 500 clamp(1.85rem, 3vw, 2.5rem)/1.15 var(--home-display);
+}
+.account-section-title:lang(ar) { line-height: 1.35; }
+.account-form-panel { align-items: start; }
+.account-form-panel h2::after {
+  display: block;
+  inline-size: 2.25rem;
+  block-size: 1px;
+  margin-block-start: 0.85rem;
+  background: var(--color-accent);
+  content: "";
+}
+.account-form,
+.account-form-fields { display: grid; min-inline-size: 0; gap: 1.15rem clamp(1.15rem, 2vw, 1.85rem); }
+.account-form { gap: 1.5rem; }
+.account-page :is(.account-form, .account-toolbar) label {
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.account-page :is(input, select) {
+  min-block-size: 2.85rem;
+  padding: 0.55rem 0.75rem;
+  border-color: var(--account-control-line);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.86rem;
+}
+.account-page:dir(rtl) input[dir="ltr"] { text-align: end; }
+.account-page input[aria-invalid="true"] { border-color: var(--color-error); }
+.home-shell .account-page :is(input, select):focus {
+  border-color: var(--color-accent);
+  outline: 1px solid var(--color-accent);
+  outline-offset: 0;
+  box-shadow: none;
+}
+.account-content :is([role="alert"], dialog) { border-radius: 0; }
+
+.account-page :is(.account-primary, .account-ghost, .account-pagination button) {
+  display: inline-flex;
+  inline-size: fit-content;
+  min-block-size: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  translate: none;
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+.account-page .account-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: white;
+}
+.account-page .account-primary:hover:enabled { background: #214660; border-color: #214660; }
+.account-page :is(.account-ghost, .account-pagination button) { background: transparent; color: var(--color-primary); }
+.account-page :is(.account-ghost, .account-pagination button):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 15%, white);
+}
+
+.account-toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.9rem clamp(0.65rem, 2vw, 1.3rem);
+  padding: clamp(0.85rem, 2.4vw, 1.45rem);
+  border: 1px solid var(--account-line);
+  background: var(--account-surface);
+}
+.account-toolbar .account-refresh { grid-column: 1 / -1; }
+.account-refresh svg { inline-size: 1rem; block-size: 1rem; flex: none; }
+.account-results-count { color: var(--home-muted); font-size: 0.8rem; }
+.account-records { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 29rem), 1fr)); gap: 1.15rem; }
+.account-record { align-content: start; gap: 1.15rem; }
+.account-record-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+}
+.account-record-heading h2 { font-size: clamp(1rem, 2vw, 1.25rem); font-weight: 650; }
+.account-page .account-status {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0;
+  background: var(--account-surface);
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+.account-record dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.account-page :is(.account-record, .account-detail) dl { gap: 0.8rem 1.35rem; }
+.account-page :is(.account-record, .account-detail) dl > div { border-color: var(--account-line); padding-block-start: 0.65rem; }
+.account-page :is(.account-record, .account-detail) dt { font-size: 0.73rem; }
+.account-page :is(.account-record, .account-detail) dd { margin-block-start: 0.25rem; font-size: 0.86rem; }
+.account-results-count,
+.account-record,
+.account-detail,
+.account-pagination { font-variant-numeric: tabular-nums; }
+.account-record-link {
+  justify-self: start;
+  padding-block: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+}
+.account-record-link:hover { text-decoration-color: currentColor; }
+
+.account-empty {
+  min-block-size: 15rem;
+  align-content: center;
+  justify-items: center;
+  gap: 0.55rem;
+  padding-block: clamp(2rem, 5vw, 3rem);
+  text-align: center;
+}
+.account-empty > span {
+  inline-size: 2rem;
+  block-size: 2rem;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  transform: skewY(-14deg);
+}
+.account-empty p { color: var(--home-muted); font-size: 0.84rem; }
+.account-empty a { margin-block-start: 0.6rem; }
+
+.account-page .account-pagination {
+  justify-content: flex-end;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--account-line);
+  color: var(--home-muted);
+  font-size: 0.76rem;
+}
+.account-page .account-pagination button { border-color: var(--account-control-line); }
+
+@media (min-width: 640px) {
+  .account-form-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-toolbar { grid-template-columns: minmax(0, 15rem) minmax(0, 12rem) 1fr; }
+  .account-toolbar .account-refresh { grid-column: auto; justify-self: end; }
+}
+
+@media (min-width: 960px) {
+  .account-form-panel { grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 2fr); gap: clamp(1.5rem, 5vw, 4rem); }
+  .account-record:only-child dl { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+  .account-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; }
+  .account-tabs a { min-block-size: 3.05rem; }
+  .account-page .account-pagination {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+  .account-pagination > span { grid-column: 1 / -1; grid-row: 1; text-align: center; }
+  .account-page .account-pagination button { inline-size: 100%; }
+}

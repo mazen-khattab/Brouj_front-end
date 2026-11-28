@@ -2,11 +2,12 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
 import { draftFrom as projectDraft, projectInput } from "../../src/Features/Projects/Admin/mapping";
-import { unitInput } from "../../src/Features/Units/Admin/mapping";
+import { draftFrom as unitDraft, unitInput } from "../../src/Features/Units/Admin/mapping";
 import { invalidFields as invalidProjectFields, fileIssue, validAmenities } from "../../src/Features/Projects/Admin/validation";
 import { invalidFields as invalidAreaFields } from "../../src/Features/Areas/Admin/validation";
 import { invalidFields as invalidUnitFields, unitTotalFits } from "../../src/Features/Units/Admin/validation";
-import type { ProjectDto } from "../../src/Types/contracts";
+import { ProjectType, type ProjectDto } from "../../src/Types/contracts";
+import { toDateTimeLocalValue } from "../../src/utils/dateTimeOffset";
 import { AuthContext } from "../../src/Context/AuthContext";
 import type { AuthValue } from "../../src/Context/AuthContext";
 import { CityEditorProvider } from "../../src/Features/Cities/Admin/EditorProvider";
@@ -37,6 +38,7 @@ const auth: AuthValue = {
 };
 const project: ProjectDto = {
   startingMeterPrice: 0, unitSavingPercentage: null,
+  reservationsWithoutOrderCount: null, reservationsWithPendingOrderCount: null, paymentPlanDto: null,
   id,
   name: "Fixture",
   areaId: id,
@@ -151,12 +153,16 @@ test("full project PATCH input strips identity, images, amenities and server-con
     neighborPrice: null,
     drawDate: null,
   });
-  expect(unitInput({ ...{ projectId: id, number: "A", size: "20", floorNumber: "0", meterPrice: "5", neighborMeterPrice: "", isAvailable: "false" } })).toEqual({
+  const draft = { ...unitDraft(), projectId: id, number: "A", size: "20", floorNumber: "0", meterPrice: "5", isAvailable: "false" };
+  expect(unitInput(draft, ProjectType.Regular)).toEqual({
     number: "A",
     size: 20,
     floorNumber: 0,
     meterPrice: 5,
+    excellencePercentage: null,
+    trend: "",
     neighborMeterPrice: null,
+    pricingDate: null,
   });
 });
 
@@ -177,7 +183,7 @@ test("project validators distinguish initiative-only fields, coordinate ranges a
       drawDate: "invalid",
     }),
   ).toEqual(expect.arrayContaining(["latitude", "longitude", "size", "price", "floorCount", "plannedUnitCount", "neighborPrice", "drawDate"]));
-  expect(invalidProjectFields({ ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-12-01T12:00:00+02:00" })).toEqual([]);
+  expect(invalidProjectFields({ ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-12-01T12:00" })).toEqual([]);
   expect(invalidAreaFields({ name: "Area", cityId: "free-form-id" })).toContain("cityId");
   expect(invalidProjectFields({ ...valid, projectType: "1", price: "1", neighborPrice: "0", drawDate: "2026-02-31T12:00:00Z" })).toContain(
     "drawDate",
@@ -189,18 +195,35 @@ test("unit monetary overflow and scale are checked without float rounding at the
   expect(unitTotalFits("1", "999999999999999.9901")).toBe(false);
   expect(unitTotalFits("100", "1.0001")).toBe(true);
   expect(unitTotalFits("1", "1.00001")).toBe(false);
-  expect(invalidUnitFields({ projectId: id, number: "N", floorNumber: "0", meterPrice: "0", size: "0.0001", neighborMeterPrice: "" })).toEqual([]);
+  expect(invalidUnitFields({ ...unitDraft(), projectId: id, number: "N", floorNumber: "0", meterPrice: "0", size: "0.0001" })).toEqual([]);
 });
 
 test("unit validation owns project selection and project-specific pricing requirements", () => {
-  const draft = { projectId: id, number: "A", floorNumber: "1", meterPrice: "10", size: "20", neighborMeterPrice: "" };
+  const draft = { ...unitDraft(), projectId: id, number: "A", floorNumber: "1", meterPrice: "10", size: "20" };
   expect(invalidUnitFields({ ...draft, projectId: "" })).toContain("projectId");
   expect(invalidUnitFields(draft, project)).toEqual([]);
   expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5" }, project)).toContain("neighborMeterPrice");
-  const initiative = { ...project, projectType: 1 as const, price: 300 };
-  expect(invalidUnitFields(draft, initiative)).toContain("neighborMeterPrice");
-  expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5" }, initiative)).toEqual([]);
-  expect(invalidUnitFields({ ...draft, neighborMeterPrice: "5", meterPrice: "20" }, initiative)).toContain("neighborMeterPrice");
+  const initiative = { ...project, projectType: ProjectType.Initiative, price: 300 };
+  expect(invalidUnitFields(draft, initiative)).toEqual(["neighborMeterPrice", "pricingDate"]);
+  const pricingDate = "2026-11-25T14:30:45.125+02:00";
+  const priced = { ...draft, neighborMeterPrice: "5", pricingDate: toDateTimeLocalValue(pricingDate) };
+  const saved = { meterPrice: 10, pricingDate };
+  expect(invalidUnitFields(priced, initiative)).toEqual([]);
+  expect(invalidUnitFields({ ...priced, meterPrice: "20" }, initiative)).toContain("neighborMeterPrice");
+  expect(invalidUnitFields({ ...priced, meterPrice: "11", pricingDate: "" }, initiative, saved)).toEqual(["pricingDate"]);
+  expect(unitInput(priced, ProjectType.Initiative, saved).pricingDate).toBeNull();
+  expect(unitInput({ ...priced, meterPrice: "11" }, ProjectType.Initiative, saved).pricingDate).toBe(pricingDate);
+});
+
+test("unit validation bounds orientation length and excellence percentage", () => {
+  const draft = { ...unitDraft(), projectId: id, number: "A", floorNumber: "1", meterPrice: "10", size: "20" };
+  for (const excellencePercentage of ["-0.01", "100.01", "0.001", "NaN"]) {
+    expect(invalidUnitFields({ ...draft, excellencePercentage }, project)).toEqual(["excellencePercentage"]);
+  }
+  const values = { ...draft, excellencePercentage: "0", trend: "  North  " };
+  expect(invalidUnitFields(values, project)).toEqual([]);
+  expect(unitInput(values, ProjectType.Regular)).toMatchObject({ excellencePercentage: 0, trend: "North" });
+  expect(invalidUnitFields({ ...values, trend: "A".repeat(65) }, project)).toEqual(["trend"]);
 });
 
 test("amenities allow empty replacement, bound collection size, and require Name/Value pairs", () => {

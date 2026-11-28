@@ -12,6 +12,7 @@ export const catalogueProject: ProjectDto = {
   description: 'A description supplied by the catalogue.\nSecond paragraph. <b>Plain text</b>', latitude: 30.05, longitude: 31.2,
   size: 1200, projectType: 1, price: 12500000, floorCount: 5, plannedUnitCount: 20,
   startingMeterPrice: 999, unitSavingPercentage: 20,
+  reservationsWithoutOrderCount: 1284, reservationsWithPendingOrderCount: 0, paymentPlanDto: null,
   neighborPrice: 13000000, drawDate: '2026-12-01T12:00:00Z', isGarage: false, garagePrice: 0,
   amenities: [{ name: 'Garden', value: 'Shared outdoor space' }],
   images: [{ id: 'image-one', imagePath: 'C:\\PRIVATE-STORAGE\\project.webp', altText: 'Supplied photograph' }, { id: 'image-two', imagePath: '/PRIVATE-STORAGE/other.webp', altText: null }],
@@ -19,6 +20,7 @@ export const catalogueProject: ProjectDto = {
 export const catalogueUnit: UnitDto = {
   id: catalogueIds.unit, projectId: catalogueIds.project, number: 'A-204', meterPrice: 999, floorNumber: 2,
   size: 100, neighborMeterPrice: 1250, totalPrice: 1234567.89, percentage: 9.876543,
+  excellencePercentage: 0, trend: '', pricingDate: '2026-11-25T12:30:00Z',
   isAvailable: true, isGarage: false, garagePrice: 0,
   amenities: [{ name: 'Balcony', value: 'Garden view' }], images: catalogueProject.images,
   paymentPlan: [],
@@ -36,7 +38,7 @@ export const initiativePaymentPlan: readonly InitiativeStagePaymentDto[] = [
 export const cataloguePattern = /https:\/\/localhost:7249\/api\/v1\/(cities|areas|projects|units|terms-and-conditions)(?:\/|\?|$)/;
 
 export async function catalogueServer(context: BrowserContext) {
-  const state = { failProjects: false, failTerms: false, missingTerms: false, missingProject: false, missingUnit: false, unitAvailable: true, projectCount: 25, regularProjectCount: 0, failCitiesLookup: false, failAreasLookup: false, unitPaymentPlan: false, initiativePaymentPlan: false };
+  const state = { failProjects: false, failTerms: false, missingTerms: false, missingProject: false, missingUnit: false, unitAvailable: true, projectCount: 25, regularProjectCount: 0, failCitiesLookup: false, failAreasLookup: false, unitPaymentPlan: false, initiativePaymentPlan: false, projectDetail: catalogueProject };
   const calls: URL[] = []; const completed: string[] = [];
   await context.route(cataloguePattern, async (route) => {
     const url = new URL(route.request().url()); calls.push(url);
@@ -89,7 +91,9 @@ export async function catalogueServer(context: BrowserContext) {
     }
     if (path.startsWith('/projects/') && path.endsWith('/units')) return page([catalogueUnit].filter((item) => item.number.toLowerCase().includes(search)));
     if (path.endsWith('/time-plan')) return ok({ id: '70000000-0000-4000-8000-000000000001', projectId: catalogueIds.project, name: 'Published schedule', deliveryDate: '2027-12-01T12:00:00Z', stages: [] });
-    if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(state.unitPaymentPlan ? { ...catalogueProject, projectType: ProjectType.Regular } : catalogueProject);
+    if (path.startsWith('/projects/')) return state.missingProject ? fail(404) : ok(state.unitPaymentPlan
+      ? { ...state.projectDetail, projectType: ProjectType.Regular, reservationsWithoutOrderCount: null, reservationsWithPendingOrderCount: null }
+      : state.projectDetail);
     if (path.startsWith('/units/')) return state.missingUnit || query.get('projectId') !== catalogueIds.project ? fail(404) : ok({
       ...catalogueUnit, isAvailable: state.unitAvailable,
       ...(state.initiativePaymentPlan && { percentage: 10 }),

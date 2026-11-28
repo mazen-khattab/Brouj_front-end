@@ -35,7 +35,7 @@ export function WorksSection() {
   const { locale } = useLocale();
   const { collections } = useHome();
   const all = collections[ProjectType.Regular];
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter] = useState<Filter>(filters[0]);
   const [filteredPage, setPage] = useState(1);
   const ids = filter === "all" ? undefined : published[filter];
   const load = useCallback(
@@ -65,7 +65,7 @@ export function WorksSection() {
             {t("seeAll")}
           </Link>
         </div>
-        <div className="home-filters" role="group" aria-label={t("regular.filter")}>
+        {/* <div className="home-filters" role="group" aria-label={t("regular.filter")}>
           {filters.map((key) => (
             <button
               type="button"
@@ -79,8 +79,8 @@ export function WorksSection() {
               {t(`regular.${key}`)}
             </button>
           ))}
-        </div>
-        <div data-reveal>
+        </div> */}
+        <div>
           {ids?.length === 0 ? (
             <p className="home-empty" role="status">
               {t("regular.unclassified")}
@@ -95,7 +95,7 @@ export function WorksSection() {
                 return regular.length ? (
                   <div key={filter + page} className="works-grid">
                     {regular.map((project, index) => (
-                      <ProjectCard key={project.id} project={project} index={index + 1} />
+                      <ProjectCard key={project.id} project={project} index={index + 1} collection="works" />
                     ))}
                   </div>
                 ) : (

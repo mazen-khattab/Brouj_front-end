@@ -1,5 +1,6 @@
 import { expect, test } from './test';
-import { catalogueIds as ids, cataloguePaymentPlan, catalogueServer, initiativePaymentPlan } from './catalogueFixtures';
+import { catalogueIds as ids, cataloguePaymentPlan, catalogueProject, catalogueServer, initiativePaymentPlan } from './catalogueFixtures';
+import { ProjectType } from '../../src/Types/contracts';
 import { routingServer, seedRouting, signIn } from './routingFixtures';
 import { openProjectFilters } from './projectFilterActions';
 import { loadEnv } from 'vite';
@@ -16,6 +17,8 @@ test('cities, areas, projects and units follow actual services with the required
   await expect(page.getByText('Shared outdoor space')).toBeVisible();
   await expect(page.getByText('Second paragraph. <b>Plain text</b>', { exact: false })).toBeVisible();
   expect(await page.locator('main b').count()).toBe(0);
+  await page.getByRole('link', { name: enCatalogue.viewUnits, exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/units$`));
   await page.getByRole('link', { name: 'Unit A-204', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/projects/${ids.project}/units/${ids.unit}$`));
   await expect(page.getByRole('heading', { name: 'Unit A-204', exact: true })).toBeVisible();
@@ -145,6 +148,53 @@ test('reservation CTA returns a customer to the selected unit and never submits 
 });
 
 for (const language of ['ar', 'en'] as const) {
+  test(`project summary shows localized reservations and payment terms in ${language}`, async ({ page, context }) => {
+    await routingServer(context);
+    const server = await catalogueServer(context);
+    await seedRouting(page, 'anonymous', language);
+    const catalogue = language === 'ar' ? arCatalogue : enCatalogue;
+    const copy = catalogue.projectSummary;
+    const reservations = page.getByRole('region', { name: copy.reservations, exact: true });
+    const payment = page.getByRole('region', { name: copy.paymentPlan, exact: true });
+    const number = new Intl.NumberFormat(language);
+
+    await page.goto('/projects/' + ids.project);
+    await expect(reservations.locator('dt')).toHaveText([copy.withoutOrder, copy.pendingOrder]);
+    await expect(reservations.locator('dd')).toHaveText([number.format(1284), number.format(0)]);
+    await expect(payment).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+    const paymentPlanDto = { downpaymentStartFrom: 112500.75, installmentStartFrom: 4250.5, repaymentPeriod: 36 };
+    server.state.projectDetail = {
+      ...catalogueProject, projectType: ProjectType.Regular, paymentPlanDto,
+      reservationsWithoutOrderCount: null, reservationsWithPendingOrderCount: null,
+    };
+    const currency = loadEnv('development', process.cwd(), 'VITE_').VITE_BUSINESS_CURRENCY;
+    const amount = new Intl.NumberFormat(language, { maximumFractionDigits: 4, ...(currency && { style: 'currency', currency }) });
+    const months = new Intl.NumberFormat(language, { style: 'unit', unit: 'month', unitDisplay: 'long' });
+    await page.reload();
+    await expect(payment.locator('dt')).toHaveText([copy.downpayment, copy.installment, copy.repaymentPeriod]);
+    await expect(payment.locator('dd')).toHaveText([
+      amount.format(paymentPlanDto.downpaymentStartFrom),
+      amount.format(paymentPlanDto.installmentStartFrom),
+      months.format(paymentPlanDto.repaymentPeriod),
+    ]);
+    const price = payment.locator('xpath=../preceding-sibling::*[1]');
+    const facts = payment.locator('xpath=following-sibling::*[1]');
+    await expect(price.locator('dt').first()).toHaveText(catalogue.startingMeterPrice);
+    await expect(facts.locator('dt').first()).toHaveText(catalogue.size);
+    const priceFontSize = await price.locator('dd').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    const termsFontSize = await payment.locator('dd').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    expect(termsFontSize).toBeLessThan(priceFontSize);
+    await expect(reservations).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+    server.state.projectDetail = { ...server.state.projectDetail, paymentPlanDto: null };
+    await page.reload();
+    await expect(page.getByRole('heading', { name: catalogueProject.name, exact: true })).toBeVisible();
+    await expect(payment).toHaveCount(0);
+  });
+
   test(`regular unit payment plans preserve installment order and show localized percentages in ${language}`, async ({ page, context }) => {
     await routingServer(context);
     const server = await catalogueServer(context);

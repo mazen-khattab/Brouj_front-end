@@ -22,6 +22,8 @@
     "fullName": "Full name (four parts)",
     "fullNameHint": "Enter your first, second, third and family names.",
     "fullNameError": "Enter your four-part name.",
+    "guestNameHint": "Enter your first and last name.",
+    "nameLength": "Enter a name of 100 characters or fewer.",
     "email": "Email address",
     "password": "Password",
     "phone": "Phone number",
@@ -55,6 +57,7 @@
   "areaNoAmenities": "No amenities added yet.",
   "projectsIntro": "Explore projects by location and project type.",
   "units": "Units",
+  "viewUnits": "View units",
   "search": "Search",
   "searchUnits": "Search unit number",
   "filters": "Search and filters",
@@ -180,6 +183,15 @@
   "allProgressImages": "Show all {{total}} photographs for {{name}}",
   "backToPhotos": "Back to all photographs",
   "startingMeterPrice": "Starting price per m²",
+  "projectSummary": {
+    "reservations": "Reservation activity",
+    "withoutOrder": "Reservations without an order",
+    "pendingOrder": "Reservations with a pending order",
+    "paymentPlan": "Payment terms",
+    "downpayment": "Downpayment from",
+    "installment": "Installment from",
+    "repaymentPeriod": "Longest repayment period"
+  },
   "unitSavingPercentage": "Unit saving percentage",
   "trend": "Orientation",
   "excellencePercentage": "Excellence percentage",
@@ -187,10 +199,12 @@
   "unitArea": "Unit area",
   "elevator": "Elevator",
   "unitsTableHint": "Select a unit to view its details. Scroll horizontally to compare all fields.",
-  "drawCountdown": "Time until the draw",
+  "stageCompleted": "Completed",
+  "drawCountdown": "Time remaining until the draw ends",
   "drawReached": "The scheduled draw time has arrived.",
   "days": "Days",
   "hours": "Hours",
   "minutes": "Minutes",
-  "seconds": "Seconds"
+  "seconds": "Seconds",
+  "PricingDate": "Pricing date"
 }

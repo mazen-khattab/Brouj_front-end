@@ -52,25 +52,6 @@
 .about-pillars .about-hairline { position: absolute; inset-block-start: 0; inset-inline: 0; }
 .about-pillar-index { font: 1.4rem/1.5 var(--home-display); }
 .about-pillars h3 { margin-block-end: 0.8rem; }
-.about-leadership { background: var(--about-surface); }
-.about-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 3rem; margin-block-end: 4.5rem; }
-.about-section-heading > p { max-inline-size: 35ch; color: var(--home-muted); font-size: 0.95rem; }
-.about-leaders { display: grid; gap: 4.5rem; }
-.about-leader { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; max-inline-size: 66rem; }
-.about-leader--strategy { margin-inline-start: auto; grid-template-columns: 1.2fr 0.8fr; }
-.about-leader--strategy .about-leader-portrait { grid-column: 2; grid-row: 1; }
-.about-leader--strategy .about-leader-copy { grid-column: 1; grid-row: 1; }
-.about-leader-portrait { position: relative; aspect-ratio: 320 / 380; background: var(--color-primary); color: var(--color-accent); overflow: hidden; }
-.about-leader-portrait svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; stroke: currentColor; stroke-width: 0.7; }
-.about-leader-portrait svg path:nth-child(2) { opacity: 0.45; }
-.about-leader-portrait > span { position: absolute; inset: 12% 0 0; display: grid; place-content: center; font: 4.5rem/1 var(--home-display); transition: transform 0.6s; }
-.about-leader--strategy .about-leader-portrait { background: var(--color-background); color: var(--color-primary); }
-.about-leader--strategy svg { stroke: var(--color-accent); }
-.about-leader-role { font-size: 0.75rem; color: var(--home-muted); margin-block-end: 0.8rem; }
-.about-leader-copy h3 { margin-block-end: 1.5rem; font-size: clamp(2.2rem, 3vw, 3.4rem); }
-.about-leader-copy .about-hairline { margin-block-end: 1.5rem; }
-.about-leader-copy .about-leader-statement { font: 1.6rem/1.55 var(--home-display); margin-block-end: 1rem; }
-.about-leader-copy > p:last-child { font-size: 0.9rem; color: var(--home-muted); }
 .about-journey { background: var(--color-primary); color: var(--color-background); }
 .about-journey-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(3rem, 10vw, 10rem); }
 .about-journey header .about-eyebrow { color: var(--color-accent); }
@@ -95,7 +76,6 @@
 .about-page:dir(rtl) .about-button > span { transform: scaleX(-1); }
 .about-page a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .about-leader:hover .about-leader-portrait > span { transform: translateY(-5px); }
   .about-button:hover { background: var(--color-accent); color: var(--color-primary); }
 }
 @media (max-width: 1023px) {
@@ -104,7 +84,6 @@
   .about-hero:lang(ar) h1 { font-size: 3.4rem; }
   .about-sculpture figcaption { flex-direction: column; gap: 0.3rem; }
   .about-sculpture-fallback { inset-block-end: 3rem; }
-  .about-section-heading { align-items: start; }
 }
 @media (max-width: 650px) {
   .about-hero-grid, .about-principles-grid, .about-journey-grid { grid-template-columns: minmax(0, 1fr); }
@@ -118,13 +97,6 @@
   .about-page h2 { font-size: 2.8rem; }
   .about-principles-grid { gap: 2.75rem; }
   .about-pillars { padding-block-start: 0; }
-  .about-section-heading { flex-direction: column; gap: 1.25rem; margin-block-end: 2.75rem; }
-  .about-leader, .about-leader--strategy { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
-  .about-leader--strategy .about-leader-portrait, .about-leader--strategy .about-leader-copy { grid-column: auto; grid-row: auto; }
-  .about-leader-portrait { inline-size: 80%; max-inline-size: 20rem; }
-  .about-leader--strategy .about-leader-portrait { margin-inline-start: auto; }
-  .about-leader-copy h3 { font-size: 2.2rem; }
-  .about-leader-copy .about-leader-statement { font-size: 1.45rem; }
   .about-journey-grid { gap: 3rem; }
   .about-timeline li { padding-inline-start: 1.75rem; }
   .about-actions { flex-direction: column; }

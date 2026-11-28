@@ -6,6 +6,9 @@ import { seedRouting } from "./routingFixtures";
 import en from "../../src/i18n/locales/en/governance.json" with { type: "json" };
 import ar from "../../src/i18n/locales/ar/governance.json" with { type: "json" };
 
+test.use({ timezoneId: "Africa/Cairo" });
+const localDate = "2026-01-01T09:00";
+
 async function save(page: Page, title: string, confirmation = false) {
   await page.getByRole("form", { name: title, exact: true }).getByRole("button", { name: en.save, exact: true }).click();
   if (confirmation) {
@@ -22,7 +25,7 @@ async function confirm(page: Page, label: string) {
 async function termsFields(page: Page, version = "3") {
   await page.locator("#terms-create-title").fill("New legal wording");
   await page.locator("#terms-create-versionNumber").fill(version);
-  await page.locator("#terms-create-effectiveDate").fill(date);
+  await page.locator("#terms-create-effectiveDate").fill(localDate);
   await page.locator("#terms-create-content").fill("Original legal prose\n<script>window.injected=true</script>");
 }
 
@@ -88,17 +91,17 @@ test("audit filters validate ranges and encode action zero, actor, resource and 
   await page.locator("#audit-filters-userId").fill(ids.self);
   await page.locator("#audit-filters-entityType").fill("Project");
   await page.locator("#audit-filters-action").selectOption("0");
-  await page.locator("#audit-filters-dateFrom").fill(date);
-  await page.locator("#audit-filters-dateTo").fill("2025-01-01T00:00:00Z");
+  await page.locator("#audit-filters-dateFrom").fill(localDate);
+  await page.locator("#audit-filters-dateTo").fill("2025-01-01T00:00");
   const before = server.calls.length;
   await page.getByRole("button", { name: en.apply, exact: true }).click();
   await expect(page.locator("#audit-filters-dateTo")).toBeFocused();
   expect(server.calls.length).toBe(before);
-  await page.locator("#audit-filters-dateTo").fill("2026-02-01T00:00:00Z");
+  await page.locator("#audit-filters-dateTo").fill("2026-02-01T00:00");
   await page.getByRole("button", { name: en.apply, exact: true }).click();
   await expect(page.getByText("Nothing here yet", { exact: true })).toBeVisible();
   const query = server.calls.at(-1)!.url.searchParams;
-  expect(Object.fromEntries(query)).toEqual({ pageNumber: "1", pageSize: "20", userId: ids.self, entityType: "Project", action: "0", dateFrom: date, dateTo: "2026-02-01T00:00:00Z" });
+  expect(Object.fromEntries(query)).toEqual({ pageNumber: "1", pageSize: "20", userId: ids.self, entityType: "Project", action: "0", dateFrom: date, dateTo: "2026-02-01T00:00:00+02:00" });
 });
 
 test("audit list/detail tolerate empty and structured malformed optional fields without exposing changes", async ({ page, context }) => {

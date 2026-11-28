@@ -6,7 +6,10 @@ import { GuardContext } from "../../src/Forms/editorDraft";
 import { TimePlanStageForm } from "../../src/Features/Planning/Stages/TimePlanStageForm";
 import { StageTemplateForm } from "../../src/Features/Planning/Templates/Stages/StageTemplateForm";
 import { ItemTemplateForm } from "../../src/Features/Planning/Templates/Items/ItemTemplateForm";
-import { planningDate as date, planningIds } from "../browser/planningFixtures";
+import { planningDate, planningIds } from "../browser/planningFixtures";
+import { toDateTimeLocalValue } from "../../src/utils/dateTimeOffset";
+
+const date = toDateTimeLocalValue(planningDate);
 
 const guard = { epoch: 0, mark: vi.fn(), transition: (next: () => void) => next() };
 

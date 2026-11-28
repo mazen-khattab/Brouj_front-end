@@ -4,7 +4,6 @@ import { routePaths } from "../../Router/routePaths";
 import { ProjectType } from "../../Types/contracts";
 
 const pillars = ["legal", "engineering", "value"] as const;
-const leaders = ["ceo", "strategy", "legal"] as const;
 const stages = ["conception", "framework", "execution", "expansion"] as const;
 
 export function AboutPrinciples() {
@@ -32,45 +31,6 @@ export function AboutPrinciples() {
               <div>
                 <h3>{t(`principles.${id}.title`)}</h3>
                 <p>{t(`principles.${id}.body`)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function AboutLeadership() {
-  const { t } = useTranslation("about");
-  const { t: home } = useTranslation("home");
-  return (
-    <section className="about-section about-leadership" aria-labelledby="about-leaders-title">
-      <div className="home-container">
-        <header className="about-section-heading">
-          <div>
-            <p className="about-eyebrow">{t("leadership.eyebrow")}</p>
-            <h2 id="about-leaders-title" data-about-reveal>{home("leadership.title")}</h2>
-          </div>
-          <p>{t("leadership.intro")}</p>
-        </header>
-        <div className="about-leaders">
-          {leaders.map((id) => (
-            <article key={id} className={`about-leader about-leader--${id}`}>
-              <div className="about-leader-portrait" data-about-parallax aria-hidden="true">
-                <svg viewBox="0 0 320 380" fill="none">
-                  <path data-about-arch d="M32 360V160a128 128 0 0 1 256 0v200" />
-                  <path data-about-arch d="M44 360V160a116 116 0 0 1 232 0v200" />
-                  <path d="M160 20v24M150 32h20M20 160h24m232 0h24M20 360h24m232 0h24" />
-                </svg>
-                <span>{home(`leadership.${id}.initials`)}</span>
-              </div>
-              <div className="about-leader-copy" data-about-reveal>
-                <p className="about-leader-role">{home(`leadership.${id}.role`)}</p>
-                <h3>{home(`leadership.${id}.name`)}</h3>
-                <div className="about-hairline" aria-hidden="true" />
-                <p className="about-leader-statement">{home(`leadership.${id}.statement`)}</p>
-                <p>{t(`leadership.${id}`)}</p>
               </div>
             </article>
           ))}

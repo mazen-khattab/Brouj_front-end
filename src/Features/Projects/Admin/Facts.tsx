@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "../../../Hooks/useLocale";
 import { formatCurrency, formatNumber, formatDateTime } from "../../../i18n/format";
-import type { ProjectDto } from "../../../Types/contracts";
+import { ProjectType, type ProjectDto } from "../../../Types/contracts";
 
 export function Facts({ items }: { items: ReadonlyArray<{ label: string; value: ReactNode }> }) {
   return (
@@ -29,7 +29,7 @@ export function ProjectFacts({ project }: { project: ProjectDto }) {
     },
     {
       label: t("projectType"),
-      value: t(project.projectType === 0 ? "regular" : project.projectType === 1 ? "initiative" : "unknownType"),
+      value: t(project.projectType === ProjectType.Regular ? "regular" : project.projectType === ProjectType.Initiative ? "initiative" : "unknownType"),
     },
   ];
   if ("floorCount" in project) {

@@ -22,6 +22,7 @@ for (const key of [
   "src/Features/Cities/Public/CityPage.tsx",
   "src/Features/Areas/Public/AreaPage.tsx",
   "src/Features/Projects/Public/ProjectPage.tsx",
+  "src/Features/Units/Public/ProjectUnitsPage.tsx",
   "src/Features/Units/Public/UnitPage.tsx",
   "src/Features/Terms/Public/TermsPage.tsx",
 ]) {

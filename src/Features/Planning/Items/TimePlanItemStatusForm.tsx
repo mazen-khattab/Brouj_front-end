@@ -1,6 +1,7 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Input, Select } from "../../../Components/Fields";
+import { Select } from "../../../Components/Fields";
 import { Button } from "../../../Components/Button";
 import { ValidationSummary } from "../../../Components/Feedback";
 import { useEditorDraft } from "../../../Forms/editorDraft";
@@ -57,14 +58,13 @@ export function TimePlanItemStatusForm({ id, title, initial, disabled, pending, 
           <option value="1">{t("itemStatus.1", { ns: "account" })}</option>
           <option value="2">{t("itemStatus.2", { ns: "account" })}</option>
         </Select>
-        <Input
+        <DateTimeInput
           id={`${id}-confirmedDate`}
           label={t("fields.confirmedDate")}
           value={draft.value.confirmedDate}
           error={error("confirmedDate")}
-          onChange={event => change("confirmedDate", event.target.value)}
+          onValueChange={value => change("confirmedDate", value)}
           dir="ltr"
-          maxLength={40}
           hint={t("confirmedHint")}
           required={draft.value.status === "2"}
         />

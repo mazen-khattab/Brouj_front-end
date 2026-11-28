@@ -15,12 +15,13 @@ const project: ProjectDto = {
   latitude: null, longitude: null, size: 1000, projectType: 1, price: 1000000, floorCount: 5,
   plannedUnitCount: 10, neighborPrice: 2000, drawDate: "2030-01-02T03:04:05Z", startingMeterPrice: 900,
   unitSavingPercentage: 25, isGarage: true, garagePrice: null, amenities: [], images: [],
+  reservationsWithoutOrderCount: 0, reservationsWithPendingOrderCount: 0, paymentPlanDto: null,
 };
 const unit: UnitListDto = {
   id: "unit", projectId: project.id, number: "A-1", meterPrice: 1000, floorNumber: 2, size: 100,
   neighborMeterPrice: 2000, totalPrice: 100000, percentage: 5, pricingDate: "2026-11-01T00:00:00Z",
   trend: "North", excellencePercentage: 12.5, unitSavingPercentage: -2.5, finishingDate: "2027-12-01T12:00:00Z",
-  stages: [{ stageName: "Structure", stagePrice: 123.4567 }, { stageName: "Finishes", stagePrice: 0 }],
+  stages: [{ stageName: "Structure", stagePrice: 123.4567, isCompleted: true }, { stageName: "Finishes", stagePrice: 0, isCompleted: false }],
   isAvailable: true, isGarage: true, garagePrice: 0,
 };
 const data = (number = 1): PaginationResult<UnitListDto> => ({ items: [{ ...unit, number: "A-" + number }], pageNumber: number, pageSize: 12, totalCount: 13, totalPages: 2 });
@@ -65,9 +66,14 @@ test.each(["en", "ar"] as const)("table shows dynamic stages, precise prices, am
   vi.spyOn(Units, "getUnitsByProject").mockResolvedValue(data());
   const { container } = renderUi(<MemoryRouter><UnitTable project={project} /></MemoryRouter>, locale);
   const table = await screen.findByRole("table");
-  expect(within(table).getAllByRole("columnheader")).toHaveLength(15);
-  expect(within(table).getByRole("columnheader", { name: "Structure" })).toBeVisible();
-  expect(within(table).getByRole("columnheader", { name: "Finishes" })).toBeVisible();
+  expect(within(table).getAllByRole("columnheader")).toHaveLength(16);
+  const completed = within(table).getByRole("columnheader", { name: locale === "en" ? "Structure, Completed" : "Structure, مكتملة" });
+  const incomplete = within(table).getByRole("columnheader", { name: "Finishes" });
+  expect(within(completed).getByText("Structure").parentElement).toHaveClass("line-through");
+  expect(within(incomplete).getByText("Finishes").parentElement).not.toHaveClass("line-through");
+  const cells = within(within(table).getAllByRole("row")[1]!).getAllByRole("cell");
+  expect(cells[(completed as HTMLTableCellElement).cellIndex - 1]?.firstElementChild).toHaveClass("line-through");
+  expect(cells[(incomplete as HTMLTableCellElement).cellIndex - 1]?.firstElementChild).not.toHaveClass("line-through");
   expect(table).toHaveTextContent("North");
   expect(within(table).getByRole("link")).toHaveAttribute("href", "/projects/" + project.id + "/units/unit");
   expect(table).toHaveTextContent(new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 4 }).format(-0.025));
@@ -80,8 +86,8 @@ test("regular table omits initiative share and displays absent values", async ()
   renderUi(<MemoryRouter><UnitTable project={{ ...project, projectType: 0 }} /></MemoryRouter>);
   const table = await screen.findByRole("table");
   expect(within(table).queryByRole("columnheader", { name: "Share percentage" })).toBeNull();
-  expect(within(table).getAllByRole("columnheader")).toHaveLength(12);
-  expect(within(table).getAllByText("Not provided")).toHaveLength(3);
+  expect(within(table).getAllByRole("columnheader")).toHaveLength(10);
+  expect(within(table).getByText("Not provided")).toBeVisible();
 });
 
 test("clicking a data cell navigates to the unit details route", async () => {

@@ -15,6 +15,7 @@ const AboutPage = lazy(() => import("../Features/About/AboutPage"));
 const PublicCityPage = lazy(() => import("../Features/Cities/Public/CityPage"));
 const PublicAreaPage = lazy(() => import("../Features/Areas/Public/AreaPage"));
 const PublicProjectPage = lazy(() => import("../Features/Projects/Public/ProjectPage"));
+const PublicProjectUnitsPage = lazy(() => import("../Features/Units/Public/ProjectUnitsPage"));
 const PublicUnitPage = lazy(() => import("../Features/Units/Public/UnitPage"));
 const AccountPage = lazy(() => import("../Features/Profile/Customer/ProfilePage"));
 const TimePlanPage = lazy(() => import("../Features/Planning/Public/TimePlanPage"));
@@ -102,6 +103,8 @@ export const appRoutes: RouteObject[] = [
                 <PublicAreaPage />
               ) : page.title === "unit" ? (
                 <PublicUnitPage />
+              ) : page.title === "units" ? (
+                <PublicProjectUnitsPage />
               ) : (
                 <PublicProjectPage />
               ),
@@ -118,6 +121,7 @@ export const appRoutes: RouteObject[] = [
             children: [
               {
                 element: <AccountLayout />,
+                errorElement: <RouteErrorView />,
                 children: [
                   ...accountPages.map((page) => ({
                     ...(page.path === "/account" ? { index: true as const } : { path: page.path.slice("/account/".length) }),
@@ -130,7 +134,6 @@ export const appRoutes: RouteObject[] = [
                       ) : (
                         <AccountPage />
                       ),
-                    errorElement: <RouteErrorView />,
                   })),
                   { path: "*", element: <RouteMessage /> },
                 ],

@@ -32,11 +32,36 @@ test('offset timestamps represent the same instant, with explicit local display 
   expect(formatDateTime('2026-01-01T00:30:00Z', 'en', { timeZone: 'America/Los_Angeles' })).toContain('Dec 31, 2025');
   expect(formatDateTime('2026-01-01T00:30:00Z', 'en', { calendar: 'islamic', timeZone: 'UTC' })).toContain('2026');
   const instant = '2026-01-01T00:30:00Z';
-  const browserZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  expect(formatDateTime(instant, 'en')).toBe(formatDateTime(instant, 'en', { timeZone: browserZone }));
+  expect(formatDateTime(instant, 'en')).toBe(formatDateTime(instant, 'en', { timeZone: 'Africa/Cairo' }));
   expect(formatDateTime(instant, 'en', { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' })).toContain('2026');
 });
 
 test.each(['2026-02-30T12:00:00Z', '2026-01-01', '2026-01-01T12:00:00', '2026-01-01T25:00:00Z'])('date-times require a valid date and explicit offset: %s', (input) => {
   expect(() => formatDateTime(input, 'en')).toThrow(RangeError);
+});
+
+test.each([
+  ['2026-01-15T23:30:00Z', '2026-01-16T01:30:00+02:00', '01:30', '1/16/26'],
+  ['2026-07-15T23:30:00Z', '2026-07-16T02:30:00+03:00', '02:30', '7/16/26'],
+])('Egypt display handles seasonal offsets and midnight rollover: %s', (utc, egypt, hour, day) => {
+  expect(formatDateTime(utc, 'en')).toBe(formatDateTime(egypt, 'en'));
+  const options = { dateStyle: 'short' as const, timeStyle: 'short' as const, hourCycle: 'h23' as const };
+  expect(formatDateTime(utc, 'en', options)).toContain(hour);
+  expect(formatDateTime(utc, 'en', options)).toContain(day);
+  expect(formatDateTime(utc, 'ar')).toBe(formatDateTime(egypt, 'ar'));
+  expect(Date.parse(utc)).toBe(Date.parse(egypt));
+});
+
+test('Egypt display is independent of a browser timezone outside Egypt', () => {
+  const original = process.env.TZ;
+  try {
+    process.env.TZ = 'America/Los_Angeles';
+    const west = formatDateTime('2026-01-15T23:30:00Z', 'en');
+    process.env.TZ = 'Asia/Tokyo';
+    expect(formatDateTime('2026-01-15T23:30:00Z', 'en')).toBe(west);
+    expect(west).toContain('Jan 16, 2026');
+  } finally {
+    if (original === undefined) delete process.env.TZ;
+    else process.env.TZ = original;
+  }
 });

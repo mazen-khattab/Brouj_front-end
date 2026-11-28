@@ -1,0 +1,50 @@
+.home-title-mask { overflow: hidden; padding-block-end: 0.08em; }
+.home-project-hairline {
+  display: block;
+  block-size: 1px;
+  margin-block: -0.55rem 1.35rem;
+  background: var(--color-accent);
+  transform-origin: left center;
+}
+.home-page:dir(rtl) .home-project-hairline { transform-origin: right center; }
+
+#initiatives .home-project { perspective: 70rem; }
+.home-page .home-project-image img { transition: none; }
+
+.home-works .home-project-image::after {
+  content: "";
+  position: absolute;
+  inset: 0.7rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background:
+    linear-gradient(var(--color-accent), var(--color-accent)) top left / 1.2rem 1px,
+    linear-gradient(var(--color-accent), var(--color-accent)) top left / 1px 1.2rem,
+    linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1.2rem 1px,
+    linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1px 1.2rem;
+  background-repeat: no-repeat;
+}
+
+@media (hover: hover) {
+  .home-works .home-project a:hover .home-project-image::after { opacity: 1; }
+}
+.home-works .home-project a:focus-visible .home-project-image::after { opacity: 1; }
+
+.home-contact { background: #f8f7f4; }
+.home-contact-grid { position: relative; }
+.home-contact-spine { display: none; }
+
+@media (min-width: 651px) {
+  .home-contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-contact-spine {
+    display: block;
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    inline-size: 1px;
+    background: var(--color-accent);
+    transform-origin: top;
+    pointer-events: none;
+  }
+}

@@ -1,12 +1,13 @@
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import type { TimePlanDto, TimePlanInput } from "../../../Types/contracts";
 import type { TimePlanDraft } from "./types";
 
 export function planFrom(source?: Pick<TimePlanDto, "name" | "deliveryDate"> | null): TimePlanDraft {
-  return { name: source?.name ?? "", deliveryDate: source?.deliveryDate ?? "" };
+  return { name: source?.name ?? "", deliveryDate: toDateTimeLocalValue(source?.deliveryDate) };
 }
 
 export function planInput(values: TimePlanDraft): TimePlanInput {
-  return { name: values.name, deliveryDate: values.deliveryDate || null };
+  return { name: values.name, deliveryDate: toDateTimeOffsetIso(values.deliveryDate) };
 }
 
 export function approvedPlan(input: TimePlanInput): TimePlanInput {

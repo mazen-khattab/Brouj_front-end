@@ -9,6 +9,7 @@ import en from "../../src/i18n/locales/en/admin.json" with { type: "json" };
 import ar from "../../src/i18n/locales/ar/admin.json" with { type: "json" };
 
 const base = "/admin";
+test.use({ timezoneId: "Africa/Cairo" });
 const projectPath = `${base}/projects/${catalogueIds.project}`;
 const unitPath = `${base}/units/${catalogueIds.unit}?projectId=${catalogueIds.project}`;
 const save = (page: Page) => page.getByRole("button", { name: "Save record", exact: true });
@@ -34,7 +35,7 @@ const expectedProject = {
   floorCount: 5,
   plannedUnitCount: 20,
   neighborPrice: 13000000,
-  drawDate: "2026-12-01T12:00:00Z",
+  drawDate: "2026-12-01T14:00:00+02:00",
 };
 
 async function field(page: Page, name: string, value: string) {
@@ -73,7 +74,7 @@ test("dashboard exposes four independent features and units only load for the se
   await expect(page.locator("table")).toHaveCount(0);
 });
 
-test("standalone unit creation requires a project and preserves it through editing", async ({ page, context }) => {
+test("initiative unit creation and editing capture orientation, excellence and pricing date", async ({ page, context }) => {
   const server = await adminCatalogueServer(context);
   await seedRouting(page, "admin");
   await page.goto("/admin/units?create=1");
@@ -84,15 +85,30 @@ test("standalone unit creation requires a project and preserves it through editi
   for (const [key, value] of Object.entries({ number: "Standalone", meterPrice: "50", floorNumber: "1", size: "90", neighborMeterPrice: "60" })) {
     await field(page, key, value);
   }
+  const pricingDate = page.getByLabel(en.fields.pricingDate, { exact: true });
+  await field(page, "excellencePercentage", "12.345");
+  await field(page, "trend", "  North  ");
+  await save(page).click();
+  await expect(pricingDate).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#field-excellencePercentage")).toHaveAttribute("aria-invalid", "true");
+  expect(server.calls.filter((call) => call.method === "POST")).toHaveLength(0);
+  await field(page, "excellencePercentage", "12.35");
+  await pricingDate.fill("2026-11-25T14:30");
   await save(page).click();
   await expect(page).toHaveURL(/\/admin\/units\/[0-9a-f-]+\?projectId=/);
   await expect(page.getByText(en.paymentPlan.title, { exact: true })).toHaveCount(0);
   expect(server.calls.filter((call) => call.method === "POST").map((call) => call.body)).toEqual([
-    { number: "Standalone", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: 60 },
+    {
+      number: "Standalone", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: 60,
+      excellencePercentage: 12.35, trend: "North", pricingDate: "2026-11-25T14:30:00+02:00",
+    },
   ]);
   await expect(page.locator("#field-projectId")).toHaveValue(catalogueIds.project);
   await expect(page.locator("#field-projectId")).toBeDisabled();
   await expect(page.getByText(en.unitProjectFixed, { exact: true })).toBeVisible();
+  await expect(pricingDate).toHaveValue("2026-11-25T14:30");
+  await expect(page.getByLabel(en.fields.trend, { exact: true })).toHaveValue("North");
+  await expect(page.getByLabel(en.fields.excellencePercentage, { exact: true })).toHaveValue("12.35");
   await field(page, "number", "Updated standalone");
   await save(page).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
@@ -100,6 +116,27 @@ test("standalone unit creation requires a project and preserves it through editi
   expect(patch.url.searchParams.get("projectId")).toBe(catalogueIds.project);
   expect(patch.body).not.toHaveProperty("projectId");
   expect(patch.body).not.toHaveProperty("paymentPlan");
+  expect(patch.body).toMatchObject({ pricingDate: null });
+
+  await pricingDate.fill("2026-11-24T13:15");
+  await save(page).click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  expect(server.calls.findLast((call) => call.method === "PATCH")?.body).toMatchObject({
+    meterPrice: 50, pricingDate: "2026-11-24T13:15:00+02:00",
+  });
+
+  await pricingDate.fill("");
+  await field(page, "meterPrice", "51");
+  await expect(pricingDate).toHaveAttribute("required", "");
+  await save(page).click();
+  await expect(pricingDate).toHaveAttribute("aria-invalid", "true");
+  expect(server.calls.filter((call) => call.method === "PATCH")).toHaveLength(2);
+  await pricingDate.fill("2026-11-26T09:00");
+  await save(page).click();
+  await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
+  expect(server.calls.findLast((call) => call.method === "PATCH")?.body).toMatchObject({
+    meterPrice: 51, pricingDate: "2026-11-26T09:00:00+02:00",
+  });
 });
 
 test("legacy regular units add and replace payment plans independently of the record draft", async ({ page, context }) => {
@@ -218,9 +255,10 @@ test("create, edit and delete a complete hierarchy with selected parents and ful
   await save(page).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
   await page.getByRole("link", { name: en.createUnit, exact: true }).click();
-  for (const [key, value] of Object.entries({ number: "N-1", meterPrice: "50", floorNumber: "1", size: "90" })) {
+  for (const [key, value] of Object.entries({ number: "N-1", meterPrice: "50", floorNumber: "1", size: "90", trend: "West", excellencePercentage: "100" })) {
     await field(page, key, value);
   }
+  await expect(page.locator("#field-pricingDate")).toHaveCount(0);
   const planName = page.getByLabel(en.paymentPlan.installmentName, { exact: true });
   await expect(planName.locator("option:not([disabled])")).toHaveText(["Downpayment", "Installment", "Deposit"]);
   await planName.selectOption("Downpayment");
@@ -235,15 +273,21 @@ test("create, edit and delete a complete hierarchy with selected parents and ful
   await expect(page).toHaveURL(/\/units\/[0-9a-f-]+\?projectId=/);
   expect(createCalls().map((call) => call.body)).toEqual([{
     number: "N-1", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: null,
+    excellencePercentage: 100, trend: "West", pricingDate: null,
     paymentPlan: [{ installmentName: "Downpayment", installmentNumber: 1, installmentPercentage: 100, installmentPeriodMonths: 0 }],
   }]);
   const unitId = new URL(page.url()).pathname.split("/").at(-1)!;
   await field(page, "number", "N-2");
+  await field(page, "trend", "");
+  await field(page, "excellencePercentage", "0");
   await save(page).click();
   await expect(page.getByText(en.saved, { exact: true })).toBeVisible();
   const unitPatch = server.calls.findLast((call) => call.method === "PATCH" && call.url.pathname.endsWith(`/units/${unitId}`))!;
   expect(unitPatch.url.searchParams.get("projectId")).toBe(projectId);
-  expect(unitPatch.body).toEqual({ number: "N-2", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: null });
+  expect(unitPatch.body).toEqual({
+    number: "N-2", meterPrice: 50, floorNumber: 1, size: 90, neighborMeterPrice: null,
+    excellencePercentage: 0, trend: "", pricingDate: null,
+  });
   const projectPatch = server.calls.findLast((call) => call.method === "PATCH" && call.url.pathname.endsWith(`/projects/${projectId}`))!;
   expect(Object.keys(projectPatch.body as object).sort()).toEqual(Object.keys(expectedProject).sort());
   await deleteCurrent(page);
@@ -264,6 +308,8 @@ test("project PATCH includes all inputs, preserves nulls and edits after a 409 w
   const server = await adminCatalogueServer(context);
   await seedRouting(page, "admin");
   await page.goto(projectPath);
+  await expect(page.locator("#field-drawDate")).toHaveAttribute("type", "datetime-local");
+  await expect(page.locator("#field-drawDate")).toHaveValue("2026-12-01T14:00");
   await field(page, "name", "Recovered draft");
   await field(page, "latitude", "");
   server.state.failNext = 409;

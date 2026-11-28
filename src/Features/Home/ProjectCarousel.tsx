@@ -43,15 +43,16 @@ export function ProjectCarousel() {
     <section id="initiatives" className="home-band" aria-labelledby="initiatives-title">
       <div className="home-container">
         <div className="home-section-heading">
-          <h2 id="initiatives-title" className="home-display">
-            {t("projects.title")}
-          </h2>
+          <div className="home-title-mask">
+            <h2 id="initiatives-title" className="home-display">{t("projects.title")}</h2>
+          </div>
           <Link to={`${routePaths.projects}?projectType=1`} className="home-text-link">
             {t("seeAll")}
           </Link>
         </div>
+        <span className="home-project-hairline" aria-hidden="true" />
         <div role="region" aria-roledescription={t("projects.carousel")} aria-label={t("projects.title")}>
-          <div id="initiatives-slides" data-reveal>
+          <div id="initiatives-slides">
             <PublicReadPanel result={result} reload={reload}>
               {({ items }) => {
                 const projects = items.filter((project) => project.projectType === ProjectType.Initiative);

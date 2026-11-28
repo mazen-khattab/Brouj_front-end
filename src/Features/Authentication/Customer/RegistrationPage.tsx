@@ -7,15 +7,14 @@ import { Alert, Loading, Skeleton, ValidationSummary } from "../../../Components
 import { Input } from "../../../Components/Fields";
 import { useAuth } from "../../../Hooks/useAuth";
 import { SessionActionError } from "../../../Types/auth";
-import type { RegisterCustomerInput } from "../../../Types/contracts";
 import { UserRole } from "../../../Types/contracts";
 import { ApiError } from "../../../Types/failures";
 import { apiFailureMessage } from "../../../i18n/apiFailures";
 import type { TranslationMessage } from "../../../i18n/resources";
 import type { AuthPageProps } from "../types";
-import { validateRegistration } from "./registrationValidation";
-const emptyAuthValues: RegisterCustomerInput = { email: "", password: "", fName: "", lName: "", phone: "", identityNumber: "" };
-type AuthField = keyof RegisterCustomerInput;
+import { validateRegistration, type RegistrationValues } from "./registrationValidation";
+const emptyAuthValues: RegistrationValues = { email: "", password: "", fName: "", lName: "", phone: "", identityNumber: "" };
+type AuthField = keyof RegistrationValues;
 type AuthIssue = {
   field: AuthField;
   key: string;

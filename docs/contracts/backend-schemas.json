@@ -1514,10 +1514,19 @@
         },
         {
           "name": "identityNumber",
-          "csharpType": "string",
-          "nullable": false,
+          "csharpType": "string?",
+          "nullable": true,
           "requiredMember": false,
-          "defaultExpression": "string.Empty"
+          "defaultExpression": null,
+          "omitWhenNull": true
+        },
+        {
+          "name": "regularReservationUnitId",
+          "csharpType": "Guid?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null,
+          "omitWhenNull": true
         },
         {
           "name": "email",
@@ -1693,6 +1702,33 @@
       ]
     },
     {
+      "name": "PaymentPlanDto",
+      "source": "src/Brouj.Application/Features/Projects/DTOs/PaymentPlanDto.cs",
+      "properties": [
+        {
+          "name": "downpaymentStartFrom",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "installmentStartFrom",
+          "csharpType": "decimal",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "repaymentPeriod",
+          "csharpType": "int",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        }
+      ]
+    },
+    {
       "name": "ProjectDto",
       "source": "src/Brouj.Application/Features/Projects/DTOs/ProjectDto.cs",
       "properties": [
@@ -1802,6 +1838,20 @@
           "defaultExpression": null
         },
         {
+          "name": "reservationsWithoutOrderCount",
+          "csharpType": "int?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "reservationsWithPendingOrderCount",
+          "csharpType": "int?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "isGarage",
           "csharpType": "bool",
           "nullable": false,
@@ -1814,6 +1864,13 @@
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": "0m"
+        },
+        {
+          "name": "paymentPlanDto",
+          "csharpType": "PaymentPlanDto?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
         },
         {
           "name": "amenities",
@@ -2793,8 +2850,29 @@
           "defaultExpression": null
         },
         {
+          "name": "excellencePercentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "trend",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "neighborMeterPrice",
           "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
@@ -2889,8 +2967,29 @@
           "defaultExpression": null
         },
         {
+          "name": "excellencePercentage",
+          "csharpType": "double",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "trend",
+          "csharpType": "string",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "string.Empty"
+        },
+        {
           "name": "neighborMeterPrice",
           "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
@@ -2986,8 +3085,29 @@
           "defaultExpression": null
         },
         {
+          "name": "excellencePercentage",
+          "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "trend",
+          "csharpType": "string?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
           "name": "neighborMeterPrice",
           "csharpType": "decimal?",
+          "nullable": true,
+          "requiredMember": false,
+          "defaultExpression": null
+        },
+        {
+          "name": "pricingDate",
+          "csharpType": "DateTimeOffset?",
           "nullable": true,
           "requiredMember": false,
           "defaultExpression": null
@@ -3233,6 +3353,13 @@
           "nullable": false,
           "requiredMember": false,
           "defaultExpression": null
+        },
+        {
+          "name": "isCompleted",
+          "csharpType": "bool",
+          "nullable": false,
+          "requiredMember": false,
+          "defaultExpression": "false"
         }
       ]
     },
@@ -3480,6 +3607,25 @@
         },
         {
           "name": "Deleted",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "InstallmentType",
+      "wireType": "number",
+      "source": "src/Brouj.Domain/Enums/InstallmentType.cs",
+      "members": [
+        {
+          "name": "Downpayment",
+          "value": 0
+        },
+        {
+          "name": "Installment",
+          "value": 1
+        },
+        {
+          "name": "Deposit",
           "value": 2
         }
       ]
@@ -3813,11 +3959,11 @@
     },
     {
       "source": "src/Brouj.Application/Features/Customers/DTOs/CustomerProfileInputValidator.cs",
-      "rules": "public sealed class CustomerProfileInputValidator : AbstractValidator<CustomerProfileInput>\n{\n    public CustomerProfileInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber).NationalId();\n        RuleFor(input => input.Email).Email();\n    }\n}"
+      "rules": "public sealed class CustomerProfileInputValidator : AbstractValidator<CustomerProfileInput>\n{\n    public CustomerProfileInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber).NationalId()\n            .When(input => !string.IsNullOrWhiteSpace(input.IdentityNumber));\n        RuleFor(input => input.Email).Email();\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Customers/DTOs/RegisterCustomerInputValidator.cs",
-      "rules": "public sealed class RegisterCustomerInputValidator : AbstractValidator<RegisterCustomerInput>\n{\n    public RegisterCustomerInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber).NationalId();\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Password).NotNull().MinimumLength(8);\n    }\n}"
+      "rules": "public sealed class RegisterCustomerInputValidator : AbstractValidator<RegisterCustomerInput>\n{\n    public RegisterCustomerInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.FName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.LName).NotEmpty().MaximumLength(100);\n        RuleFor(input => input.Phone).EgyptianPhone();\n        RuleFor(input => input.IdentityNumber!).NationalId()\n            .When(input => input.RegularReservationUnitId is null || input.IdentityNumber is not null);\n        RuleFor(input => input.Email).Email();\n        RuleFor(input => input.Password).NotNull().MinimumLength(8);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/ItemTemplates/DTOs/ItemTemplateInputValidator.cs",
@@ -3869,11 +4015,11 @@
     },
     {
       "source": "src/Brouj.Application/Features/Units/DTOs/UnitInputValidator.cs",
-      "rules": "public sealed class UnitInputValidator : AbstractValidator<UnitInput>\n{\n    public UnitInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input).Must(input => Pricing.IsValidTotal(input.Size, input.MeterPrice))\n            .WithMessage(\"The calculated total exceeds the supported amount.\");\n\n        RuleFor(input => input.Number).NotEmpty().MaximumLength(64);\n        RuleFor(input => input.MeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.Size).GreaterThan(0).PrecisionScale(18, 4, false);\n        RuleFor(input => input.FloorNumber).GreaterThanOrEqualTo(0);\n        RuleFor(input => input.NeighborMeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n    }\n}"
+      "rules": "public sealed class UnitInputValidator : AbstractValidator<UnitInput>\n{\n    public UnitInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input).Must(input => Pricing.IsValidTotal(input.Size, input.MeterPrice))\n            .WithMessage(\"The calculated total exceeds the supported amount.\");\n\n        RuleFor(input => input.Number).NotEmpty().MaximumLength(64);\n        RuleFor(input => input.MeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.Size).GreaterThan(0).PrecisionScale(18, 4, false);\n        RuleFor(input => input.FloorNumber).GreaterThanOrEqualTo(0);\n        RuleFor(input => input.NeighborMeterPrice).GreaterThanOrEqualTo(0).PrecisionScale(19, 4, false);\n        RuleFor(input => input.ExcellencePercentage).InclusiveBetween(0m, 100m).PrecisionScale(5, 2, true);\n        RuleFor(input => input.Trend).MaximumLength(64);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentInstallmentInputValidator.cs",
-      "rules": "public sealed class UnitPaymentInstallmentInputValidator : AbstractValidator<UnitPaymentInstallmentInput>\n{\n    public UnitPaymentInstallmentInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.InstallmentName).NotEmpty()\n            .Must(name => name.Trim().Length <= 100)\n            .WithMessage(\"Installment name must be at most 100 characters after trimming.\");\n        RuleFor(input => input.InstallmentNumber).GreaterThan(0);\n        RuleFor(input => input.InstallmentPercentage).GreaterThan(0).LessThanOrEqualTo(100)\n            .PrecisionScale(7, 4, ignoreTrailingZeros: true)\n            .WithMessage(\"Installment percentage may have at most four decimal places.\");\n        RuleFor(input => input.InstallmentPeriodMonths).NotNull().GreaterThanOrEqualTo(0);\n    }\n}"
+      "rules": "public sealed class UnitPaymentInstallmentInputValidator : AbstractValidator<UnitPaymentInstallmentInput>\n{\n    public UnitPaymentInstallmentInputValidator()\n    {\n        RuleLevelCascadeMode = CascadeMode.Stop;\n        ClassLevelCascadeMode = CascadeMode.Stop;\n\n        RuleFor(input => input.InstallmentName).NotEmpty()\n            .Must(name => Enum.IsDefined(typeof(InstallmentType), name.Trim()))\n            .WithMessage(\"Installment name must be Downpayment, Installment, or Deposit.\");\n        RuleFor(input => input.InstallmentNumber).GreaterThan(0);\n        RuleFor(input => input.InstallmentPercentage).GreaterThan(0).LessThanOrEqualTo(100)\n            .PrecisionScale(7, 4, ignoreTrailingZeros: true)\n            .WithMessage(\"Installment percentage may have at most four decimal places.\");\n        RuleFor(input => input.InstallmentPeriodMonths).NotNull().GreaterThanOrEqualTo(0);\n    }\n}"
     },
     {
       "source": "src/Brouj.Application/Features/Units/DTOs/UnitPaymentPlanInputValidator.cs",

@@ -5,6 +5,11 @@ import { catalogueIds as ids, catalogueServer, catalogueUnit } from './catalogue
 import { routingServer, seedRouting } from './routingFixtures';
 import { sessionCors } from './sessionFixtures';
 import type { TimePlanDto } from '../../src/Types/contracts';
+import enCatalogue from '../../src/i18n/locales/en/catalogue.json' with { type: 'json' };
+import arCatalogue from '../../src/i18n/locales/ar/catalogue.json' with { type: 'json' };
+
+const projectPath = `/projects/${ids.project}`;
+const unitsPath = `${projectPath}/units`;
 
 async function detailsServer(context: BrowserContext) {
   await routingServer(context); await catalogueServer(context);
@@ -25,46 +30,68 @@ async function detailsServer(context: BrowserContext) {
     if (url.pathname.endsWith('time-plan')) return state.planFailure ? fail(state.planFailure) : ok(plan);
     const number = Number(url.searchParams.get('pageNumber') ?? 1), size = Number(url.searchParams.get('pageSize') ?? 12);
     if (state.failUnits || number > 1 && state.failNextBatch) return fail(503);
-    const items = Array.from({ length: state.unitCount }, (_, index) => ({ ...catalogueUnit, id: `90000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, number: `A-${index + 1}`, trend: 'North', excellencePercentage: 12.5, pricingDate: '2026-11-01T00:00:00Z', unitSavingPercentage: 20, finishingDate: plan.deliveryDate, stages: [{ stageName: 'Structure', stagePrice: 123.4567 }, { stageName: 'Finishes', stagePrice: 0 }] }));
+    const items = Array.from({ length: state.unitCount }, (_, index) => ({ ...catalogueUnit, id: `90000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, number: `A-${index + 1}`, trend: 'North', excellencePercentage: 12.5, pricingDate: '2026-11-01T00:00:00Z', unitSavingPercentage: 20, finishingDate: plan.deliveryDate, stages: [{ stageName: 'Structure', stagePrice: 123.4567, isCompleted: true }, { stageName: 'Finishes', stagePrice: 0, isCompleted: false }] }));
     return ok({ items: items.slice((number - 1) * size, number * size), pageNumber: number, pageSize: size, totalCount: state.unitCount, totalPages: Math.ceil(state.unitCount / size) });
   });
   return { calls, state, plan };
 }
 
 for (const language of ['en', 'ar'] as const) {
+  const catalogue = language === 'en' ? enCatalogue : arCatalogue;
   const text = language === 'en' ? { next: 'Next units', previous: 'Previous units', soon: 'Unit details are coming soon.', all: 'Show all 6 photographs for Work 6', open: 'Open photograph 5 for Work 6', back: 'Back to all photographs', close: 'Close' } : { next: 'الوحدات التالية', previous: 'الوحدات السابقة', soon: 'تفاصيل الوحدات قريبًا.', all: 'عرض جميع الصور (٦) لـ Work 6', open: 'فتح الصورة ٥ لـ Work 6', back: 'العودة إلى جميع الصور', close: 'إغلاق' };
 
-  test(`anonymous details table and progress gallery in ${language}`, async ({ page, context }) => {
+  test(`separate units table and project progress gallery in ${language}`, async ({ page, context }) => {
     const server = await detailsServer(context); await seedRouting(page, 'anonymous', language);
     const digits = await page.evaluate((locale) => [1, 3, 5, 6].map((value) => new Intl.NumberFormat(locale).format(value)), language);
     const unsafeImages: string[] = [];
     page.on('request', (request) => { if (request.resourceType() === 'image' && /PRIVATE|image-\d+\.webp/.test(request.url())) unsafeImages.push(request.url()); });
-    const path = `/projects/${ids.project}?pageNumber=8&pageSize=3&search=ignored`;
-    await page.goto(path);
-    const carousel = page.locator('#project-units table');
-    await expect(carousel.locator('tbody tr')).toHaveCount(12);
-    await expect(carousel.getByRole('columnheader', { name: 'Structure', exact: true })).toBeVisible();
-    await expect(carousel.getByRole('columnheader', { name: 'Finishes', exact: true })).toBeVisible();
-    await expect(carousel.locator('tbody tr').first()).toContainText('North');
+    await page.goto(projectPath);
     await expect(page.getByRole('heading', { name: 'Published schedule', exact: true })).toBeVisible();
+    await expect(page.locator('#project-units')).toHaveCount(0);
+    expect(server.calls.filter((url) => url.pathname.endsWith('/units'))).toHaveLength(0);
+    const viewUnits = page.getByRole('link', { name: catalogue.viewUnits, exact: true });
+    await expect(viewUnits).toHaveAttribute('href', unitsPath);
+    await viewUnits.click();
+    await expect(page).toHaveURL(new RegExp(`${unitsPath}$`));
+    await expect(page.getByRole('heading', { name: catalogue.units, level: 1 })).toBeFocused();
+    const table = page.locator('#project-units table');
+    await expect(table.locator('tbody tr')).toHaveCount(20);
+    const completed = table.getByRole('columnheader', { name: `Structure, ${catalogue.stageCompleted}`, exact: true });
+    const incomplete = table.getByRole('columnheader', { name: 'Finishes', exact: true });
+    await expect(completed.locator(':scope > span')).toHaveCSS('text-decoration-line', 'line-through');
+    await expect(incomplete.locator(':scope > span')).toHaveCSS('text-decoration-line', 'none');
+    const prices = async (header: typeof completed) => {
+      const index = await header.evaluate((cell) => (cell as HTMLTableCellElement).cellIndex + 1);
+      return table.locator(`tbody td:nth-child(${index}) > span`).evaluateAll((values) =>
+        values.map((value) => getComputedStyle(value).textDecorationLine));
+    };
+    expect(await prices(completed)).toEqual(Array(20).fill('line-through'));
+    expect(await prices(incomplete)).toEqual(Array(20).fill('none'));
+    await expect(table.locator('tbody tr').first()).toContainText('North');
     await expect(page.locator('#project-units input, #project-units select')).toHaveCount(0);
-    await expect(carousel.getByRole('link').first()).toHaveAttribute('href', `/projects/${ids.project}/units/90000000-0000-4000-8000-000000000001`);
-    await expect(page).toHaveURL(path);
+    await expect(table.getByRole('link').first()).toHaveAttribute('href', `${unitsPath}/90000000-0000-4000-8000-000000000001`);
+    const scroll = page.locator('.pd-table-scroll');
+    const firstColumn = scroll.locator('tbody th').first();
+    const before = (await firstColumn.boundingBox())!;
+    await scroll.evaluate(el => { el.scrollLeft = getComputedStyle(el).direction === 'rtl' ? -600 : 600; });
+    await expect.poll(async () => (await firstColumn.boundingBox())!.x).toBeCloseTo(before.x, 0);
+    expect(await scroll.evaluate(el => Math.abs(el.scrollLeft))).toBeGreaterThan(100);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
     const next = page.getByRole('button', { name: text.next, exact: true });
-    for (let step = 0; step < 28; step++) {
-      if (await next.isDisabled()) break;
-      await next.click();
-      // Wait for an approaching-end prefetch before attempting the loaded boundary.
-      await expect(page.locator('#project-units [aria-busy="true"]')).toHaveCount(0);
-    }
-    await expect(carousel.getByRole('link').last()).toContainText('A-27');
+    await next.click();
+    await expect(table.locator('tbody tr')).toHaveCount(7);
+    await expect(table.getByRole('link').last()).toContainText('A-27');
+    expect(await prices(completed)).toEqual(Array(7).fill('line-through'));
     await expect(next).toBeDisabled();
     const unitCalls = server.calls.filter((url) => url.pathname.endsWith('/units'));
-    expect(unitCalls.map((url) => url.searchParams.get('pageNumber'))).toEqual(['1', '2', '3']);
-    expect(unitCalls.every((url) => url.searchParams.get('pageSize') === '12' && !url.searchParams.has('search'))).toBe(true);
+    expect(unitCalls.map((url) => url.searchParams.get('pageNumber'))).toEqual(['1', '2']);
+    expect(unitCalls.every((url) => url.searchParams.get('pageSize') === '20' && !url.searchParams.has('search'))).toBe(true);
     await page.getByRole('button', { name: text.previous, exact: true }).click();
-    await expect(carousel.getByRole('link').first()).toContainText('A-13');
-    await expect(page.getByRole('button', { name: text.previous, exact: true })).toBeEnabled();
+    await expect(table.getByRole('link').first()).toContainText('A-1');
+    await expect(page.getByRole('button', { name: text.previous, exact: true })).toBeDisabled();
+    await page.getByRole('link', { name: catalogue.backProject, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`${projectPath}$`));
 
     const stages = page.locator('#project-time-plan details');
     await expect(stages.nth(0)).toHaveAttribute('open'); await expect(stages.nth(1)).not.toHaveAttribute('open');
@@ -114,9 +141,9 @@ for (const language of ['en', 'ar'] as const) {
     await expect(page.locator('.home-shell > header')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     await expect(page.locator('.pd-countdown [role="timer"]')).toBeVisible();
     await expect(page.locator('.pd-breadcrumbs [aria-current]')).toHaveText('Garden Residence 1');
-    for (const [name, width, count] of [['desktop', 1440, 12], ['tablet', 900, 12], ['mobile', 390, 12]] as const) {
+    for (const [name, width] of [['desktop', 1440], ['tablet', 900], ['mobile', 390]] as const) {
       await page.setViewportSize({ width, height: 1000 });
-      await expect(page.locator('#project-units tbody tr')).toHaveCount(count);
+      await expect(page.getByRole('link', { name: catalogue.viewUnits, exact: true })).toBeVisible();
       const item = page.locator('#project-time-plan article').nth(1);
       const textBox = await item.locator(':scope > div').nth(0).boundingBox();
       const mediaBox = await item.locator(':scope > div').nth(1).boundingBox();
@@ -127,13 +154,6 @@ for (const language of ['en', 'ar'] as const) {
         expect(Math.abs(textBox!.width - mediaBox!.width)).toBeLessThan(2);
       }
       else expect(textBox!.y).toBeLessThan(mediaBox!.y);
-      const scroll = page.locator('.pd-table-scroll');
-      const firstColumn = scroll.locator('tbody th').first();
-      const before = (await firstColumn.boundingBox())!;
-      await scroll.evaluate(el => { el.scrollLeft = getComputedStyle(el).direction === 'rtl' ? -600 : 600; });
-      await expect.poll(async () => (await firstColumn.boundingBox())!.x).toBeCloseTo(before.x, 0);
-      expect(await scroll.evaluate(el => Math.abs(el.scrollLeft))).toBeGreaterThan(100);
-      await scroll.evaluate(el => { el.scrollLeft = 0; });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await page.screenshot({ path: `docs/evidence/project-details/${language}-${name}.png`, fullPage: true, animations: 'disabled', scale: 'css' });
     }
@@ -169,22 +189,27 @@ test('unit and time-plan errors retry independently, including missing and empty
   await page.goto(`/projects/${ids.project}`);
   await expect(page.getByText('Shared outdoor space', { exact: true })).toBeVisible();
   await expect(page.getByText('The time plan is not available yet', { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: enCatalogue.viewUnits, exact: true }).click();
+  const retryUnits = page.locator('#project-units').getByRole('button', { name: 'Try again' });
+  await expect(retryUnits).toBeVisible();
   server.state.failUnits = false;
-  await page.locator('#project-units').getByRole('button', { name: 'Try again' }).click();
+  await retryUnits.click();
   await expect(page.getByRole('link', { name: 'Unit A-1', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: enCatalogue.backProject, exact: true }).click();
   server.state.planFailure = 503;
   await page.locator('#project-time-plan').getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByText('The time plan could not load', { exact: true })).toBeVisible();
   server.state.planFailure = 0; server.plan.stages = [];
   await page.locator('#project-time-plan').getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByText('No stages have been published.', { exact: true })).toBeVisible();
-  server.state.unitCount = 0; await page.reload();
+  server.state.unitCount = 0;
+  await page.getByRole('link', { name: enCatalogue.viewUnits, exact: true }).click();
   await expect(page.getByText('No units have been listed.', { exact: true })).toBeVisible();
 });
 
 test('table rows open unit details and support keyboard links', async ({ page, context }) => {
   await detailsServer(context); await seedRouting(page);
-  await page.goto(`/projects/${ids.project}`);
+  await page.goto(unitsPath);
   const row = page.locator('#project-units tbody tr').first();
   const link = row.getByRole('link');
   await expect(link).toContainText('A-1');

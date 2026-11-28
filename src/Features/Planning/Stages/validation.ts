@@ -1,10 +1,10 @@
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
-import { validDateTime } from "../../../Validation/dateTime";
+import { toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 
 export function validateStage(values: TimePlanStageDraft, mode: "create" | "edit", isTemplateCopy = false): (keyof TimePlanStageDraft)[] {
   const errors: (keyof TimePlanStageDraft)[] = [];
   if (!values.name.trim() || values.name.length > 100) errors.push("name");
-  if (!validDateTime(values.deliveryDate)) errors.push("deliveryDate");
+  if (!toDateTimeOffsetIso(values.deliveryDate)) errors.push("deliveryDate");
 
   if (isTemplateCopy) return errors;
 
@@ -14,7 +14,7 @@ export function validateStage(values: TimePlanStageDraft, mode: "create" | "edit
   if (mode === "create" || price || pricingDate) {
     const normalized = price.replace(/^0+(?=\d)/, "").replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
     if (!/^\d{1,15}(?:\.\d{1,4})?$/.test(price) || String(Number(price)) !== normalized) errors.push("price");
-    if (!validDateTime(pricingDate)) errors.push("pricingDate");
+    if (!toDateTimeOffsetIso(pricingDate)) errors.push("pricingDate");
   }
 
   return errors;
@@ -22,7 +22,7 @@ export function validateStage(values: TimePlanStageDraft, mode: "create" | "edit
 
 export function validateTemplateItemDates(rows: readonly TemplateApplicationItemDraft[]): string[] {
   return rows.flatMap((row, index) => [
-    ...(!validDateTime(row.dueDate) ? [`template-due-${index}`] : []),
-    ...(row.confirmedDate && !validDateTime(row.confirmedDate) ? [`template-confirmed-${index}`] : []),
+    ...(!toDateTimeOffsetIso(row.dueDate) ? [`template-due-${index}`] : []),
+    ...(row.confirmedDate && !toDateTimeOffsetIso(row.confirmedDate) ? [`template-confirmed-${index}`] : []),
   ]);
 }

@@ -1,3 +1,4 @@
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import type { ProjectDto, ProjectInput } from "../../../Types/contracts";
 import type { ProjectDraft } from "./types";
 
@@ -14,7 +15,7 @@ export function draftFrom(data?: ProjectDto): ProjectDraft {
     floorCount: data?.floorCount == null ? "" : String(data.floorCount),
     plannedUnitCount: data?.plannedUnitCount == null ? "" : String(data.plannedUnitCount),
     neighborPrice: data?.neighborPrice == null ? "" : String(data.neighborPrice),
-    drawDate: data?.drawDate == null ? "" : String(data.drawDate),
+    drawDate: toDateTimeLocalValue(data?.drawDate),
   };
 }
 
@@ -35,6 +36,6 @@ export function projectInput(d: ProjectDraft): ProjectInput {
     floorCount: Number(d.floorCount),
     plannedUnitCount: Number(d.plannedUnitCount),
     neighborPrice: optionalNumber(d.neighborPrice),
-    drawDate: d.drawDate || null,
+    drawDate: toDateTimeOffsetIso(d.drawDate),
   };
 }

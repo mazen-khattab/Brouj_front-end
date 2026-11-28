@@ -1,9 +1,10 @@
 import type { RegisterCustomerInput } from "../../../Types/contracts";
 import { validEmail } from "../../../Validation/email";
-type AuthField = keyof RegisterCustomerInput;
+export type RegistrationValues = Required<Pick<RegisterCustomerInput, "fName" | "lName" | "phone" | "identityNumber" | "email" | "password">>;
+type AuthField = keyof RegistrationValues;
 type AuthIssue = { field: AuthField; key: string };
 /** Registration follows the approved customer identity constraints. */
-export function validateRegistration(values: RegisterCustomerInput): AuthIssue[] {
+export function validateRegistration(values: RegistrationValues): AuthIssue[] {
   const issues: AuthIssue[] = [];
   const fields: AuthField[] = ["fName", "lName", "phone", "identityNumber", "email", "password"];
   for (const field of fields) {

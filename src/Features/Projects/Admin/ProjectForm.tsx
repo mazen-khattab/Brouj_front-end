@@ -1,3 +1,4 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { AreaSelector } from "./AreaSelector";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -208,14 +209,15 @@ export default function ProjectForm({
           hint={t("nullable")}
           onChange={(event) => change("neighborPrice", event.target.value)}
         />
-        <Input
+        <DateTimeInput
           id="field-drawDate"
           label={t("fields.drawDate")}
           value={draft.drawDate}
+          required={draft.projectType === "1"}
           error={error("drawDate")}
           disabled={disabled || draft.projectType === "0"}
-          hint={t("dateHint")}
-          onChange={(event) => change("drawDate", event.target.value)}
+          // hint={t("dateHint")}
+          onValueChange={value => change("drawDate", value)}
         />
       </div>
       <div className="flex flex-wrap gap-3">

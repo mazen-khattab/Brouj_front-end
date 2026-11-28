@@ -16,7 +16,9 @@ const values = {
   email: ' guest@example.test ', password: ' guest password ', ageGroup: '28-35', placeOfResidence: ' Cairo ',
   preferredFinancialBracket: '500000', preferredRepaymentPeriod: '9',
 };
-const body = bookingInput(id, values, false);
+const initiative = { initiative: true, guest: false };
+const guestInitiative = { ...initiative, guest: true };
+const body = bookingInput(id, values, initiative);
 function customer(): AuthValue {
   return {
     status: 'customer', actor: 'customer', generation: 1, pending: false, automaticRefresh: true, logoutRequired: true,
@@ -30,9 +32,9 @@ function wrapper(auth: AuthValue) {
 afterEach(() => { vi.resetAllMocks(); vi.restoreAllMocks(); });
 
 test('booking validates exact options, four-part names and numeric identity without using profile preferences', () => {
-  expect(validateBooking(values, true)).toEqual([]);
-  expect(validateBooking({ ...values, email: '', password: '' }, false)).toEqual([]);
-  expect(validateBooking({ ...values, fullName: 'Only Two', identityNumber: '١'.repeat(14), ageGroup: '20-30', preferredFinancialBracket: '1', preferredRepaymentPeriod: '18' }, false).map((issue) => issue.field))
+  expect(validateBooking(values, guestInitiative)).toEqual([]);
+  expect(validateBooking({ ...values, email: '', password: '' }, initiative)).toEqual([]);
+  expect(validateBooking({ ...values, fullName: 'Only Two', identityNumber: '١'.repeat(14), ageGroup: '20-30', preferredFinancialBracket: '1', preferredRepaymentPeriod: '18' }, initiative).map((issue) => issue.field))
     .toEqual(['fullName', 'identityNumber', 'ageGroup', 'preferredFinancialBracket', 'preferredRepaymentPeriod']);
   const auth = customer();
   const initial = bookingValues(auth.actor === 'customer' ? auth.profile : undefined);
@@ -40,9 +42,34 @@ test('booking validates exact options, four-part names and numeric identity with
   expect(initial.placeOfResidence).toBe('');
 });
 
-test('request body contains numeric EGP/month preferences and guest-only unmodified credentials', () => {
-  expect(body).toEqual({ unitId: id, fullName: 'First Second Third Family', phone: values.phone, identityNumber: '00000000000001', ageGroup: '28-35', placeOfResidence: 'Cairo', preferredFinancialBracket: 500000, preferredRepaymentPeriod: 9 });
-  expect(bookingInput(id, values, true)).toEqual({ ...body, email: 'guest@example.test', password: ' guest password ' });
+test('reservation details and guest registration use separate request bodies', () => {
+  expect(body.reservation).toEqual({ unitId: id, fullName: 'First Second Third Family', phone: values.phone, identityNumber: '00000000000001', ageGroup: '28-35', placeOfResidence: 'Cairo', preferredFinancialBracket: 500000, preferredRepaymentPeriod: 9 });
+  expect(bookingInput(id, values, guestInitiative)).toEqual({
+    ...body,
+    registration: { fName: 'First', lName: 'Second Third Family', phone: values.phone, identityNumber: values.identityNumber, email: 'guest@example.test', password: ' guest password ' },
+  });
+});
+
+test('signed-in regular booking validates and submits only the contact fields', () => {
+  const regular = { initiative: false, guest: false };
+  const contact = { ...bookingValues(), fullName: 'First Family', phone: values.phone };
+  expect(validateBooking(contact, regular)).toEqual([]);
+  expect(bookingInput(id, { ...values, ...contact }, regular)).toEqual({
+    reservation: {
+      unitId: id, fullName: 'First Family', phone: values.phone,
+      identityNumber: null, ageGroup: null, placeOfResidence: null, preferredFinancialBracket: null, preferredRepaymentPeriod: null,
+    },
+  });
+});
+
+test('regular guests register with contact and login details and a regular unit reference', () => {
+  const regularGuest = { initiative: false, guest: true };
+  const contact = { ...bookingValues(), fullName: 'First Family', phone: values.phone, email: values.email, password: values.password };
+  expect(validateBooking(contact, regularGuest)).toEqual([]);
+  expect(bookingInput(id, contact, regularGuest).registration).toEqual({
+    fName: 'First', lName: 'Family', phone: values.phone, email: 'guest@example.test', password: values.password,
+    regularReservationUnitId: id,
+  });
 });
 
 test('complete reservation payload is forwarded once and uncertain outcomes block replay', async () => {
@@ -52,7 +79,7 @@ test('complete reservation payload is forwarded once and uncertain outcomes bloc
   const hook = renderHook(useReservationBookingController, { wrapper: wrapper(customer()) });
   let work!: ReturnType<typeof hook.result.current.submit>;
   await act(async () => { work = hook.result.current.submit(body, vi.fn()); await hook.result.current.submit(body, vi.fn()); });
-  expect(reservations.createReservation).toHaveBeenCalledExactlyOnceWith({ body }, { signal: expect.any(AbortSignal) });
+  expect(reservations.createReservation).toHaveBeenCalledExactlyOnceWith({ body: body.reservation }, { signal: expect.any(AbortSignal) });
   await act(async () => { reject(new ApiError('network')); await work; });
   expect(hook.result.current.uncertain).toBe(true);
   await act(async () => { await hook.result.current.submit(body, vi.fn()); });
@@ -67,12 +94,12 @@ test('guest registration precedes reservation, and a rejected registration canno
   const guest: AuthValue = { ...base, status: 'anonymous', actor: null, logoutRequired: false, registerCustomer: register };
   const hook = renderHook(useReservationBookingController, { wrapper: wrapper(guest) });
   const clear = vi.fn();
-  await act(async () => { await hook.result.current.submit(bookingInput(id, values, true), clear); });
+  await act(async () => { await hook.result.current.submit(bookingInput(id, values, guestInitiative), clear); });
   expect(reservations.createReservation).not.toHaveBeenCalled();
   expect(clear).not.toHaveBeenCalled();
   expect(hook.result.current.registrationFailure).toBe(true);
   vi.mocked(reservations.createReservation).mockResolvedValue(id);
-  await act(async () => { await hook.result.current.submit(bookingInput(id, values, true), clear); });
+  await act(async () => { await hook.result.current.submit(bookingInput(id, values, guestInitiative), clear); });
   expect(register).toHaveBeenLastCalledWith({ fName: 'First', lName: 'Second Third Family', phone: values.phone, identityNumber: values.identityNumber, email: 'guest@example.test', password: values.password }, expect.any(AbortSignal));
   expect(clear).toHaveBeenCalledOnce();
   expect(reservations.createReservation).toHaveBeenCalledOnce();

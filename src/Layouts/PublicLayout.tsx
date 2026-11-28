@@ -15,19 +15,21 @@ export default function PublicLayout() {
   const isHome = pathname === routePaths.home;
   const isProjects = pathname === routePaths.projects;
   const isProjectDetail = Boolean(matchPath('/projects/:projectId', pathname));
+  const isProjectUnits = Boolean(matchPath('/projects/:projectId/units', pathname));
   const isUnitDetail = Boolean(matchPath('/projects/:projectId/units/:unitId', pathname));
   const isAreaDetail = Boolean(matchPath('/areas/:areaId', pathname));
   const isCityDetail = Boolean(matchPath('/cities/:cityId', pathname));
   const isCities = pathname === routePaths.cities;
   const isAreas = pathname === routePaths.areas;
-  const isEditorial = isHome || isProjects || isProjectDetail || isUnitDetail || isAreaDetail || isCityDetail || isCities || isAreas || pathname === routePaths.about || pathname === routePaths.terms;
+  const isAccount = Boolean(matchPath({ path: routePaths.account, end: false }, pathname));
+  const isEditorial = isHome || isProjects || isProjectDetail || isProjectUnits || isUnitDetail || isAreaDetail || isCityDetail || isCities || isAreas || isAccount || pathname === routePaths.about || pathname === routePaths.terms;
   return (
     <div className={`relative isolate flex min-h-svh flex-col overflow-x-clip text-white ${isEditorial ? "home-shell" : ""}`}>
       {!isEditorial && <LuxuryBackdrop />}
       <PublicHeader key={key} />
       <main id="route-content" tabIndex={-1} className={`relative z-10 mx-auto w-full flex-1 ${isEditorial ? "" : "max-w-[1320px] px-5 py-8 sm:px-10 lg:py-12"}`}>
         <SessionNotice />
-        {!isProjects && !isProjectDetail && !isUnitDetail && !isAreaDetail && !isCityDetail && !isCities && !isAreas && (isEditorial && !isHome ? <div className="home-container editorial-breadcrumbs"><Breadcrumbs /></div> : <Breadcrumbs />)}
+        {!isProjects && !isProjectDetail && !isUnitDetail && !isAreaDetail && !isCityDetail && !isCities && !isAreas && !isAccount && (isEditorial && !isHome ? <div className="home-container editorial-breadcrumbs"><Breadcrumbs /></div> : <Breadcrumbs />)}
         <Suspense key={pathname} fallback={<PageLoading />}>
           <Outlet />
         </Suspense>

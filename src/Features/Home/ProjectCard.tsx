@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useLocale } from "../../Hooks/useLocale";
@@ -7,15 +8,18 @@ import type { ProjectListDto } from "../../Types/contracts";
 import design from "../../assets/home/design.jpg";
 import places from "../../assets/home/places.jpg";
 import perspective from "../../assets/home/perspective.jpg";
+import { useProjectCardMotion } from "./useProjectCardMotion";
 
 const illustrations = [places, design, perspective];
 export type CardProject = Pick<ProjectListDto, "id" | "name" | "size"> & { areaName?: string };
 
-export function ProjectCard({ project, index }: { project: CardProject; index: number }) {
+export function ProjectCard({ project, index, collection = "initiative" }: { project: CardProject; index: number; collection?: "initiative" | "works" }) {
   const { t } = useTranslation("home");
   const { locale } = useLocale();
+  const card = useRef<HTMLElement>(null);
+  useProjectCardMotion(card, collection, index);
   return (
-    <article className="home-project">
+    <article className="home-project" ref={card}>
       <Link to={routePaths.project(project.id)} aria-label={project.name}>
         <div className="home-project-image">
           <img src={illustrations[index % illustrations.length]} alt="" loading="lazy" />

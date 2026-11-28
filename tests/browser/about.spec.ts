@@ -42,7 +42,7 @@ for (const locale of ['en', 'ar'] as const) {
         await expect(page.locator('.about-sculpture-fallback')).toBeVisible();
       }
       await page.screenshot({ path: info.outputPath(`about-hero-${locale}-${width}.png`), animations: 'disabled' });
-      await expect(page.locator('.about-leader')).toHaveCount(3);
+      await expect(page.locator('.leadership-deck-card')).toHaveCount(3);
       await expect(page.locator('.about-timeline li')).toHaveCount(4);
       await expect(page.locator('.about-closing a').first()).toHaveAttribute('href', '/projects?projectType=1');
       await expect(page.locator('.about-closing a').last()).toHaveAttribute('href', '/terms');

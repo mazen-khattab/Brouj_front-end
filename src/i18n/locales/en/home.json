@@ -9,9 +9,7 @@
     "mute": "Mute film",
     "unmute": "Unmute film",
     "pause": "Pause film",
-    "play": "Play film",
-    "model": "View scale model",
-    "courtyard": "Return to film"
+    "play": "Play film"
   },
   "projects": {
     "eyebrow": "A place to begin",
@@ -40,13 +38,11 @@
     "unclassified": "Brouj has yet to publish projects in this category. Browse the full collection under All projects."
   },
   "terms": {
-    "booklet": "The initiative booklet",
-    "title": "The initiative legal booklet",
-    "version": "Version {{version}}",
-    "read": "Read the full booklet",
-    "empty": "The booklet is awaiting publication.",
-    "emptyDescription": "The initiative’s terms and conditions will appear here once they are published.",
-    "intro": "Read the published terms of participation and consult the full booklet before you register your interest."
+    "read": "Read full legal booklet",
+    "chapters": "Booklet chapters",
+    "open": "Open the booklet",
+    "previous": "Previous page",
+    "next": "Next page"
   },
   "films": {
     "initiative": "The initiative film",

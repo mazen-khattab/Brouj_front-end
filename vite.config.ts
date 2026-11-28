@@ -41,7 +41,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     build: { manifest: true },
-    // Prepare lazy route dependencies so opening the model cannot restart the dev page.
+    // Prepare lazy route dependencies so opening the About scene cannot restart the dev page.
     optimizeDeps: { include: ['axios', 'gsap', 'gsap/ScrollTrigger', 'lenis', 'embla-carousel-react', '@react-three/fiber', 'three', 'three/addons/environments/RoomEnvironment.js'] },
     server: {
       host: "localhost",

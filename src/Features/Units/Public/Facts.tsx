@@ -37,10 +37,10 @@ export function UnitFacts({
     items.unshift({ label: t("unitNumber"), value: <BidiText>{unit.number}</BidiText> });
     items.push(
       { label: t("garage"), value: t(unit.isGarage ? "yes" : "no") },
-      {
-        label: t("garagePrice"),
-        value: formatCurrency(unit.garagePrice, locale),
-      },
+      // {
+      //   label: t("garagePrice"),
+      //   value: formatCurrency(unit.garagePrice, locale),
+      // },
     );
     if (showMeterPrices) {
       items.push({

@@ -8,25 +8,44 @@ function Timer({ drawDate }: { drawDate: string }) {
   const { locale } = useLocale();
   const target = Date.parse(drawDate);
   const [now, setNow] = useState(() => Date.now());
+
   useEffect(() => {
-    if (!Number.isFinite(target) || target <= Date.now()) return;
+    if (!Number.isFinite(target) || target <= Date.now()) {
+      return;
+    }
+
     const timer = window.setInterval(() => {
       const current = Date.now();
       setNow(current);
-      if (current >= target) window.clearInterval(timer);
+
+      if (current >= target) {
+        window.clearInterval(timer);
+      }
     }, 1000);
+
     return () => window.clearInterval(timer);
   }, [target]);
-  if (!Number.isFinite(target)) return null;
+
+  if (!Number.isFinite(target)) {
+    return null;
+  }
+
   const remaining = Math.max(0, Math.ceil((target - now) / 1000));
   const values = [Math.floor(remaining / 86400), Math.floor(remaining / 3600) % 24, Math.floor(remaining / 60) % 60, remaining % 60];
+
   return (
     <section aria-label={t("drawCountdown")} className="pd-countdown">
       <div className="grid gap-2">
         <h2 className="text-xl font-medium">{t("drawCountdown")}</h2>
-        <time dateTime={drawDate} className="text-sm text-accent-light">{formatDateTime(drawDate, locale)}</time>
+        <time dateTime={drawDate} className="text-sm text-accent-light">
+          {formatDateTime(drawDate, locale)}
+        </time>
       </div>
-      {remaining === 0 ? <p role="status" className="text-lg text-accent-light">{t("drawReached")}</p> : (
+      {remaining === 0 ? (
+        <p role="status" className="text-lg text-accent-light">
+          {t("drawReached")}
+        </p>
+      ) : (
         <dl role="timer" aria-label={t("drawCountdown")} className="grid grid-cols-4 gap-2 text-center sm:gap-6">
           {["days", "hours", "minutes", "seconds"].map((label, index) => (
             <div key={label} className="grid gap-1 border-s border-accent/30 ps-2 sm:ps-6">

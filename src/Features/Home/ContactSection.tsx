@@ -163,10 +163,10 @@ function SurveyForm() {
 export function ContactSection() {
   const { t } = useTranslation("home");
   const { hash, key } = useLocation();
-  const { collections, terms } = useHome();
+  const { collections } = useHome();
   const section = useRef<HTMLElement>(null);
   const alignedLocation = useRef<string | null>(null);
-  const waiting = terms.status === "loading" || Object.values(collections).some(collection => collection.result.status === "loading");
+  const waiting = Object.values(collections).some(collection => collection.result.status === "loading");
   useEffect(() => {
     if (hash !== "#contact" || waiting || alignedLocation.current === key) return;
     let active = true;
@@ -188,10 +188,11 @@ export function ContactSection() {
           {t("contact.title")}
         </h2>
         <div className="home-contact-grid">
-          <div data-reveal>
+          <span className="home-contact-spine" aria-hidden="true" />
+          <div data-contact-form>
             <RegistrationForm />
           </div>
-          <div data-reveal>
+          <div data-contact-form>
             <SurveyForm />
           </div>
         </div>

@@ -3,11 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Input } from "../../../Components/Fields";
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { Button } from "../../../Components/Button";
 import { createUnit, updateUnit, getUnitById } from "../../../Services/Units";
 import { routePaths } from "../../../Router/browserPaths";
 import { draftFrom, unitInput } from "./mapping";
-import { invalidFields } from "./validation";
+import { invalidFields, requiresPricingDate } from "./validation";
 import type { UnitDraft, UnitRecord } from "./types";
 import { useUnitEditor } from "./EditorContext";
 import { ErrorPanel, ValidationSummary } from "../../../Components/Feedback";
@@ -27,7 +28,7 @@ export default function UnitForm({
 }: {
   data?: UnitRecord;
   projectId?: string;
-  refresh: () => Promise<unknown>;
+  refresh: () => Promise<UnitRecord | void>;
   readPending?: boolean;
   onCreated?: () => void;
   parentRead?: ReturnType<typeof useUnitProject>;
@@ -44,8 +45,11 @@ export default function UnitForm({
   const ownParent = useUnitProject(action.scope, parentRead ? "" : draft.projectId);
   const parent = parentRead ?? ownParent;
   const project = parent.result.status === "success" ? parent.result.data : undefined;
+  const isInitiative = project?.projectType === ProjectType.Initiative;
+  const dateRequired = isInitiative && requiresPricingDate(draft, data);
   const needsPlan = !data && project?.projectType === ProjectType.Regular;
   const validation = usePaymentPlanValidation(plan, planSubmitted);
+
   const disabled = action.pending || action.blocked || readPending || !project;
 
   function change(key: keyof UnitDraft, value: string) {
@@ -53,6 +57,7 @@ export default function UnitForm({
     let nextPlan = plan;
     if (key === "projectId" && value !== draft.projectId) {
       next.neighborMeterPrice = "";
+      next.pricingDate = "";
       nextPlan = paymentPlanDraft();
       setPlan(nextPlan);
       setPlanSubmitted(false);
@@ -67,26 +72,30 @@ export default function UnitForm({
   }
 
   async function submit() {
-    const errors = invalidFields(draft, project);
+    const errors = invalidFields(draft, project, data);
     setInvalid(errors);
     setPlanSubmitted(needsPlan);
     const paymentPlan = needsPlan ? validation.paymentPlan : undefined;
-    if (errors.length || disabled || (needsPlan && !paymentPlan)) {
+    if (errors.length || disabled || !project || (needsPlan && !paymentPlan)) {
       return;
     }
     let createdId = "";
+    let savedDraft = draft;
     let writeSignal = new AbortController().signal;
     const result = await action.run(
       async (signal) => {
         writeSignal = signal;
-        const body = unitInput(draft);
+        const body = unitInput(draft, project.projectType, data);
         createdId = data
           ? await updateUnit({ id: data.id, query: { projectId: data.projectId }, body }, { signal })
           : await createUnit({ projectId: draft.projectId, body: { ...body, ...(paymentPlan && { paymentPlan }) } }, { signal });
         return createdId;
       },
       data
-        ? refresh
+        ? async () => {
+            const saved = await refresh();
+            if (saved) savedDraft = draftFrom(saved);
+          }
         : async () => {
             // Confirm the returned create reference before moving to its editor.
             await getUnitById({ id: createdId, query: { projectId: draft.projectId } }, { signal: writeSignal });
@@ -94,8 +103,9 @@ export default function UnitForm({
           },
     );
     if (result) {
+      setDraft(savedDraft);
       action.markDirty(formKey, false);
-      setBaseline(JSON.stringify({ draft, plan }));
+      setBaseline(JSON.stringify({ draft: savedDraft, plan }));
       if (!data) {
         onCreated?.();
         navigate(routePaths.admin.unit(draft.projectId, result));
@@ -128,7 +138,8 @@ export default function UnitForm({
       {parent.result.status === "error" && <ErrorPanel title={t("parentUnavailable")} onRetry={parent.reload} />}
       <ValidationSummary
         items={[
-          ...["projectId", "number", "meterPrice", "floorNumber", "size", "neighborMeterPrice"]
+          ...["projectId", "number", "meterPrice", "floorNumber", "size", "trend", "excellencePercentage",
+            ...(isInitiative ? ["neighborMeterPrice", "pricingDate"] : [])]
             .filter((key) => error(key))
             .map((key) => ({ fieldId: `field-${key}`, message: `${t(`fields.${key}`)}: ${t("invalid")}` })),
           ...(needsPlan ? validation.summary : []),
@@ -180,15 +191,47 @@ export default function UnitForm({
           onChange={(event) => change("size", event.target.value)}
         />
         <Input
-          id="field-neighborMeterPrice"
-          label={t("fields.neighborMeterPrice")}
-          value={draft.neighborMeterPrice}
-          error={error("neighborMeterPrice")}
-          disabled={disabled || project?.projectType === ProjectType.Regular}
-          inputMode="decimal"
-          hint={t(project?.projectType === ProjectType.Initiative ? "initiativeUnitHint" : "nullable")}
-          onChange={(event) => change("neighborMeterPrice", event.target.value)}
+          id="field-trend"
+          label={t("fields.trend")}
+          value={draft.trend}
+          error={error("trend")}
+          disabled={disabled}
+          maxLength={64}
+          onChange={(event) => change("trend", event.target.value)}
         />
+        <Input
+          id="field-excellencePercentage"
+          label={t("fields.excellencePercentage")}
+          hint={t("unitExcellenceHint")}
+          value={draft.excellencePercentage}
+          error={error("excellencePercentage")}
+          disabled={disabled}
+          inputMode="decimal"
+          onChange={(event) => change("excellencePercentage", event.target.value)}
+        />
+        {isInitiative && (
+          <>
+            <Input
+              id="field-neighborMeterPrice"
+              label={t("fields.neighborMeterPrice")}
+              value={draft.neighborMeterPrice}
+              error={error("neighborMeterPrice")}
+              disabled={disabled}
+              inputMode="decimal"
+              onChange={(event) => change("neighborMeterPrice", event.target.value)}
+            />
+            <DateTimeInput
+              id="field-pricingDate"
+              label={t("fields.pricingDate")}
+              hint={t(dateRequired ? "unitPricingDateRequired" : "unitPricingDateKeep")}
+              required={dateRequired}
+              value={draft.pricingDate}
+              error={error("pricingDate")}
+              disabled={disabled}
+              onValueChange={(value) => change("pricingDate", value)}
+            />
+          </>
+        )}
       </div>
       {needsPlan && <PaymentPlanEditor rows={plan} validation={validation} disabled={disabled} onChange={changePlan} />}
       <div className="flex flex-wrap gap-3">

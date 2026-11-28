@@ -1,7 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { accountPanel } from "../../../Components/PrivateReadPanel";
 import { Button } from "../../../Components/Button";
 import { Alert, ValidationSummary } from "../../../Components/Feedback";
 import { Input } from "../../../Components/Fields";
@@ -94,27 +93,27 @@ export default function ProfileForms({ profile }: { profile: CurrentCustomerDto 
     <>
       {reloadFailed && <Alert tone="error">{t("reloadFailed")}</Alert>}
       {(action.uncertain || reloadFailed) && (
-        <Button variant="secondary" disabled={action.pending} onClick={() => void checkProfile()}>
+        <Button className="account-ghost" variant="secondary" disabled={action.pending} onClick={() => void checkProfile()}>
           {t("reloadProfile")}
         </Button>
       )}
-      <section className={accountPanel}>
-        <h2 className="text-2xl font-medium">{t("profileForm")}</h2>
-        <form noValidate className="grid gap-6" onSubmit={(event) => void saveProfile(event)}>
+      <section className="account-panel account-form-panel" aria-labelledby="personal-information">
+        <h2 id="personal-information" className="account-section-title">{t("profileForm")}</h2>
+        <form noValidate className="account-form" onSubmit={(event) => void saveProfile(event)}>
           <ValidationSummary
             items={issues.map((issue) => ({
               fieldId: "profile-" + issue.field,
               message: t(issue.field, { ns: "auth" }) + ": " + t(issue.key, { ns: "auth" }),
             }))}
           />
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="account-form-fields">
             {profileFields.map((field) => (
               <Input
                 key={field}
                 id={"profile-" + field}
                 label={t(field, { ns: "auth" })}
                 value={values[field]}
-                required
+                required={field !== "identityNumber"}
                 pending={action.pending}
                 type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
                 {...(field === "identityNumber" ? { dir: "ltr", inputMode: "numeric" as const } : {})}
@@ -136,39 +135,41 @@ export default function ProfileForms({ profile }: { profile: CurrentCustomerDto 
               />
             ))}
           </div>
-          <Button type="submit" disabled={blocked} pending={action.pending && action.operation === "profile"} pendingLabel={t("working")}>
+          <Button className="account-primary" type="submit" disabled={blocked} pending={action.pending && action.operation === "profile"} pendingLabel={t("working")}>
             {t("saveProfile")}
           </Button>
         </form>
       </section>
-      <section className={accountPanel}>
-        <h2 className="text-2xl font-medium">{t("passwordForm")}</h2>
-        <form noValidate className="grid gap-6" onSubmit={(event) => void savePassword(event)}>
+      <section className="account-panel account-form-panel" aria-labelledby="change-password">
+        <h2 id="change-password" className="account-section-title">{t("passwordForm")}</h2>
+        <form noValidate className="account-form" onSubmit={(event) => void savePassword(event)}>
           <ValidationSummary
             items={passwordIssues.map((issue) => ({
               fieldId: "password-" + issue.field,
               message: t(issue.field) + ": " + t(issue.key, { ns: "auth" }),
             }))}
           />
-          {(["currentPassword", "newPassword"] as const).map((field) => (
-            <Input
-              key={field}
-              id={"password-" + field}
-              label={t(field)}
-              type="password"
-              autoComplete={field === "currentPassword" ? "current-password" : "new-password"}
-              value={passwords[field]}
-              required
-              pending={action.pending}
-              error={
-                passwordIssues.some((issue) => issue.field === field)
-                  ? t(passwordIssues.find((issue) => issue.field === field)!.key, { ns: "auth" })
-                  : undefined
-              }
-              onChange={(event) => setPasswords((current) => ({ ...current, [field]: event.target.value }))}
-            />
-          ))}
-          <Button type="submit" disabled={blocked} pending={action.pending && action.operation === "password"} pendingLabel={t("working")}>
+          <div className="account-form-fields">
+            {(["currentPassword", "newPassword"] as const).map((field) => (
+              <Input
+                key={field}
+                id={"password-" + field}
+                label={t(field)}
+                type="password"
+                autoComplete={field === "currentPassword" ? "current-password" : "new-password"}
+                value={passwords[field]}
+                required
+                pending={action.pending}
+                error={
+                  passwordIssues.some((issue) => issue.field === field)
+                    ? t(passwordIssues.find((issue) => issue.field === field)!.key, { ns: "auth" })
+                    : undefined
+                }
+                onChange={(event) => setPasswords((current) => ({ ...current, [field]: event.target.value }))}
+              />
+            ))}
+          </div>
+          <Button className="account-primary" type="submit" disabled={blocked} pending={action.pending && action.operation === "password"} pendingLabel={t("working")}>
             {t("savePassword")}
           </Button>
         </form>

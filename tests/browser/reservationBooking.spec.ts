@@ -15,23 +15,36 @@ for (const projectType of [0, 1]) {
       headers: sessionCors, json: { success: true, data: { ...catalogueProject, projectType }, message: null },
     }));
     await page.goto(`/projects/${catalogueIds.project}`);
+    await page.getByRole('link', { name: 'View units', exact: true }).click();
     await page.getByRole('link', { name: 'Unit A-204', exact: true }).click();
     const button = page.getByRole('button', { name: 'Reserve now', exact: true });
     await expect(button).toBeVisible();
     expect(await button.evaluate((node) => !!node.closest('article'))).toBe(true);
     await button.click();
     await expect(page.locator('#booking-phone')).toHaveValue(server.profile.phone);
-    await expect(page.locator('#booking-identityNumber')).toHaveValue(server.profile.identityNumber);
     await expect(page.locator('#booking-fullName')).toHaveValue('Fixture Customer');
     await expect(page.locator('#booking-email')).toHaveCount(0);
     await expect(page.locator('#booking-password')).toHaveCount(0);
-    await fillBooking(page);
+    if (projectType === 1) {
+      await expect(page.locator('#booking-identityNumber')).toHaveValue(server.profile.identityNumber);
+      await fillBooking(page);
+      await page.locator('#booking-identityNumber').fill('20000000000000');
+    } else {
+      const dialog = page.getByRole('dialog');
+      await expect(dialog.locator('input')).toHaveCount(2);
+      await expect(dialog.locator('select')).toHaveCount(0);
+      await page.locator('#booking-fullName').fill('Updated Customer');
+    }
     await page.locator('#booking-phone').fill('01111111111');
-    await page.locator('#booking-identityNumber').fill('20000000000000');
     await page.getByRole('dialog').getByRole('button', { name: 'Confirm reservation', exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`/account/reservations/${accountIds.created}$`));
     expect(server.calls.filter((call) => call.method === 'POST' && call.path === '/api/v1/reservations').map((call) => call.body)).toEqual([
-      { unitId: catalogueIds.unit, ...bookingDetails, phone: '01111111111', identityNumber: '20000000000000' },
+      projectType === 1
+        ? { unitId: catalogueIds.unit, ...bookingDetails, phone: '01111111111', identityNumber: '20000000000000' }
+        : {
+            unitId: catalogueIds.unit, fullName: 'Updated Customer', phone: '01111111111',
+            identityNumber: null, ageGroup: null, placeOfResidence: null, preferredFinancialBracket: null, preferredRepaymentPeriod: null,
+          },
     ]);
     expect(server.calls.some((call) => call.method === 'PATCH')).toBe(false);
     expect(server.profile.phone).toBe('01000000000');
@@ -55,9 +68,39 @@ test('guest registration is followed by exactly one complete booking request', a
     fName: 'Fixture', lName: 'Second Third Customer', phone: bookingDetails.phone,
     identityNumber: bookingDetails.identityNumber, email: 'booking@example.test', password: ' booking-password ',
   });
-  expect(writes[1]!.body).toEqual({ unitId: catalogueIds.unit, ...bookingDetails, email: 'booking@example.test', password: ' booking-password ' });
+  expect(writes[1]!.body).toEqual({ unitId: catalogueIds.unit, ...bookingDetails });
   expect(server.calls.some((call) => call.method === 'PATCH')).toBe(false);
   expect(await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toMatch(/booking@example|booking-password|Cairo/);
+});
+
+test('regular guest booking sends account details to signup and contact details to reservations', async ({ page, context }) => {
+  const server = await accountServer(context, 'anonymous');
+  await seedRouting(page);
+  await context.route(`https://localhost:7249/api/v1/projects/${catalogueIds.project}`, (route) => route.fulfill({
+    headers: sessionCors, json: { success: true, data: { ...catalogueProject, projectType: 0 }, message: null },
+  }));
+  await page.goto(unitPath);
+  await page.getByRole('button', { name: 'Reserve now', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('input')).toHaveCount(4);
+  await expect(dialog.locator('select')).toHaveCount(0);
+  await page.locator('#booking-fullName').fill('Fixture Customer');
+  await page.locator('#booking-phone').fill(bookingDetails.phone);
+  await page.locator('#booking-email').fill('regular@example.test');
+  await page.locator('#booking-password').fill('fixture-password');
+  await dialog.getByRole('button', { name: 'Confirm reservation', exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/account/reservations/${accountIds.created}$`));
+  const writes = server.calls.filter((call) => call.method === 'POST' && (call.path.endsWith('/register') || call.path === '/api/v1/reservations'));
+  expect(writes.map((call) => [call.path, call.body])).toEqual([
+    ['/api/v1/auth/customers/register', {
+      fName: 'Fixture', lName: 'Customer', phone: bookingDetails.phone,
+      regularReservationUnitId: catalogueIds.unit, email: 'regular@example.test', password: 'fixture-password',
+    }],
+    ['/api/v1/reservations', {
+      unitId: catalogueIds.unit, fullName: 'Fixture Customer', phone: bookingDetails.phone,
+      identityNumber: null, ageGroup: null, placeOfResidence: null, preferredFinancialBracket: null, preferredRepaymentPeriod: null,
+    }],
+  ]);
 });
 
 test('validation and failed registration preserve the draft and cannot submit a reservation', async ({ page, context }) => {

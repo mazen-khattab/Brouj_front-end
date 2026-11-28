@@ -16,6 +16,7 @@ import { assertCompleteOrdering, moveRows, orderingInput } from "../../src/Featu
 import { serverFieldErrors } from "../../src/Forms/fieldErrors";
 import { stageFromTemplateInput, stageUpdateInput, stageFrom } from "../../src/Features/Planning/Stages/mapping";
 import { validDateTime } from "../../src/Validation/dateTime";
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../src/utils/dateTimeOffset";
 import { ApiError } from "../../src/Types/failures";
 import * as plans from "../../src/Services/TimePlans";
 import * as templates from "../../src/Services/Templates";
@@ -89,6 +90,7 @@ test.each([
 });
 
 test("feature validation explicitly covers plan, stage, item, status, image and template fields", () => {
+  const date = toDateTimeLocalValue(plan.deliveryDate);
   expect(validatePlan({ name: " ", deliveryDate: "" })).toEqual(["name", "deliveryDate"]);
   expect(validatePlan({ name: "Plan", deliveryDate: date })).toEqual([]);
   expect(validateStageTemplate({ name: "x".repeat(101), code: "x".repeat(65) })).toEqual(["name", "code"]);
@@ -153,6 +155,7 @@ test("ordering preserves input arrays and checks the complete unique sibling set
 });
 
 test("template drafts carry source references, explicit dates and reject inactive/incomplete sources", () => {
+  const date = toDateTimeLocalValue(plan.deliveryDate);
   const rows = template.items.map((row) => ({ itemTemplateId: row.itemTemplateId, dueDate: date, confirmedDate: "" }));
   const values = { name: "Ignored manual name", deliveryDate: date, price: "2500", pricingDate: date, status: "2" };
   const input = stageFromTemplateInput(template, values, rows);
@@ -161,7 +164,7 @@ test("template drafts carry source references, explicit dates and reject inactiv
   expect(input).not.toHaveProperty("pricingDate");
   expect(input).not.toHaveProperty("status");
   expect(input.items.map((row) => row.itemTemplateId)).toEqual([ids.itemTemplate, ids.itemTemplate2]);
-  expect(input.items.every((row) => row.dueDate === date && row.confirmedDate === null)).toBe(true);
+  expect(input.items.every((row) => row.dueDate === toDateTimeOffsetIso(date) && row.confirmedDate === null)).toBe(true);
   expect(() => stageFromTemplateInput({ ...template, isActive: false }, values, rows)).toThrow(ApiError);
   expect(() => stageFromTemplateInput({ ...template, items: template.items.map((row) => ({ ...row, isActive: false })) }, values, rows)).toThrow(ApiError);
   expect(() => stageFromTemplateInput(template, values, [])).toThrow(ApiError);
@@ -172,8 +175,8 @@ test("template drafts carry source references, explicit dates and reject inactiv
       rows.map((row) => ({ ...row, itemTemplateId: ids.item })),
     ),
   ).toThrow(ApiError);
-  expect(stageUpdateInput(values)).toEqual({ name: values.name, deliveryDate: date, price: 2500, pricingDate: date, status: 2 });
-  expect(stageFrom(plan.stages[0]!)).toMatchObject({ name: plan.stages[0]!.name, deliveryDate: plan.stages[0]!.deliveryDate });
+  expect(stageUpdateInput(values)).toEqual({ name: values.name, deliveryDate: toDateTimeOffsetIso(date), price: 2500, pricingDate: toDateTimeOffsetIso(date), status: 2 });
+  expect(stageFrom(plan.stages[0]!)).toMatchObject({ name: plan.stages[0]!.name, deliveryDate: toDateTimeLocalValue(plan.stages[0]!.deliveryDate) });
 });
 
 test.each([

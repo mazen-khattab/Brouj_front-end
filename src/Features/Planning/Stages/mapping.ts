@@ -1,3 +1,4 @@
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import { ApiError } from "../../../Types/failures";
 import { TimePlanStageStatus, type StageDraftInput, type StageTemplateDto, type StageUpdateInput, type TemplateStageDraftInput, type TimePlanStageDto } from "../../../Types/contracts";
 import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
@@ -5,21 +6,22 @@ import type { TimePlanStageDraft, TemplateApplicationItemDraft } from "./types";
 export function stageFrom(source?: TimePlanStageDto): TimePlanStageDraft {
   return {
     name: source?.name ?? "",
-    deliveryDate: source?.deliveryDate ?? "",
+    deliveryDate: toDateTimeLocalValue(source?.deliveryDate),
     price: source?.pricingDate == null ? "" : String(source.price),
-    pricingDate: source?.pricingDate ?? "",
+    pricingDate: toDateTimeLocalValue(source?.pricingDate),
     status: String(source?.status ?? TimePlanStageStatus.Pending),
   };
 }
 
 function stagePricingInput(values: TimePlanStageDraft): Pick<StageUpdateInput, "price" | "pricingDate"> {
-  return values.price.trim() && values.pricingDate.trim() ? { price: Number(values.price), pricingDate: values.pricingDate.trim() } : {};
+  const pricingDate = toDateTimeOffsetIso(values.pricingDate);
+  return values.price.trim() && pricingDate ? { price: Number(values.price), pricingDate } : {};
 }
 
 export function stageUpdateInput(values: TimePlanStageDraft): StageUpdateInput {
   return {
     name: values.name,
-    deliveryDate: values.deliveryDate || null,
+    deliveryDate: toDateTimeOffsetIso(values.deliveryDate),
     status: Number(values.status) as TimePlanStageStatus,
     ...stagePricingInput(values),
   };
@@ -63,14 +65,14 @@ export function stageFromTemplateInput(
     throw new ApiError("transport", { status: 409 });
   }
   return {
-    deliveryDate: values.deliveryDate || null,
+    deliveryDate: toDateTimeOffsetIso(values.deliveryDate),
     stageTemplateId: source.id,
     name: source.name,
     items: rows.map((row) => ({
       itemTemplateId: row.itemTemplateId,
       name: source.items.find((item) => item.itemTemplateId === row.itemTemplateId)!.name,
-      dueDate: row.dueDate || null,
-      confirmedDate: row.confirmedDate || null,
+      dueDate: toDateTimeOffsetIso(row.dueDate),
+      confirmedDate: toDateTimeOffsetIso(row.confirmedDate),
     })),
   };
 }

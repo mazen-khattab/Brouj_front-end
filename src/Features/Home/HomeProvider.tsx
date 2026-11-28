@@ -4,7 +4,6 @@ import { HomeContext, type HomeCollection } from "./HomeContext";
 import { useResourceRead } from "../../Hooks/useResourceRead";
 import { usePublicContentInvalidation } from "../../Realtime/publicContentInvalidation";
 import { getProjects } from "../../Services/Projects";
-import { getActiveTermsAndConditions } from "../../Services/Terms";
 import { ProjectType } from "../../Types/contracts";
 
 function useCollection(projectType: ProjectType): HomeCollection {
@@ -20,15 +19,12 @@ function useCollection(projectType: ProjectType): HomeCollection {
 export function HomeProvider({ children }: { children: ReactNode }) {
   const initiative = useCollection(ProjectType.Initiative);
   const regular = useCollection(ProjectType.Regular);
-  const loadTerms = useCallback((signal: AbortSignal) => getActiveTermsAndConditions({ signal }), []);
-  const { result: terms, reload: reloadTerms } = useResourceRead("home-terms", loadTerms);
   const { reload: reloadInitiative } = initiative;
   const { reload: reloadRegular } = regular;
   const reload = useCallback(() => {
     reloadInitiative();
     reloadRegular();
-    reloadTerms();
-  }, [reloadInitiative, reloadRegular, reloadTerms]);
+  }, [reloadInitiative, reloadRegular]);
 
   usePublicContentInvalidation(reload);
 
@@ -36,8 +32,6 @@ export function HomeProvider({ children }: { children: ReactNode }) {
     <HomeContext
       value={{
         collections: { [ProjectType.Initiative]: initiative, [ProjectType.Regular]: regular },
-        terms,
-        reloadTerms,
       }}
     >
       {children}

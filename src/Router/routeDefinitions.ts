@@ -27,6 +27,12 @@ export const publicPages: RouteDefinition[] = [
     phase: 6,
   },
   {
+    path: "/projects/:projectId/units",
+    title: "units",
+    access: "public",
+    phase: 6,
+  },
+  {
     path: "/projects/:projectId/units/:unitId",
     title: "unit",
     access: "public",

@@ -1,20 +1,21 @@
+import { toDateTimeLocalValue, toDateTimeOffsetIso } from "../../../utils/dateTimeOffset";
 import type { PlanStageItemDto, PlanStageItemInput, ChangePlanStageItemStatusRequest, PlanStageItemStatus } from "../../../Types/contracts";
 import type { TimePlanItemDraft, TimePlanItemStatusDraft, ItemImageDescriptionDraft } from "./types";
 
 export function itemFrom(source?: PlanStageItemDto): TimePlanItemDraft {
-  return { name: source?.name ?? "", dueDate: source?.dueDate ?? "", confirmedDate: source?.confirmedDate ?? "" };
+  return { name: source?.name ?? "", dueDate: toDateTimeLocalValue(source?.dueDate), confirmedDate: toDateTimeLocalValue(source?.confirmedDate) };
 }
 
 export function itemStatusFrom(source: PlanStageItemDto): TimePlanItemStatusDraft {
-  return { status: String(source.status), confirmedDate: source.confirmedDate ?? "" };
+  return { status: String(source.status), confirmedDate: toDateTimeLocalValue(source.confirmedDate) };
 }
 
 export function itemInput(values: TimePlanItemDraft): PlanStageItemInput {
-  return { name: values.name, dueDate: values.dueDate || null, confirmedDate: values.confirmedDate || null };
+  return { name: values.name, dueDate: toDateTimeOffsetIso(values.dueDate), confirmedDate: toDateTimeOffsetIso(values.confirmedDate) };
 }
 
 export function itemStatusInput(values: TimePlanItemStatusDraft): ChangePlanStageItemStatusRequest {
-  return { status: Number(values.status) as PlanStageItemStatus, confirmedDate: values.confirmedDate || null };
+  return { status: Number(values.status) as PlanStageItemStatus, confirmedDate: toDateTimeOffsetIso(values.confirmedDate) };
 }
 
 export function imageDescriptionInput(values: ItemImageDescriptionDraft) {

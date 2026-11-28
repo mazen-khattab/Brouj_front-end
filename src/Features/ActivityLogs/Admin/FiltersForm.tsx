@@ -1,3 +1,4 @@
+import { DateTimeInput } from "../../../Components/DateTimeInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../../Components/Button";
@@ -84,6 +85,11 @@ export function FiltersForm({
     };
   }
 
+  function dateControl(field: "dateFrom" | "dateTo") {
+    const { onChange, ...props } = control(field);
+    return { ...props, onValueChange: (value: string) => onChange({ target: { value } }) };
+  }
+
   return (
     <form
       aria-label={title}
@@ -109,8 +115,8 @@ export function FiltersForm({
             </option>
           ))}
         </Select>
-        <Input {...control("dateFrom")} type="text" dir="ltr" maxLength={40} autoComplete="off" hint={t("dateHint")} />
-        <Input {...control("dateTo")} type="text" dir="ltr" maxLength={40} autoComplete="off" hint={t("dateHint")} />
+        <DateTimeInput {...dateControl("dateFrom")} autoComplete="off" /*hint={t("dateHint")}*/ />
+        <DateTimeInput {...dateControl("dateTo")} autoComplete="off" /*hint={t("dateHint")}*/ />
       </fieldset>
       <div className="flex flex-wrap gap-3">
         <Button type="submit" disabled={disabled || confirming} pending={pending}>

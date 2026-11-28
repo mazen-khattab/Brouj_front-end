@@ -35,7 +35,7 @@ function sample(type: string): unknown {
   if (type === 'Guid') return guid;
   if (type === 'DateTimeOffset') return '2026-10-29T12:00:00+02:00';
   if (type === 'string') return 'example <&> / ?';
-  if (['decimal', 'int', 'long'].includes(type)) return 2;
+  if (['decimal', 'double', 'int', 'long'].includes(type)) return 2;
   if (type === 'bool') return false;
   if (type === 'IFormFile') return new File(['image fixture'], 'fixture.png', { type: 'image/png' });
   const enumeration = inventory.enums.find((item) => item.name === type);
@@ -115,13 +115,17 @@ test('all operation identifiers and source properties have explicit mappings', (
 test('unit clients keep inherited create fields, omit an initiative plan, and send numeric replacement rows', async () => {
   result = guid;
   const signal = new AbortController().signal;
-  const body = { number: 'A-204', meterPrice: 28000, floorNumber: 2, size: 120, neighborMeterPrice: 31000 };
+  const body = {
+    number: 'A-204', meterPrice: 28000, floorNumber: 2, size: 120, neighborMeterPrice: 31000,
+    excellencePercentage: 12.35, trend: 'North', pricingDate: '2026-11-25T14:30:00+02:00',
+  };
   const paymentPlan = [{ installmentName: 'دفعة A', installmentNumber: 1, installmentPercentage: 100, installmentPeriodMonths: 0 }];
   expect(await createUnit({ projectId: guid, body }, { signal })).toBe(guid);
-  expect(await createUnit({ projectId: guid, body: { ...body, neighborMeterPrice: null, paymentPlan } }, { signal })).toBe(guid);
+  const regular = { ...body, neighborMeterPrice: null, pricingDate: null, paymentPlan };
+  expect(await createUnit({ projectId: guid, body: regular }, { signal })).toBe(guid);
   expect(await replaceUnitPaymentPlan({ id: guid, body: { paymentPlan } }, { signal })).toBe(guid);
   const writes = calls.filter((call) => !call.url?.endsWith('/csrf'));
-  expect(writes.map((call) => JSON.parse(call.data as string))).toEqual([body, { ...body, neighborMeterPrice: null, paymentPlan }, { paymentPlan }]);
+  expect(writes.map((call) => JSON.parse(call.data as string))).toEqual([body, regular, { paymentPlan }]);
   expect(writes[2]).toMatchObject({ method: 'put', url: `/api/v1/admin/units/${guid}/payment-plan`, signal });
   expect(writes[2]?.params).toBeUndefined();
 });

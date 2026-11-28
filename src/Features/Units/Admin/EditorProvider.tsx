@@ -27,6 +27,7 @@ export function UnitEditorProvider({ children, scope }: { children: ReactNode; s
     succeeded: false,
     failure: undefined as ApiError | undefined,
   });
+
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
     const currentMode = new URLSearchParams(currentLocation.search);
     const nextMode = new URLSearchParams(nextLocation.search);
@@ -37,6 +38,7 @@ export function UnitEditorProvider({ children, scope }: { children: ReactNode; s
       currentMode.get("projectId") !== nextMode.get("projectId");
     return (lock.current || dirty.current.size > 0) && leavesEditor;
   });
+
   useEffect(() => {
     active.current = true;
     function beforeUnload(event: BeforeUnloadEvent) {

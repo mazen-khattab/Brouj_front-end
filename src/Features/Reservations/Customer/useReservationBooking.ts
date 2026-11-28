@@ -50,7 +50,7 @@ export function useReservationBookingController() {
   ): Promise<{ id: string } | { failure: ApiError | SessionActionError; reservationSent: boolean } | undefined> {
     const guest = auth.status === "anonymous" && !auth.logoutRequired;
 
-    if (locked.current || blocked.current || auth.pending || (!guest && auth.actor !== "customer")) {
+    if (locked.current || blocked.current || auth.pending || (guest ? !input.registration : auth.actor !== "customer")) {
       return;
     }
 
@@ -62,20 +62,9 @@ export function useReservationBookingController() {
     let reservationSent = false;
 
     try {
-      if (guest) {
+      if (guest && input.registration) {
         registering.current = true;
-        const parts = input.fullName.split(" ");
-        await auth.registerCustomer(
-          {
-            fName: parts[0]!,
-            lName: parts.slice(1).join(" "),
-            phone: input.phone,
-            identityNumber: input.identityNumber,
-            email: input.email!,
-            password: input.password!,
-          },
-          request.signal,
-        );
+        await auth.registerCustomer(input.registration, request.signal);
         registeredGeneration.current = sessionBoundary.stamp()?.generation;
         expectedGeneration.current = registeredGeneration.current;
         registering.current = false;
@@ -83,16 +72,17 @@ export function useReservationBookingController() {
           onRegistered();
         }
       }
+
       if (!active.current || request.signal.aborted) {
         return;
       }
+
       const stamp = sessionBoundary.stamp();
       if (stamp && expectedGeneration.current !== stamp.generation) {
         throw new ApiError("canceled");
       }
       reservationSent = true;
-      // The generated service forwards this extended, typed body unchanged.
-      const id = await createReservation({ body: input }, { signal: request.signal });
+      const id = await createReservation({ body: input.reservation }, { signal: request.signal });
 
       if (!active.current || request.signal.aborted || (stamp && sessionBoundary.stamp()?.generation !== stamp.generation)) {
         return;

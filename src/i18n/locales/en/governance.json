@@ -21,7 +21,7 @@
   "apply": "Apply filters",
   "all": "All",
   "invalidField": "Review {{field}} and enter a valid value.",
-  "dateHint": "Use a full timestamp with an offset, for example 2026-10-29T09:00:00+02:00.",
+  "dateHint": "Choose the date and time in your local timezone.",
   "legalHint": "Plain text only. Keep the supplied legal wording in its original language.",
   "createTerms": "Create terms version",
   "viewCreated": "View the created record",
